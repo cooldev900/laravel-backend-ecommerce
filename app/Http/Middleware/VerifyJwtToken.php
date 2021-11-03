@@ -22,7 +22,7 @@ class VerifyJwtToken
     {
         try {
             if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['error' => 'user_not_found'], 101); //means auth error in the api
+                return response()->json(['error' => 'user_not_found'], 401); //means auth error in the api
             }
         } catch (TokenExpiredException $e) {
             // If the token is expired, then it will be refreshed and added to the headers
@@ -32,10 +32,10 @@ class VerifyJwtToken
                 $user = JWTAuth::setToken($refreshed)->toUser();
                 header('Authorization:' . $refreshed);
             } catch (JWTException $e) {
-                return response()->json(['error' => 'token_not_refreshable'], 103); //means not refreshable
+                return response()->json(['error' => 'token_not_refreshable'], 401); //means not refreshable
             }
         } catch (JWTException $e) {
-            return response()->json(['error' => 'user_not_found'], 101); //means auth error in the api
+            return response()->json(['error' => 'user_not_found'], 401); //means auth error in the api
         }
 
         // Login the user instance for global usage
