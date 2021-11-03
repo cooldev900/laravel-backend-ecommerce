@@ -19,8 +19,7 @@ Route::group([
     'prefix' => 'auth',
 ], function ($router) {
     Route::post('login', [AuthController::class, 'login'])->name('login');
-    Route::get('/refresh', [AuthController::class, 'refresh'])->name('refresh');
-
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::group(['middleware' => 'jwt_auth'], function () {

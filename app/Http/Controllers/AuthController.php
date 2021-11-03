@@ -82,40 +82,9 @@ class AuthController extends Controller
     {
         JWTAuth::invalidate(JWTAuth::getToken());
 
-        // $token = JWTAuth::parseToken();
-        // dd($token);
-
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully logged out',
-        ]);
-    }
-
-    /**
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-
-    public function refresh()
-    {
-        return $this->respondWithToken(JWTAuth::refresh(JWTAuth::getToken()));
-    }
-
-    /**
-     * Get the user permissions.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'status' => 'success',
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60,
         ]);
     }
 
