@@ -18,8 +18,7 @@ Route::group([
     'prefix' => 'auth',
 ], function ($router) {
     // Routes for auth
-    Route::post('login', [AuthController::class, 'login'])->name('login');
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
 
     // Routes for register
     // Route::post('register', 'Api\RegisterController@register');
@@ -27,5 +26,6 @@ Route::group([
 });
 
 Route::group(['middleware' => 'jwt_auth'], function () {
-    Route::get('/me', [AuthController::class, 'me'])->name('me');
+    Route::post('/auth/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('me', [AuthController::class, 'me'])->name('me');
 });
