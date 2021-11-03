@@ -15,11 +15,15 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::group([
-    'middleware' => 'api',
     'prefix' => 'auth',
 ], function ($router) {
+    // Routes for auth
     Route::post('login', [AuthController::class, 'login'])->name('login');
-    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Routes for register
+    // Route::post('register', 'Api\RegisterController@register');
+
 });
 
 Route::group(['middleware' => 'jwt_auth'], function () {
