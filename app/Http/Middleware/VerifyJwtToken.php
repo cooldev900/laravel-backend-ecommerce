@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -21,19 +22,24 @@ class VerifyJwtToken
     {
         try {
             if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['error' => 'user_not_found'], 404);
+                return response()->json(['error' => 'user_not_found'], 101); //means auth error in the api
+            }
+        } catch (TokenExpiredException $e) {
+            // If the token is expired, then it will be refreshed and added to the headers
+            try
+            {
+                $refreshed = JWTAuth::refresh(JWTAuth::getToken());
+                $user = JWTAuth::setToken($refreshed)->toUser();
+                header('Authorization:' . $refreshed);
+            } catch (JWTException $e) {
+                return response()->json(['error' => 'token_not_refreshable'], 103); //means not refreshable
             }
         } catch (JWTException $e) {
-            return response()->json(['error' => 'invalid token'], 403);
-        } catch (TokenExpiredException $e) {
-
-            return response()->json(['error' => 'token_expired'], 403);
-
-        } catch (JWTException $e) {
-
-            return response()->json(['error' => 'token_absent'], 403);
-
+            return response()->json(['error' => 'user_not_found'], 101); //means auth error in the api
         }
+
+        // Login the user instance for global usage
+        Auth::login($user, false);
 
         return $next($request);
     }

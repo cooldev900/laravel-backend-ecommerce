@@ -103,7 +103,24 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the guard to be used during authentication.
+     * Get the user permissions.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'status' => 'success',
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+        ]);
+    }
+
+    /**
+     * Get the user permission based on JWT token.
      *
      * @param  \Model\User $user
      *
