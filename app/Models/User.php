@@ -21,7 +21,6 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'company_id',
         'store_view',
         'scope',
         'role',
@@ -35,6 +34,10 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
     ];
+
+    protected $with = [];
+
+    // protected $appends = ['company_name'];
 
     /**
      * The attributes that should be cast.
@@ -63,6 +66,11 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    // public function getCompanyNameAttribute()
+    // {
+    //     return $this->company()->get()->first()->name;
+    // }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -74,8 +82,8 @@ class User extends Authenticatable implements JWTSubject
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function magento()
+    public function company()
     {
-        return $this->hasOne(Magento::class);
+        return $this->hasOne(Company::class, 'name', 'company_name');
     }
 }

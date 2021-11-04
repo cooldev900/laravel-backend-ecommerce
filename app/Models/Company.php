@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Magento extends Model
+class Company extends Model
 {
     use HasFactory;
 
@@ -16,5 +16,5 @@ class Magento extends Model
      */
     protected $hidden = ['created_at', 'updated_at'];
 
-    protected $fillable = ['url', 'consumer_key', 'consumer_secret', 'token', 'token_secret', 'user_id'];
+    protected $fillable = ['name', 'url', 'consumer_key', 'consumer_secret', 'token', 'token_secret', 'user_id'];
 }

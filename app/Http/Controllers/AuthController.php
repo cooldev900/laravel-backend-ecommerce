@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserPermission;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -30,7 +31,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         // grab credentials from the request
-        $credentials = $request->only('email', 'password', 'company_id');
+        $credentials = $request->only('email', 'password', 'company_name');
 
         try {
             // attempt to verify the credentials and create a token for the user

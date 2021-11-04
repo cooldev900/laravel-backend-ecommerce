@@ -19,6 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(StoreViews::class);
         $this->call(Users::class);
         $this->call(UserPermissions::class);
-        $this->call(Magentos::class);
+        $this->call(Companies::class);
     }
 }

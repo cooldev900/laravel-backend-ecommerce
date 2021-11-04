@@ -20,7 +20,7 @@ class Users extends Seeder
                 'name' => 'tom brown',
                 'email' => 'admin@outomotive.uk.co',
                 'password' => bcrypt("12345"),
-                'company_id' => 'Omni Automotive',
+                'company_name' => 'Omni Automotive',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
