@@ -104,9 +104,9 @@ class AuthController extends Controller
         $permissions_store_views_unique = json_decode(json_encode($permissions->unique('store_views')), true);
         $permissions_roles_unique = json_decode(json_encode($permissions->unique('roles')), true);
 
-        $_user['scope'] = array_column($permissions_scopes_unique, 'scopes');
-        $_user['store_view'] = array_column($permissions_store_views_unique, 'store_views');
-        $_user['role'] = array_column($permissions_roles_unique, 'roles');
+        $_user['scopes'] = array_column($permissions_scopes_unique, 'scopes');
+        $_user['store_views'] = array_column($permissions_store_views_unique, 'store_views');
+        $_user['roles'] = array_column($permissions_roles_unique, 'roles');
 
         return $_user;
     }
