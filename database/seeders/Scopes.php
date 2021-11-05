@@ -17,17 +17,17 @@ class Scopes extends Seeder
     {
         DB::table('scopes')->insert([
             [
-                'name' => 'product',
+                'name' => 'products',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name' => 'order',
+                'name' => 'orders',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name' => 'cart',
+                'name' => 'invoices',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

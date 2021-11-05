@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DataController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,4 +29,8 @@ Route::group([
 Route::group(['middleware' => 'jwt_auth'], function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('me', [AuthController::class, 'me'])->name('me');
+
+    Route::group(['prefix' => '{store_view}/{scope}', 'middleware' => 'permission'], function () {
+        Route::get('/', [DataController::class, 'getData'])->name('data.get');
+    });
 });

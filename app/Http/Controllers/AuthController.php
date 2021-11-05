@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\UserPermission;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -97,7 +96,7 @@ class AuthController extends Controller
      * @return Object $user with permissions
      */
 
-    private function getPermission($user)
+    public function getPermission($user)
     {
         $_user = $user;
         $permissions = UserPermission::where('user_id', $_user->id)->get();
