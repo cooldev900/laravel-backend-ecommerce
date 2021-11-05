@@ -37,7 +37,7 @@ class Controller extends BaseController
      * @return GuzzleHttp\Client;
      */
 
-    private function makeHttpClient()
+    protected function makeHttpClient()
     {
         $user = JWTAuth::user();
         $company = $user->company;
