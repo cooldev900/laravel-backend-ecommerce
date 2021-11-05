@@ -17,7 +17,7 @@ class ProductController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
 
-    public function all(Request $request)
+    public function allProducts(Request $request)
     {
         try {
             $client = $this->makeHttpClient();
@@ -45,7 +45,35 @@ class ProductController extends Controller
         }
     }
 
-    public function delete(Request $request)
+    /**
+     * Get Magento data.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+
+    public function getProduct(Request $request)
+    {
+
+        try {
+            $client = $this->makeHttpClient();
+            $params = $request->route()->parameters();
+            $response = $client->request('GET', $params['scope'] . '/' . $params['sku']);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_get_product',
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+
+        }
+    }
+
+    public function deleteProduct(Request $request)
     {
         try {
             $client = $this->makeHttpClient();

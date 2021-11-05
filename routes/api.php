@@ -33,7 +33,8 @@ Route::middleware(['jwt_auth'])->group(function () {
 Route::prefix('{store_view}/{scope}')->group(function () {
     Route::middleware(['jwt_auth', 'permission'])->group(function () {
         /********** Products **********/
-        Route::get('/', [ProductController::class, 'all'])->name('products.all');
-        Route::delete('/{sku}', [ProductController::class, 'delete'])->name('product.delete');
+        Route::get('/', [ProductController::class, 'allProducts'])->name('products.all');
+        Route::get('/{sku}', [ProductController::class, 'getProduct'])->name('products.index');
+        Route::delete('/{sku}', [ProductController::class, 'deleteProduct'])->name('products.delete');
     });
 });
