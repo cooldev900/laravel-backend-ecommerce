@@ -49,15 +49,11 @@ class DataController extends Controller
     public function getData(Request $request)
     {
         $params = $request->route()->parameters();
-        // $search_criteria = $request->query('searchCriteria');
-        // dd($search_criteria);
+        $search_criteria = json_decode($request->get('searchCriteria'));
 
         $response = $this->client->request('GET', $params['scope'], [
             'query' => [
-                'searchCriteria' => [
-                    'pageSize' => 20,
-                    'currentPage' => 1,
-                ],
+                'searchCriteria' => $search_criteria,
             ],
         ]);
 
