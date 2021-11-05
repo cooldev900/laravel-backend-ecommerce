@@ -38,9 +38,10 @@ class ProductController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                "error" => "could_get_products",
-                "message" => "Unable to get products",
-            ], 400);
+                'error' => 'could_get_products',
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+
         }
     }
 
@@ -50,18 +51,17 @@ class ProductController extends Controller
             $client = $this->makeHttpClient();
             $params = $request->route()->parameters();
 
-            $response = $client->request('DELETE', $params['scope'] . '/' . $params['sku']);
+            $client->request('DELETE', $params['scope'] . '/' . $params['sku']);
 
             return response()->json([
                 'status' => 'success',
-                'data' => json_decode($response->getBody()),
             ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                "error" => "could_delete_product",
-                "message" => "Unable to delete product",
-            ], 400);
+                'error' => 'could_delete_product',
+                'message' => $e->getMessage(),
+            ], $e->getCode());
         }
     }
 

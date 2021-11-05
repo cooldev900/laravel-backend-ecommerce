@@ -31,7 +31,6 @@ class VerifyJwtToken
                 $refreshed = JWTAuth::refresh(JWTAuth::getToken());
                 $user = JWTAuth::setToken($refreshed)->toUser();
                 header('Authorization:' . $refreshed);
-                dd('hello');
             } catch (JWTException $e) {
                 return response()->json(['error' => 'token_not_refreshable'], 401); //means not refreshable
             }

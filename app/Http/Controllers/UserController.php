@@ -14,7 +14,7 @@ class UserController extends Controller
         $result = [];
 
         foreach ($users as $user) {
-            array_push($result, )
+            // array_push($result, )
         }
 
         return response()->json($users);
