@@ -15,9 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::group([
-    'prefix' => 'auth',
-], function ($router) {
+Route::prefix('auth')->group(function () {
     // Routes for auth
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 
@@ -26,11 +24,14 @@ Route::group([
 
 });
 
-Route::group(['middleware' => 'jwt_auth'], function () {
+Route::middleware(['jwt_auth'])->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('me', [AuthController::class, 'me'])->name('me');
 
-    Route::group(['prefix' => '{store_view}/{scope}', 'middleware' => 'permission'], function () {
-        Route::get('/', [DataController::class, 'getData'])->name('data.get');
+});
+
+Route::prefix('{store_view}/{scope}')->group(function () {
+    Route::middleware(['jwt_auth', 'permission'])->group(function () {
+        Route::get('/', [DataController::class, 'getData'])->name('data.index');
     });
 });

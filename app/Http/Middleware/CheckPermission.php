@@ -40,11 +40,17 @@ class CheckPermission
             if (!$has_read_role) {
                 return response()->json(['error' => 'no_read_role'], 405); // 405: Method Not Allowed
             }
+        } else if ($action == 'DELETE') {
+            $has_delete_role = in_array('delete', array_column($permissions->roles, 'name'));
+            if (!$has_delete_role) {
+                return response()->json(['error' => 'no_delete_role'], 405); // 405: Method Not Allowed
+            }
         } else {
             $has_write_role = in_array('write', array_column($permissions->roles, 'name'));
             if (!$has_write_role) {
                 return response()->json(['error' => 'no_write_role'], 405); // 405: Method Not Allowed
             }
+
         }
 
         return $next($request);

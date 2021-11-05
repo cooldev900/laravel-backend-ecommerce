@@ -27,7 +27,7 @@ class Roles extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name' => 'create',
+                'name' => 'delete',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
