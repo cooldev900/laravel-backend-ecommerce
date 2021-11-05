@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,7 @@ Route::prefix('auth')->group(function () {
 Route::middleware(['jwt_auth'])->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('me', [AuthController::class, 'me'])->name('me');
+    Route::get('/nationalcodes', [Controller::class, 'allNationalCodes'])->name('nationalcodes');
 
 });
 
