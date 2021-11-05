@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DataController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,6 +32,8 @@ Route::middleware(['jwt_auth'])->group(function () {
 
 Route::prefix('{store_view}/{scope}')->group(function () {
     Route::middleware(['jwt_auth', 'permission'])->group(function () {
-        Route::get('/', [DataController::class, 'getData'])->name('data.index');
+        /********** Products **********/
+        Route::get('/', [ProductController::class, 'all'])->name('products.all');
+        Route::delete('/{sku}', [ProductController::class, 'delete'])->name('product.delete');
     });
 });
