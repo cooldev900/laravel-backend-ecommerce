@@ -134,7 +134,7 @@ class ProductController extends Controller
                 $extension = explode('/', mime_content_type($file['data']['fileBase64']))[1];
                 $base64Content = explode('base64,', $file['data']['fileBase64']);
 
-                $params = [
+                $payload = [
                     'entry' => [
                         'media_type' => 'image',
                         'position' => $count++,
@@ -152,7 +152,7 @@ class ProductController extends Controller
 
                 $client->request('POST', $params['scope'] . '/' . $params['sku'] . '/media', [
                     'headers' => ['Content-Type' => 'application/json'],
-                    'body' => json_encode($params),
+                    'body' => json_encode($payload),
                 ]);
             }
 
