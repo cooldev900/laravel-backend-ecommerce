@@ -116,4 +116,55 @@ class ProductController extends Controller
             ], $e->getCode());
         }
     }
+
+    public function updateMedia(Request $request)
+    {
+        try {
+            $client = $this->makeHttpClient();
+            $params = $request->route()->parameters();
+            $files = $request->input('files');
+            $imageIds = $request->input('imageIds');
+
+            foreach ($imageIds as $id) {
+                $client->request('DELETE', $params['scope'] . '/' . $params['sku'] . '/media/' . $id);
+            }
+
+            $count = 0;
+            foreach ($files as $file) {
+                $extension = explode('/', mime_content_type($file['data']['fileBase64']))[1];
+                $base64Content = explode('base64,', $file['data']['fileBase64']);
+
+                $params = [
+                    'entry' => [
+                        'media_type' => 'image',
+                        'position' => $count++,
+                        'label' => 'new_picture',
+                        'disabled' => false,
+                        'types' => ['image'],
+                        'file' => implode(explode(' ', $file['name'])),
+                        'content' => [
+                            'base64_encoded_data' => $base64Content[1],
+                            'type' => 'image/' . $extension,
+                            'name' => implode(explode(' ', $file['name'])),
+                        ],
+                    ],
+                ];
+
+                $client->request('POST', $params['scope'] . '/' . $params['sku'] . '/media', [
+                    'headers' => ['Content-Type' => 'application/json'],
+                    'body' => json_encode($params),
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'success',
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_delete_product',
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
+    }
 }

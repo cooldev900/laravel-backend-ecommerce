@@ -39,5 +39,6 @@ Route::prefix('{store_view}/{scope}')->group(function () {
         Route::get('/{sku}', [ProductController::class, 'getProduct'])->name('products.index');
         Route::delete('/{sku}', [ProductController::class, 'deleteProduct'])->name('products.delete');
         Route::put('/{sku}', [ProductController::class, 'updateProduct'])->name('products.update');
+        Route::post('/{sku}/media', [ProductController::class, 'updateMedia'])->name('products.media.update');
     });
 });
