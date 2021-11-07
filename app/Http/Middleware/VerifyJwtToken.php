@@ -33,9 +33,7 @@ class VerifyJwtToken
             {
                 $refreshed = JWTAuth::refresh(JWTAuth::getToken());
                 $user = JWTAuth::setToken($refreshed)->toUser();
-                echo 'hey--1';
                 header('Authorization:' . $refreshed);
-                echo 'hey--2';
             } catch (JWTException $e) {
                 return response()->json([
                     'success' => false,
