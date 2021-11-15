@@ -27,18 +27,22 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware(['jwt_auth'])->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('me', [AuthController::class, 'me'])->name('me');
+    Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::get('/nationalcodes', [Controller::class, 'allNationalCodes'])->name('nationalcodes');
 
 });
 
-Route::prefix('{store_view}/{scope}')->group(function () {
+Route::prefix('{store_view}')->group(function () {
     Route::middleware(['jwt_auth', 'permission'])->group(function () {
         /********** Products **********/
-        Route::get('/', [ProductController::class, 'allProducts'])->name('products.all');
-        Route::get('/{sku}', [ProductController::class, 'getProduct'])->name('products.index');
-        Route::delete('/{sku}', [ProductController::class, 'deleteProduct'])->name('products.delete');
-        Route::put('/{sku}', [ProductController::class, 'updateProduct'])->name('products.update');
-        Route::post('/{sku}/media', [ProductController::class, 'updateMedia'])->name('products.media.update');
+        Route::get('/products', [ProductController::class, 'allProducts'])->name('products.all');
+        Route::get('/products/{sku}', [ProductController::class, 'getProduct'])->name('products.index');
+        Route::delete('/products/{sku}', [ProductController::class, 'deleteProduct'])->name('products.delete');
+        Route::put('/products/{sku}', [ProductController::class, 'updateProduct'])->name('products.update');
+        Route::post('/products/{sku}/media', [ProductController::class, 'updateMedia'])->name('products.media.update');
     });
+
+    /********** Orders **********/
+    // Route::get('/', [OrderController::class, 'allProducts'])->name('products.all');
+
 });

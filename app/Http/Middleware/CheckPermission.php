@@ -20,6 +20,7 @@ class CheckPermission
     {
         $permissions = AuthController::getPermission(JWTAuth::user());
         $params = $request->route()->parameters();
+        $scope = explode('/', $request->path())[2];
         $action = $request->route()->methods[0];
 
         // Check store_view
@@ -29,7 +30,7 @@ class CheckPermission
         }
 
         // Check scope
-        $has_scope_access = in_array($params['scope'], array_column($permissions->scopes, 'name'));
+        $has_scope_access = in_array($scope, array_column($permissions->scopes, 'name'));
         if (!$has_scope_access) {
             return response()->json(['error' => 'scope_permission_denied'], 401);
         }

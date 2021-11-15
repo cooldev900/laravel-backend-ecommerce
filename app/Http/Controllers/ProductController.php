@@ -25,7 +25,7 @@ class ProductController extends Controller
                     'searchCriteria' => $search_criteria ? $search_criteria : '',
                 ],
             ];
-            $response = $client->request('GET', $params['scope'], $query);
+            $response = $client->request('GET', 'products', $query);
 
             return response()->json([
                 'status' => 'success',
@@ -53,7 +53,7 @@ class ProductController extends Controller
         try {
             $client = $this->makeHttpClient();
             $params = $request->route()->parameters();
-            $response = $client->request('GET', $params['scope'] . '/' . $params['sku']);
+            $response = $client->request('GET', 'products/' . $params['sku']);
 
             return response()->json([
                 'status' => 'success',
@@ -79,7 +79,7 @@ class ProductController extends Controller
                 'saveOptions' => true,
             ];
 
-            $response = $client->request('PUT', $params['scope'] . '/' . $params['sku'], [
+            $response = $client->request('PUT', 'products/' . $params['sku'], [
                 'headers' => ['Content-Type' => 'application/json'],
                 'body' => json_encode($body),
             ]);
@@ -103,7 +103,7 @@ class ProductController extends Controller
             $client = $this->makeHttpClient();
             $params = $request->route()->parameters();
 
-            $client->request('DELETE', $params['scope'] . '/' . $params['sku']);
+            $client->request('DELETE', 'products/' . $params['sku']);
 
             return response()->json([
                 'status' => 'success',
@@ -126,7 +126,7 @@ class ProductController extends Controller
             $imageIds = $request->input('imageIds');
 
             foreach ($imageIds as $id) {
-                $client->request('DELETE', $params['scope'] . '/' . $params['sku'] . '/media/' . $id);
+                $client->request('DELETE', 'products/' . $params['sku'] . '/media/' . $id);
             }
 
             $count = 0;
@@ -150,7 +150,7 @@ class ProductController extends Controller
                     ],
                 ];
 
-                $client->request('POST', $params['scope'] . '/' . $params['sku'] . '/media', [
+                $client->request('POST', 'products/' . $params['sku'] . '/media', [
                     'headers' => ['Content-Type' => 'application/json'],
                     'body' => json_encode($payload),
                 ]);
