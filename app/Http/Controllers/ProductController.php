@@ -17,7 +17,6 @@ class ProductController extends Controller
     {
         try {
             $client = $this->makeHttpClient();
-            $params = $request->route()->parameters();
             $search_criteria = json_decode($request->get('searchCriteria'));
 
             $query = [
@@ -49,7 +48,6 @@ class ProductController extends Controller
 
     public function getProduct(Request $request)
     {
-
         try {
             $client = $this->makeHttpClient();
             $params = $request->route()->parameters();
