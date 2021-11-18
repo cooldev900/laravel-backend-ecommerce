@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class NationalCodesSeeder extends Seeder
+class NationalCodes extends Seeder
 {
     /**
      * Run the database seeds.
