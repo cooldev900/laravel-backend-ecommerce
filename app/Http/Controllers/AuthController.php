@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserPermission;
+use Exception;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -59,6 +61,67 @@ class AuthController extends Controller
             'token' => $token,
         ], 200);
 
+    }
+
+    /**
+     * Register user if current user has admin permission.
+     *
+     * @param
+     * @return \Illuminate\Http\JsonResponse
+     */
+
+    public function register(Request $request)
+    {
+        try {
+            $user = JWTAuth::user();
+            // Check if user is admin
+            if (!$user->is_admin) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'not_admin',
+                    'message' => 'Only admin user can register a new user.',
+                ], 402);
+            }
+
+            $request->validate([
+                'email' => 'required',
+                'name' => 'required',
+                'password' => 'required',
+                'company_name' => 'required',
+                'scopes' => 'required|array|min:1',
+                'store_views' => 'required|array|min:1',
+                'roles' => 'required|array|min:1',
+            ]);
+
+            $newUser = new User();
+            $newUser->email = $request->input('email');
+            $newUser->name = $request->input('name');
+            $newUser->company_name = $request->input('company_name');
+            $newUser->is_admin = $request->input('is_admin');
+            $newUser->password = bcrypt($request->input('password'));
+            $newUser->save();
+
+            foreach ($request->input('scopes') as $scope) {
+                foreach ($request->input('store_views') as $store_view) {
+                    foreach ($request->input('roles') as $role) {
+                        $newUserPermission = new UserPermission();
+                        $newUserPermission->user_id = $newUser->id;
+                        $newUserPermission->scope_id = $scope;
+                        $newUserPermission->store_view_id = $store_view;
+                        $newUserPermission->role_id = $role;
+                        $newUserPermission->save();
+                    }
+                }
+            }
+
+            return response()->json($this->getPermission($newUser));
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'invalid_user_data',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

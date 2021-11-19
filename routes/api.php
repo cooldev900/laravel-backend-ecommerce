@@ -19,17 +19,11 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::prefix('auth')->group(function () {
-    // Routes for auth
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
-
-    // Routes for register
-    // Route::post('register', 'Api\RegisterController@register');
-
-});
+Route::post('/auth/login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware(['jwt_auth'])->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/auth/register', [AuthController::class, 'register'])->name('register');
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::get('/nationalcodes', [Controller::class, 'allNationalCodes'])->name('nationalcodes');
 
