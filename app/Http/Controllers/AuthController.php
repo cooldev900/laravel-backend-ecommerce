@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\User;
 use App\Models\UserPermission;
 use Exception;
@@ -73,8 +74,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
-            $user = JWTAuth::user();
             // Check if user is admin
+            $user = JWTAuth::user();
             if (!$user->is_admin) {
                 return response()->json([
                     'status' => 'error',
@@ -84,15 +85,32 @@ class AuthController extends Controller
             }
 
             $request->validate([
-                'email' => 'required',
-                'name' => 'required',
-                'password' => 'required',
-                'company_name' => 'required',
+                'email' => 'required|regex:/^.+@.+$/i',
+                'name' => 'required|string',
+                'password' => 'required|string',
+                'company_name' => 'required|string',
+                'company_url' => 'required|string',
+                'company_consumer_key' => 'required|string',
+                'company_consumer_secret' => 'required|string',
+                'company_token' => 'required|string',
+                'company_token_secret' => 'required|string',
                 'scopes' => 'required|array|min:1',
                 'store_views' => 'required|array|min:1',
                 'roles' => 'required|array|min:1',
+                'is_admin' => 'numeric',
             ]);
 
+            // Check if company was already registered
+            // $companies = Company::all();
+            // if (!in_array($request->company_name, array_column($companies->toArray(), 'name'))) {
+            //     return response()->json([
+            //         'status' => 'error',
+            //         'error' => 'invalid_company_data',
+            //         'message' => 'This company should be registered in advance.',
+            //     ], 500);
+            // }
+
+            //Register a new user
             $newUser = new User();
             $newUser->email = $request->input('email');
             $newUser->name = $request->input('name');
@@ -101,6 +119,17 @@ class AuthController extends Controller
             $newUser->password = bcrypt($request->input('password'));
             $newUser->save();
 
+            //Register a new company
+            $newCompany = new Company();
+            $newCompany->name = $request->input('company_name');
+            $newCompany->url = encrypt($request->input('company_url'));
+            $newCompany->consumer_key = encrypt($request->input('company_consumer_key'));
+            $newCompany->consumer_secret = encrypt($request->input('company_consumer_secret'));
+            $newCompany->token = encrypt($request->input('company_token'));
+            $newCompany->token_secret = encrypt($request->input('company_token_secret'));
+            $newCompany->save();
+
+            //Set user permissions
             foreach ($request->input('scopes') as $scope) {
                 foreach ($request->input('store_views') as $store_view) {
                     foreach ($request->input('roles') as $role) {
