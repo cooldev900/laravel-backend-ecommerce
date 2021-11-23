@@ -8,6 +8,45 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ *
+ * @OA\Schema(
+ * required={"password"},
+ * @OA\Xml(name="User"),
+ * @OA\Property(property="id", type="integer", readOnly="true", example="1"),
+ * @OA\Property(property="name", type="string", readOnly="true", description="User name", example="John Doe"),
+ * @OA\Property(property="email", type="string", readOnly="true", format="email", description="User unique email address", example="user@gmail.com"),
+ * @OA\Property(property="company_name", type="string", example="Web Hunter"),
+ * @OA\Property(property="is_admin", type="integer", example="1"),
+ * @OA\Property(
+ *      property="scopes",
+ *      type="array",
+ *      @OA\Items(
+ *          type="object", ref="#/components/schemas/Scope"
+ *      )
+ * ),
+ * @OA\Property(
+ *      property="store_views",
+ *      type="array",
+ *      @OA\Items(
+ *          type="object", ref="#/components/schemas/StoreView"
+ *      )
+ * ),
+ * @OA\Property(
+ *      property="roles",
+ *      type="array",
+ *      @OA\Items(
+ *          type="object", ref="#/components/schemas/Role"
+ *      )
+ * ),
+ * @OA\Property(property="created_at", ref="#/components/schemas/BaseModel/properties/created_at"),
+ * @OA\Property(property="updated_at", ref="#/components/schemas/BaseModel/properties/updated_at"),
+ * )
+ *
+ * Class User
+ *
+ */
+
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;

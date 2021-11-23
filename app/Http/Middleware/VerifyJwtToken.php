@@ -24,7 +24,7 @@ class VerifyJwtToken
             if (!$user = JWTAuth::parseToken()->authenticate()) {
                 return response()->json([
                     'success' => false,
-                    'error' => 'user_not_found',
+                    'error' => 'invalid_token',
                 ], 401); //means auth error in the api
             }
         } catch (TokenExpiredException $e) {
@@ -43,7 +43,7 @@ class VerifyJwtToken
         } catch (JWTException $e) {
             return response()->json([
                 'success' => false,
-                'error' => 'user_not_found',
+                'error' => 'invalid_token',
             ], 401); //means auth error in the api
         }
 

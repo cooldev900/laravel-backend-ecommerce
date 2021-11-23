@@ -25,11 +25,42 @@ class AuthController extends Controller
     }
 
     /**
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     * path="/auth/login",
+     * summary="Sign in",
+     * description="Login by email, password, company name",
+     * operationId="authLogin",
+     * tags={"UnAuthorize"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Pass user credentials",
+     *    @OA\JsonContent(
+     *       required={"email","password", "company_name"},
+     *       @OA\Property(property="email", type="string", pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", format="email", example="user1@mail.com"),
+     *       @OA\Property(property="password", type="string", format="password", example="PassWord12345"),
+     *       @OA\Property(property="company_name", type="string", example="Omni"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="success", type="string", example="success"),
+     *        @OA\Property(property="user", type="object", ref="#/components/schemas/User"),
+     *        @OA\Property(property="token", ref="#/components/schemas/BaseModel/properties/token"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=422,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="credentials_error"),
+     *       @OA\Property(property="message", type="string", example="Sorry, wrong email address ,password or company name. Please try again")
+     *        )
+     *     )
+     * )
      */
-
     public function login(Request $request)
     {
         // grab credentials from the request
@@ -49,7 +80,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'error',
                 'error' => 'could_not_create_token',
-                'message' => 'Enable to process request.',
+                'message' => 'Sorry, wrong email address, password or company name. Please try again.',
             ], 422);
         }
 
@@ -65,10 +96,69 @@ class AuthController extends Controller
     }
 
     /**
-     * Register user if current user has admin permission.
-     *
-     * @param
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     * path="/auth/register",
+     * summary="Register a new user",
+     * description="Register a new user. User should have admin permission",
+     * operationId="authRegister",
+     * tags={"User"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Pass user credentials",
+     *    @OA\JsonContent(
+     *       required={"email", "name", "password", "company_name", "company_url", "company_consumer_key", "company_consumer_secret", "company_token", "company_token_secret", "scopes", "store_views", "roles"},
+     *       @OA\Property(property="email", type="string", pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", format="email", example="user1@mail.com"),
+     *       @OA\Property(property="name", type="string", example="Johe Doe"),
+     *       @OA\Property(property="password", type="string", format="password", example="PassWord12345"),
+     *       @OA\Property(property="company_name", type="string", example="Omni"),
+     *       @OA\Property(property="company_url", type="string", example="https://omni.magento"),
+     *       @OA\Property(property="company_consumer_key", ref="#/components/schemas/BaseModel/properties/token"),
+     *       @OA\Property(property="company_consumer_secret", ref="#/components/schemas/BaseModel/properties/token"),
+     *       @OA\Property(property="company_token", ref="#/components/schemas/BaseModel/properties/token"),
+     *       @OA\Property(property="company_token_secret", ref="#/components/schemas/BaseModel/properties/token"),
+     *       @OA\Property(
+     *          property="scopes",
+     *          type="array",
+     *              @OA\Items(
+     *                  type="object", ref="#/components/schemas/Scope"
+     *          )
+     *       ),
+     *       @OA\Property(
+     *          property="store_views",
+     *          type="array",
+     *              @OA\Items(
+     *                  type="object", ref="#/components/schemas/StoreView"
+     *          )
+     *       ),
+     *       @OA\Property(
+     *          property="roles",
+     *          type="array",
+     *              @OA\Items(
+     *                  type="object", ref="#/components/schemas/Role"
+     *          )
+     *       ),
+     *       @OA\Property(property="is_admin", type="integer", example="1"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="success", type="string", example="success"),
+     *        @OA\Property(property="new_user", type="object", ref="#/components/schemas/User"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function register(Request $request)
@@ -143,7 +233,10 @@ class AuthController extends Controller
                 }
             }
 
-            return response()->json($this->getPermission($newUser));
+            return response()->json([
+                'status' => 'success',
+                'new_user' => $this->getPermission($newUser),
+            ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',

@@ -5,6 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @OA\Schema(
+ *     @OA\Xml(name="Role"),
+ *     @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *          description="Unique Role ID",
+ *          example="1",
+ *      ),
+ *     @OA\Property(property="name", type="string", example="read"),
+ * )
+ *
+ * Class Role
+ *
+ * @package App\Models
+ */
+
 class Role extends Model
 {
     use HasFactory;
