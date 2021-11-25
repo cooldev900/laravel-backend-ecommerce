@@ -17,20 +17,26 @@ class StoreViews extends Seeder
     {
         DB::table('store_views')->insert([
             [
-                'code' => 'omni',
+                'code' => 'default',
                 'magento_id' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'code' => 'mini',
+                'code' => 'jaguar',
                 'magento_id' => 2,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'code' => 'audi',
+                'code' => 'landrover',
                 'magento_id' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'code' => 'audi',
+                'magento_id' => 4,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

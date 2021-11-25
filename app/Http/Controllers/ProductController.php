@@ -16,7 +16,8 @@ class ProductController extends Controller
     public function allProducts(Request $request)
     {
         try {
-            $client = $this->makeHttpClient();
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
             $search_criteria = json_decode($request->get('searchCriteria'));
 
             $query = [
@@ -49,8 +50,8 @@ class ProductController extends Controller
     public function getProduct(Request $request)
     {
         try {
-            $client = $this->makeHttpClient();
             $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
             $response = $client->request('GET', 'products/' . $params['sku']);
 
             return response()->json([
@@ -70,8 +71,8 @@ class ProductController extends Controller
     public function updateProduct(Request $request)
     {
         try {
-            $client = $this->makeHttpClient();
             $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
             $body = [
                 'product' => $request->all(),
                 'saveOptions' => true,
@@ -98,8 +99,8 @@ class ProductController extends Controller
     public function deleteProduct(Request $request)
     {
         try {
-            $client = $this->makeHttpClient();
             $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
 
             $client->request('DELETE', 'products/' . $params['sku']);
 
@@ -118,8 +119,8 @@ class ProductController extends Controller
     public function updateMedia(Request $request)
     {
         try {
-            $client = $this->makeHttpClient();
             $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
             $files = $request->input('files');
             $imageIds = $request->input('imageIds');
 

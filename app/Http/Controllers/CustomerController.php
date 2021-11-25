@@ -16,7 +16,8 @@ class CustomerController extends Controller
     public function allCustomers(Request $request)
     {
         try {
-            $client = $this->makeHttpClient();
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
             $search_criteria = json_decode($request->get('searchCriteria'));
 
             $json = '
@@ -39,7 +40,7 @@ class CustomerController extends Controller
             $j = $search_criteria ? $search_criteria : json_decode($json);
             $get_params = http_build_query($j);
 
-            $response = $client->request('GET', 'customers/search?'.$get_params);
+            $response = $client->request('GET', 'customers/search?' . $get_params);
 
             return response()->json([
                 'status' => 'success',
@@ -64,8 +65,8 @@ class CustomerController extends Controller
     public function getCustomer(Request $request)
     {
         try {
-            $client = $this->makeHttpClient();
             $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
             $response = $client->request('GET', 'customers/' . $params['customerId']);
 
             return response()->json([
@@ -85,8 +86,8 @@ class CustomerController extends Controller
     public function deleteCustomer(Request $request)
     {
         try {
-            $client = $this->makeHttpClient();
             $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
 
             $client->request('DELETE', 'customers/' . $params['customerId']);
 

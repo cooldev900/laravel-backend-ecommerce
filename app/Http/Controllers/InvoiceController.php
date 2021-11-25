@@ -15,7 +15,8 @@ class InvoiceController extends Controller
     public function allInvoices(Request $request)
     {
         try {
-            $client = $this->makeHttpClient();
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
 
             $search_criteria = json_decode($request->get('searchCriteria'));
             $query = [
@@ -51,9 +52,9 @@ class InvoiceController extends Controller
     {
 
         try {
-            $client = $this->makeHttpClient();
-
             $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
             $response = $client->request('GET', 'invoices/' . $params['id']);
 
             return response()->json([
@@ -79,7 +80,8 @@ class InvoiceController extends Controller
     {
 
         try {
-            $client = $this->makeHttpClient();
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
 
             //TODO: get body and send
 

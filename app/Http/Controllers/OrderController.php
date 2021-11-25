@@ -15,7 +15,8 @@ class OrderController extends Controller
     public function allOrders(Request $request)
     {
         try {
-            $client = $this->makeHttpClient();
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
 
             $search_criteria = json_decode($request->get('searchCriteria'));
             $query = [
@@ -50,9 +51,9 @@ class OrderController extends Controller
     {
 
         try {
-            $client = $this->makeHttpClient();
-
             $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
             $response = $client->request('GET', 'orders/' . $params['id']);
 
             return response()->json([
@@ -79,9 +80,9 @@ class OrderController extends Controller
     {
 
         try {
-            $client = $this->makeHttpClient();
-
             $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
             $response = $client->request('GET', 'orders/items/' . $params['id']);
 
             return response()->json([
@@ -106,7 +107,8 @@ class OrderController extends Controller
     public function getOrderItems(Request $request)
     {
         try {
-            $client = $this->makeHttpClient();
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
 
             $search_criteria = json_decode($request->get('searchCriteria'));
             $query = [
@@ -116,7 +118,6 @@ class OrderController extends Controller
             ];
 
             $response = $client->request('GET', 'orders/items', $query);
-
 
             return response()->json([
                 'status' => 'success',
