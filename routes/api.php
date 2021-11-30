@@ -2,10 +2,10 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,17 +27,18 @@ Route::middleware(['jwt_auth'])->group(function () {
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::get('/nationalcodes', [Controller::class, 'allNationalCodes'])->name('nationalcodes');
 
-}); 
+});
 
 Route::prefix('{store_view}')->group(function () {
     Route::middleware(['jwt_auth', 'permission'])->group(function () {
         /********** Products **********/
         Route::get('/products', [ProductController::class, 'allProducts'])->name('products.all');
+        Route::post('/products', [ProductController::class, 'createProduct'])->name('products.create');
         Route::get('/products/{sku}', [ProductController::class, 'getProduct'])->name('products.index');
         Route::delete('/products/{sku}', [ProductController::class, 'deleteProduct'])->name('products.delete');
         Route::put('/products/{sku}', [ProductController::class, 'updateProduct'])->name('products.update');
         Route::post('/products/{sku}/media', [ProductController::class, 'updateMedia'])->name('products.media.update');
-        
+
         /********** Orders **********/
         Route::get('/orders', [OrderController::class, 'allOrders'])->name('orders.all');
         Route::get('/orders/items', [OrderController::class, 'getOrderItems'])->name('orders.items.all');
