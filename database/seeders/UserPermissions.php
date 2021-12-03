@@ -64,6 +64,14 @@ class UserPermissions extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'user_id' => 1,
+                'store_view_id' => 3,
+                'scope_id' => 4,
+                'role_id' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }
