@@ -51,7 +51,7 @@ Route::prefix('{store_view}')->group(function () {
         Route::post('/invoices', [InvoiceController::class, 'createInvoice'])->name('invoices.create');
 
         /********** Customers **********/
-        Route::get('/customers/search', [CustomerController::class, 'allCustomers'])->name('customer.all');
+        Route::get('/customers', [CustomerController::class, 'allCustomers'])->name('customer.all');
         Route::get('/customers/{customerId}', [CustomerController::class, 'getCustomer'])->name('customer.index');
         Route::delete('/customers/{customerId}', [CustomerController::class, 'deleteCustomer'])->name('customer.delete');
     });
