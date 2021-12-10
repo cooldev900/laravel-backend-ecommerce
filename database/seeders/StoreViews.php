@@ -42,7 +42,7 @@ class StoreViews extends Seeder
             ],
             [
                 'code' => 'bmw',
-                'magento_id' => 4,
+                'magento_id' => 5,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
