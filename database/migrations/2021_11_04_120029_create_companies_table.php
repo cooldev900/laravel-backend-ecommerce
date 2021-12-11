@@ -22,8 +22,7 @@ class CreateCompaniesTable extends Migration
             $table->string('token', 500);
             $table->string('token_secret', 500);
             $table->timestamps();
-
-            $table->foreign('name')->references('company_name')->on('users')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+            // $table->foreign('name')->references('company_name')->on('users')->onUpdate('RESTRICT')->onDelete('RESTRICT');
         });
     }
 

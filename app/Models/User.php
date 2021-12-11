@@ -117,12 +117,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(UserPermission::class);
     }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function company()
-    {
-        return $this->hasOne(Company::class, 'name', 'company_name');
-    }
 }

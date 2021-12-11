@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\NationalCodes;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
@@ -40,8 +41,8 @@ class Controller extends BaseController
     protected function makeHttpClient($store_view)
     {
         $user = JWTAuth::user();
-        $company = $user->company;
         $stack = HandlerStack::create();
+        $company = Company::where('name', $user->company_name)->firstOrFail();
 
         $middleware = new Oauth1([
             'consumer_key' => decrypt($company->consumer_key),
