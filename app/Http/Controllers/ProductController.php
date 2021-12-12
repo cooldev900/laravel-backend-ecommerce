@@ -150,11 +150,13 @@ class ProductController extends Controller
         try {
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
+            $deleteClient = $this->makeHttpClient('all');
+
             $files = $request->input('files');
             $imageIds = $request->input('imageIds');
 
             foreach ($imageIds as $id) {
-                $client->request('DELETE', 'products/' . $params['sku'] . '/media/' . $id);
+                $deleteClient->request('DELETE', 'products/' . $params['sku'] . '/media/' . $id);
             }
 
             $count = 0;
