@@ -169,32 +169,32 @@ class ProductController extends Controller
             //     $deleteClient->request('DELETE', 'products/' . $params['sku'] . '/media/' . $id);
             // }
 
-            // $count = 0;
-            // foreach ($files as $file) {
-            //     $extension = explode('/', mime_content_type($file['data']['fileBase64']))[1];
-            //     $base64Content = explode('base64,', $file['data']['fileBase64']);
+            $count = 0;
+            foreach ($files as $file) {
+                $extension = explode('/', mime_content_type($file['data']['fileBase64']))[1];
+                $base64Content = explode('base64,', $file['data']['fileBase64']);
 
-            //     $payload = [
-            //         'entry' => [
-            //             'media_type' => 'image',
-            //             'position' => $count++,
-            //             'label' => 'new_picture',
-            //             'disabled' => false,
-            //             'types' => ['image'],
-            //             'file' => implode(explode(' ', $file['name'])),
-            //             'content' => [
-            //                 'base64_encoded_data' => $base64Content[1],
-            //                 'type' => 'image/' . $extension,
-            //                 'name' => implode(explode(' ', $file['name'])),
-            //             ],
-            //         ],
-            //     ];
+                $payload = [
+                    'entry' => [
+                        'media_type' => 'image',
+                        'position' => $count++,
+                        'label' => 'new_picture',
+                        'disabled' => false,
+                        'types' => ['image'],
+                        'file' => implode(explode(' ', $file['name'])),
+                        'content' => [
+                            'base64_encoded_data' => $base64Content[1],
+                            'type' => 'image/' . $extension,
+                            'name' => implode(explode(' ', $file['name'])),
+                        ],
+                    ],
+                ];
 
-            //     $client->request('POST', 'products/' . $params['sku'] . '/media', [
-            //         'headers' => ['Content-Type' => 'application/json'],
-            //         'body' => json_encode($payload),
-            //     ]);
-            // }
+                $client->request('POST', 'products/' . $params['sku'] . '/media', [
+                    'headers' => ['Content-Type' => 'application/json'],
+                    'body' => json_encode($payload),
+                ]);
+            }
 
             return response()->json([
                 'status' => 'success',
