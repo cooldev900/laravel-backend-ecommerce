@@ -155,19 +155,9 @@ class ProductController extends Controller
             $files = $request->input('files');
             $imageIds = $request->input('imageIds');
 
-            $payload = [
-                'sku' => $params['sku'],
-                'media_gallery_entries' => [],
-            ];
-
-            $deleteClient->request('POST', 'product' . $params['sku'], [
-                'headers' => ['Content-Type' => 'application/json'],
-                'body' => json_encode($payload),
-            ]);
-
-            // foreach ($imageIds as $id) {
-            //     $deleteClient->request('DELETE', 'products/' . $params['sku'] . '/media/' . $id);
-            // }
+            foreach ($imageIds as $id) {
+                $deleteClient->request('DELETE', 'products/' . $params['sku'] . '/media/' . $id);
+            }
 
             $count = 0;
             foreach ($files as $file) {
