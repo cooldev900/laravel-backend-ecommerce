@@ -155,36 +155,46 @@ class ProductController extends Controller
             $files = $request->input('files');
             $imageIds = $request->input('imageIds');
 
-            foreach ($imageIds as $id) {
-                $deleteClient->request('DELETE', 'products/' . $params['sku'] . '/media/' . $id);
-            }
+            $payload = [
+                'sku' => $params['sku'],
+                'media_gallery_entries' => [],
+            ];
 
-            $count = 0;
-            foreach ($files as $file) {
-                $extension = explode('/', mime_content_type($file['data']['fileBase64']))[1];
-                $base64Content = explode('base64,', $file['data']['fileBase64']);
+            $deleteClient->request('POST', 'product' . $params['sku'], [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
 
-                $payload = [
-                    'entry' => [
-                        'media_type' => 'image',
-                        'position' => $count++,
-                        'label' => 'new_picture',
-                        'disabled' => false,
-                        'types' => ['image'],
-                        'file' => implode(explode(' ', $file['name'])),
-                        'content' => [
-                            'base64_encoded_data' => $base64Content[1],
-                            'type' => 'image/' . $extension,
-                            'name' => implode(explode(' ', $file['name'])),
-                        ],
-                    ],
-                ];
+            // foreach ($imageIds as $id) {
+            //     $deleteClient->request('DELETE', 'products/' . $params['sku'] . '/media/' . $id);
+            // }
 
-                $client->request('POST', 'products/' . $params['sku'] . '/media', [
-                    'headers' => ['Content-Type' => 'application/json'],
-                    'body' => json_encode($payload),
-                ]);
-            }
+            // $count = 0;
+            // foreach ($files as $file) {
+            //     $extension = explode('/', mime_content_type($file['data']['fileBase64']))[1];
+            //     $base64Content = explode('base64,', $file['data']['fileBase64']);
+
+            //     $payload = [
+            //         'entry' => [
+            //             'media_type' => 'image',
+            //             'position' => $count++,
+            //             'label' => 'new_picture',
+            //             'disabled' => false,
+            //             'types' => ['image'],
+            //             'file' => implode(explode(' ', $file['name'])),
+            //             'content' => [
+            //                 'base64_encoded_data' => $base64Content[1],
+            //                 'type' => 'image/' . $extension,
+            //                 'name' => implode(explode(' ', $file['name'])),
+            //             ],
+            //         ],
+            //     ];
+
+            //     $client->request('POST', 'products/' . $params['sku'] . '/media', [
+            //         'headers' => ['Content-Type' => 'application/json'],
+            //         'body' => json_encode($payload),
+            //     ]);
+            // }
 
             return response()->json([
                 'status' => 'success',
