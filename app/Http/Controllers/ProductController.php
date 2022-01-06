@@ -171,7 +171,7 @@ class ProductController extends Controller
                         'label' => 'new_picture',
                         'disabled' => false,
                         'types' => ['image'],
-                        'file' => implode(explode(' ', $file['name'])),
+                        'file' => $params['sku'] . implode(explode(' ', $file['name'])),
                         'content' => [
                             'base64_encoded_data' => $base64Content[1],
                             'type' => 'image/' . $extension,
