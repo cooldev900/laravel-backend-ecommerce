@@ -164,16 +164,6 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
-            // Check if user is admin
-            $user = JWTAuth::user();
-            if (!$user->is_admin) {
-                return response()->json([
-                    'status' => 'error',
-                    'error' => 'not_admin',
-                    'message' => 'Only admin user can register a new user.',
-                ], 402);
-            }
-
             $request->validate([
                 'email' => 'required|regex:/^.+@.+$/i',
                 'name' => 'required|string',

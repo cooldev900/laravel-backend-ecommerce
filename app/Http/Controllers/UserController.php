@@ -3,20 +3,62 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function getUsers(Request $request)
+    public function allUsers()
     {
-        $users = User::find(1)->permissions();
+        $users = User::all();
 
         $result = [];
-
         foreach ($users as $user) {
-            // array_push($result, )
+            array_push($result, $user);
         }
 
-        return response()->json($users);
+        return response()->json([
+            'status' => 'success',
+            'data' => $result,
+        ], 200);
+    }
+
+    public function getUser(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $user = User::find($params['id']);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $user,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_get_user',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function deleteUser(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $location = User::find($params['id']);
+            $location->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $location,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_delete_location',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

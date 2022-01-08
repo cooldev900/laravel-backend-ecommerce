@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRolesTable extends Migration
+class DeleteMagentoIdColumnStoreViews extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name')->unique()->index();
-            $table->timestamps();
+        Schema::table('store_views', function (Blueprint $table) {
+            $table->dropColumn('magento_id');
         });
+
     }
 
     /**
@@ -27,6 +26,6 @@ class CreateRolesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roles');
+        //
     }
 }

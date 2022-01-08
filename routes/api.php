@@ -4,8 +4,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StoreviewController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,7 +26,6 @@ Route::post('/auth/login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware(['jwt_auth'])->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::post('/auth/register', [AuthController::class, 'register'])->name('register');
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::get('/nationalcodes', [Controller::class, 'allNationalCodes'])->name('nationalcodes');
 
@@ -55,5 +57,30 @@ Route::prefix('{store_view}')->group(function () {
         Route::get('/customers/{customerId}', [CustomerController::class, 'getCustomer'])->name('customer.index');
         Route::delete('/customers/{customerId}', [CustomerController::class, 'deleteCustomer'])->name('customer.delete');
     });
+});
 
+Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
+    Route::prefix('storeviews')->group(function () {
+        Route::get('/', [StoreviewController::class, 'allStoreviews'])->name('storeviews.all');
+        Route::get('/{id}', [StoreviewController::class, 'getStoreview'])->name('storeviews.index');
+        Route::post('/', [StoreviewController::class, 'createStoreview'])->name('storeviews.create');
+        Route::put('/{id}', [StoreviewController::class, 'updateStoreview'])->name('storeviews.update');
+        Route::delete('/{id}', [StoreviewController::class, 'deleteStoreview'])->name('storeviews.delete');
+    });
+
+    Route::prefix('/locations/{companyId}')->group(function () {
+        Route::get('/', [LocationController::class, 'allLocations'])->name('locations.all');
+        Route::get('/{id}', [LocationController::class, 'getLocation'])->name('locations.index');
+        Route::post('/', [LocationController::class, 'createLocation'])->name('locations.create');
+        Route::put('/{id}', [LocationController::class, 'updateLocation'])->name('locations.update');
+        Route::delete('/{id}', [LocationController::class, 'deleteLocation'])->name('locations.delete');
+    });
+
+    Route::post('/auth/register', [AuthController::class, 'register'])->name('register');
+    Route::prefix('/users/{companyId}')->group(function () {
+        Route::get('/', [UserController::class, 'allUsers'])->name('users.all');
+        Route::get('/{id}', [UserController::class, 'getUser'])->name('users.index');
+        // Route::put('/{id}', [UserController::class, 'updateLocation'])->name('users.update');
+        Route::delete('/{id}', [UserController::class, 'deleteUser'])->name('users.delete');
+    });
 });
