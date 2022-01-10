@@ -77,9 +77,12 @@ class CompanyController extends Controller
             };
             $company->save();
 
+            $result = $company->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
+            $result->url = decrypt($result->url);
+
             return response()->json([
                 'status' => 'success',
-                'data' => $company->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']),
+                'data' => $result,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -116,9 +119,12 @@ class CompanyController extends Controller
             };
             $company->save();
 
+            $result = $company->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
+            $result->url = decrypt($result->url);
+
             return response()->json([
                 'status' => 'success',
-                'data' => $company,
+                'data' => $result,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
