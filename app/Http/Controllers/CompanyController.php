@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\Models\Location;
+use App\Models\CompanyLocation;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -37,10 +37,10 @@ class CompanyController extends Controller
             $params = $request->route()->parameters();
             $company = Company::find($params['id']);
             $users = User::where('company_name', $company->name);
-            $locations = Location::where('company_id', $params['id']);
+            $companyLocations = CompanyLocation::where('company_id', $params['id']);
 
             $users->delete();
-            $locations->delete();
+            $companyLocations->delete();
             $company->delete();
 
             return response()->json([
