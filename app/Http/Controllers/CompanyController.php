@@ -16,11 +16,10 @@ class CompanyController extends Controller
 
         $result = [];
         foreach ($companies as $company) {
-            $company->consumer_key = decrypt($company->consumer_key);
-            $company->consumer_secret = decrypt($company->consumer_secret);
-            $company->token = decrypt($company->token);
-            $company->token_secret = decrypt($company->token_secret);
-            $company->url = decrypt($company->url);
+            $decryptedKeys = ['consumer_key', 'consumer_secret', 'token', 'token_secret', 'url'];
+            foreach ($decryptedKeys as $key) {
+                $company[$key] = decrypt($company[$key]);
+            }
 
             array_push($result, $company);
         }
@@ -29,6 +28,33 @@ class CompanyController extends Controller
             'status' => 'success',
             'data' => $result,
         ], 200);
+    }
+
+    public function getCompany(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $company = Company::find($params['id']);
+            $decryptedKeys = ['consumer_key', 'consumer_secret', 'token', 'token_secret', 'url'];
+            foreach ($decryptedKeys as $key) {
+                $company[$key] = decrypt($company[$key]);
+            }
+            $locations = CompanyLocation::where('company_id', $params['id'])->get()->toArray();
+            $users = User::where('company_name', $company->name)->get()->makeHidden(['password', 'created_at', 'updated_at'])->toArray();
+            $company->locations = array_column($locations, 'locations');
+            $company->users = $users;
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $company,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_get_client',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function deleteCompany(Request $request)
@@ -50,7 +76,7 @@ class CompanyController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'fail_delete_storeview',
+                'error' => 'fail_delete_client',
                 'message' => $e->getMessage(),
             ], 500);
         }
