@@ -108,10 +108,11 @@ class CompanyController extends Controller
             $company = Company::find($params['id'])
                 ->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
             foreach ($inputs as $key => $input) {
-                if ($key === 'url') {
+                if ($key === 'name') {
+                    $company[$key] = $input;
+                } else {
                     $company[$key] = encrypt($input);
                 }
-                $company[$key] = $input;
             };
             $company->save();
 
