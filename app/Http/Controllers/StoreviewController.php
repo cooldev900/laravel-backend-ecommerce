@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\StoreView;
+use App\Models\UserPermission;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -71,6 +72,9 @@ class StoreviewController extends Controller
     {
         try {
             $params = $request->route()->parameters();
+            $userPermissions = UserPermission::where('store_view_id', $params['id']);
+            $userPermissions->delete();
+
             $storeview = StoreView::find($params['id']);
             $storeview->delete();
 
