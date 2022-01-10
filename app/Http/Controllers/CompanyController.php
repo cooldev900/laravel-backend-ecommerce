@@ -12,14 +12,11 @@ class CompanyController extends Controller
 {
     public function allCompanies()
     {
-        $companies = Company::all();
+        $companies = Company::all()->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
 
         $result = [];
         foreach ($companies as $company) {
-            $decryptedKeys = ['consumer_key', 'consumer_secret', 'token', 'token_secret', 'url'];
-            foreach ($decryptedKeys as $key) {
-                $company[$key] = decrypt($company[$key]);
-            }
+            $company->url = decrypt($company->url);
 
             array_push($result, $company);
         }
@@ -34,11 +31,8 @@ class CompanyController extends Controller
     {
         try {
             $params = $request->route()->parameters();
-            $company = Company::find($params['id']);
-            $decryptedKeys = ['consumer_key', 'consumer_secret', 'token', 'token_secret', 'url'];
-            foreach ($decryptedKeys as $key) {
-                $company[$key] = decrypt($company[$key]);
-            }
+            $company = Company::find($params['id'])->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
+            $company->url = decrypt($company->url);
             $locations = CompanyLocation::where('company_id', $params['id'])->get()->toArray();
             $users = User::where('company_name', $company->name)->get()->makeHidden(['password', 'created_at', 'updated_at'])->toArray();
             $company->locations = array_column($locations, 'locations');
