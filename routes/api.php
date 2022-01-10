@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
@@ -66,6 +67,14 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
         Route::post('/', [StoreviewController::class, 'createStoreview'])->name('storeviews.create');
         Route::put('/{id}', [StoreviewController::class, 'updateStoreview'])->name('storeviews.update');
         Route::delete('/{id}', [StoreviewController::class, 'deleteStoreview'])->name('storeviews.delete');
+    });
+
+    Route::prefix('companies')->group(function () {
+        Route::get('/', [CompanyController::class, 'allCompanies'])->name('companies.all');
+        // Route::get('/{id}', [CompanyController::class, 'getStoreview'])->name('storeviews.index');
+        // Route::post('/', [CompanyController::class, 'createStoreview'])->name('storeviews.create');
+        // Route::put('/{id}', [CompanyController::class, 'updateStoreview'])->name('storeviews.update');
+        // Route::delete('/{id}', [CompanyController::class, 'deleteStoreview'])->name('storeviews.delete');
     });
 
     Route::prefix('/locations/{companyId}')->group(function () {
