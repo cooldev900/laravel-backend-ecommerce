@@ -74,7 +74,7 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
         // Route::get('/{id}', [CompanyController::class, 'getStoreview'])->name('storeviews.index');
         // Route::post('/', [CompanyController::class, 'createStoreview'])->name('storeviews.create');
         // Route::put('/{id}', [CompanyController::class, 'updateStoreview'])->name('storeviews.update');
-        // Route::delete('/{id}', [CompanyController::class, 'deleteStoreview'])->name('storeviews.delete');
+        Route::delete('/{id}', [CompanyController::class, 'deleteCompany'])->name('companies.delete');
     });
 
     Route::prefix('/locations/{companyId}')->group(function () {

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use Exception;
+use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
@@ -25,5 +27,25 @@ class CompanyController extends Controller
             'status' => 'success',
             'data' => $result,
         ], 200);
+    }
+
+    public function deleteCompany(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $company = Company::find($params['id']);
+            $company->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $company,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_delete_storeview',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
