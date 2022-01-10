@@ -17,10 +17,10 @@ class CreateCompaniesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name', 200);
             $table->string('url', 500);
-            $table->string('consumer_key', 500);
-            $table->string('consumer_secret', 500);
-            $table->string('token', 500);
-            $table->string('token_secret', 500);
+            $table->string('consumer_key', 500)->nullable();
+            $table->string('consumer_secret', 500)->nullable();
+            $table->string('token', 500)->nullable();
+            $table->string('token_secret', 500)->nullable();
             $table->timestamps();
             // $table->foreign('name')->references('company_name')->on('users')->onUpdate('RESTRICT')->onDelete('RESTRICT');
         });

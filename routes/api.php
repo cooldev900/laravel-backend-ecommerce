@@ -72,8 +72,8 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
     Route::prefix('companies')->group(function () {
         Route::get('/', [CompanyController::class, 'allCompanies'])->name('companies.all');
         Route::get('/{id}', [CompanyController::class, 'getCompany'])->name('companies.index');
-        // Route::post('/', [CompanyController::class, 'createStoreview'])->name('storeviews.create');
-        // Route::put('/{id}', [CompanyController::class, 'updateStoreview'])->name('storeviews.update');
+        Route::post('/', [CompanyController::class, 'createCompany'])->name('companies.create');
+        Route::put('/{id}', [CompanyController::class, 'updateCompany'])->name('companies.update');
         Route::delete('/{id}', [CompanyController::class, 'deleteCompany'])->name('companies.delete');
     });
 

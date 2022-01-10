@@ -31,10 +31,12 @@ class CompanyController extends Controller
     {
         try {
             $params = $request->route()->parameters();
-            $company = Company::find($params['id'])->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
+            $company = Company::find($params['id'])
+                ->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
             $company->url = decrypt($company->url);
             $locations = CompanyLocation::where('company_id', $params['id'])->get()->toArray();
-            $users = User::where('company_name', $company->name)->get()->makeHidden(['password', 'created_at', 'updated_at'])->toArray();
+            $users = User::where('company_name', $company->name)->get()
+                ->makeHidden(['password', 'created_at', 'updated_at'])->toArray();
             $company->locations = array_column($locations, 'locations');
             $company->users = $users;
 
@@ -46,6 +48,73 @@ class CompanyController extends Controller
             return response()->json([
                 'status' => 'error',
                 'error' => 'fail_get_client',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function createCompany(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string',
+                'url' => 'string',
+                'consumer_key' => 'string',
+                'consumer_secret' => 'string',
+                'token' => 'string',
+                'token_secret' => 'string',
+            ]);
+            $inputs = $request->all();
+
+            $company = new Company();
+            foreach ($inputs as $key => $input) {
+                $company[$key] = $input;
+            };
+            $company->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $company->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_create_client',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateCompany(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string',
+                'url' => 'string',
+                'consumer_key' => 'string',
+                'consumer_secret' => 'string',
+                'token' => 'string',
+                'token_secret' => 'string',
+            ]);
+
+            $params = $request->route()->parameters();
+            $inputs = $request->all();
+
+            $company = Company::find($params['id'])
+                ->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
+            foreach ($inputs as $key => $input) {
+                $company[$key] = $input;
+            };
+            $company->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $company,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_update_client',
                 'message' => $e->getMessage(),
             ], 500);
         }
