@@ -174,9 +174,9 @@ class AuthController extends Controller
                 'company_consumer_secret' => 'required|string',
                 'company_token' => 'required|string',
                 'company_token_secret' => 'required|string',
-                'scopes' => 'required|array|min:1',
-                'store_views' => 'required|array|min:1',
-                'roles' => 'required|array|min:1',
+                'scopes' => 'array',
+                'store_views' => 'array',
+                'roles' => 'array',
                 'is_admin' => 'numeric',
             ]);
 
@@ -200,14 +200,17 @@ class AuthController extends Controller
             $newUser->save();
 
             //Register a new company
-            $newCompany = new Company();
-            $newCompany->name = $request->input('company_name');
-            $newCompany->url = encrypt($request->input('company_url'));
-            $newCompany->consumer_key = encrypt($request->input('company_consumer_key'));
-            $newCompany->consumer_secret = encrypt($request->input('company_consumer_secret'));
-            $newCompany->token = encrypt($request->input('company_token'));
-            $newCompany->token_secret = encrypt($request->input('company_token_secret'));
-            $newCompany->save();
+            $company = Company::where('name', $request->input('company_name'))->first();
+            if ($company === null) {
+                $newCompany = new Company();
+                $newCompany->name = $request->input('company_name');
+                $newCompany->url = encrypt($request->input('company_url'));
+                $newCompany->consumer_key = encrypt($request->input('company_consumer_key'));
+                $newCompany->consumer_secret = encrypt($request->input('company_consumer_secret'));
+                $newCompany->token = encrypt($request->input('company_token'));
+                $newCompany->token_secret = encrypt($request->input('company_token_secret'));
+                $newCompany->save();
+            }
 
             //Set user permissions
             foreach ($request->input('scopes') as $scope) {
@@ -261,28 +264,5 @@ class AuthController extends Controller
             'status' => 'success',
             'message' => 'Successfully logged out',
         ]);
-    }
-
-    /**
-     * Get the user permission based on JWT token.
-     *
-     * @param  \Model\User $user
-     *
-     * @return Object $user with permissions
-     */
-
-    public function getPermission($user)
-    {
-        $_user = $user;
-        $permissions = UserPermission::where('user_id', $_user->id)->get();
-        $permissions_scopes_unique = json_decode(json_encode($permissions->unique('scopes')), true);
-        $permissions_store_views_unique = json_decode(json_encode($permissions->unique('store_views')), true);
-        $permissions_roles_unique = json_decode(json_encode($permissions->unique('roles')), true);
-
-        $_user['scopes'] = array_column($permissions_scopes_unique, 'scopes');
-        $_user['store_views'] = array_column($permissions_store_views_unique, 'store_views');
-        $_user['roles'] = array_column($permissions_roles_unique, 'roles');
-
-        return $_user;
     }
 }

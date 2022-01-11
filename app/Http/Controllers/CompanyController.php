@@ -38,7 +38,11 @@ class CompanyController extends Controller
             $users = User::where('company_name', $company->name)->get()
                 ->makeHidden(['password', 'created_at', 'updated_at'])->toArray();
             $company->locations = array_column($locations, 'locations');
-            $company->users = $users;
+
+            $company->users = [];
+            foreach ($users as $user) {
+                array_push($company->users, $this->getPermission($user));
+            }
 
             return response()->json([
                 'status' => 'success',

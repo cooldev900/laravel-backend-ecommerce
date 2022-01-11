@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\CompanyLocation;
 use App\Models\Location;
-use App\Models\UserLocation;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -141,9 +140,6 @@ class LocationController extends Controller
 
             $companyLocation = CompanyLocation::where('location_id', $params['id']);
             $companyLocation->delete();
-
-            $userLocation = UserLocation::where('location_id', $params['id']);
-            $userLocation->delete();
 
             $location = Location::find($params['id']);
             $location->delete();

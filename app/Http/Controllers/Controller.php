@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\NationalCodes;
+use App\Models\UserPermission;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
@@ -57,5 +58,28 @@ class Controller extends BaseController
             'handler' => $stack,
             'auth' => 'oauth',
         ]);
+    }
+
+    /**
+     * Get the user permission based on JWT token.
+     *
+     * @param  \Model\User $user
+     *
+     * @return Object $user with permissions
+     */
+
+    public function getPermission($user)
+    {
+        $_user = $user;
+        $permissions = UserPermission::where('user_id', $_user->id)->get();
+        $permissions_scopes_unique = json_decode(json_encode($permissions->unique('scopes')), true);
+        $permissions_store_views_unique = json_decode(json_encode($permissions->unique('store_views')), true);
+        $permissions_roles_unique = json_decode(json_encode($permissions->unique('roles')), true);
+
+        $_user['scopes'] = array_column($permissions_scopes_unique, 'scopes');
+        $_user['store_views'] = array_column($permissions_store_views_unique, 'store_views');
+        $_user['roles'] = array_column($permissions_roles_unique, 'roles');
+
+        return $_user;
     }
 }
