@@ -89,7 +89,7 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
     Route::prefix('/users/{companyId}')->group(function () {
         Route::get('/', [UserController::class, 'allUsers'])->name('users.all');
         Route::get('/{id}', [UserController::class, 'getUser'])->name('users.index');
-        // Route::put('/{id}', [UserController::class, 'updateLocation'])->name('users.update');
+        Route::put('/{id}', [UserController::class, 'updateUser'])->name('users.update');
         Route::delete('/{id}', [UserController::class, 'deleteUser'])->name('users.delete');
     });
 
