@@ -47,15 +47,15 @@ class UserController extends Controller
     {
         try {
             $params = $request->route()->parameters();
-            $location = User::find($params['id']);
-            $location->delete();
-
             $userPermissions = UserPermission::where('user_id', $params['id']);
             $userPermissions->delete();
 
+            $user = User::find($params['id']);
+            $user->delete();
+
             return response()->json([
                 'status' => 'success',
-                'data' => $location,
+                'data' => $user,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
