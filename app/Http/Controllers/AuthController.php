@@ -167,7 +167,7 @@ class AuthController extends Controller
             $request->validate([
                 'email' => 'required|regex:/^.+@.+$/i',
                 'name' => 'required|string',
-                'password' => 'required|string',
+                'password' => 'string',
                 'company_name' => 'required|string',
                 'scopes' => 'array',
                 'store_views' => 'array',
