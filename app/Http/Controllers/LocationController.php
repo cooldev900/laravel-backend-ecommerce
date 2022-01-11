@@ -91,20 +91,20 @@ class LocationController extends Controller
     public function updateLocation(Request $request)
     {
         try {
-            $request->validate([
-                'location_name' => 'required|string',
-                'location_order_id' => 'numeric',
-                'vsf_store_id' => 'numeric',
-                'address' => 'string',
-                'phone' => 'string',
-                'is_hub' => 'numeric',
-                'collection' => 'numeric',
-                'fitment' => 'numeric',
-                'delivery' => 'numeric',
-                'brand' => 'string',
-                'longitude' => 'string',
-                'latitude' => 'string',
-            ]);
+            // $request->validate([
+            //     'location_name' => 'required|string',
+            //     'location_order_id' => 'numeric',
+            //     'vsf_store_id' => 'numeric',
+            //     'address' => 'string',
+            //     'phone' => 'string',
+            //     'is_hub' => 'numeric',
+            //     'collection' => 'numeric',
+            //     'fitment' => 'numeric',
+            //     'delivery' => 'numeric',
+            //     'brand' => 'string',
+            //     'longitude' => 'string',
+            //     'latitude' => 'string',
+            // ]);
             $params = $request->route()->parameters();
             $location = Location::find($params['id'])->update([
                 'location_name' => $request->input('location_name'),
