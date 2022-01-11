@@ -71,7 +71,7 @@ class Controller extends BaseController
     public function getPermission($user)
     {
         $_user = $user;
-        $permissions = UserPermission::where('user_id', $_user->id)->get();
+        $permissions = UserPermission::where('user_id', $_user['id'])->get();
         $permissions_scopes_unique = json_decode(json_encode($permissions->unique('scopes')), true);
         $permissions_store_views_unique = json_decode(json_encode($permissions->unique('store_views')), true);
         $permissions_roles_unique = json_decode(json_encode($permissions->unique('roles')), true);

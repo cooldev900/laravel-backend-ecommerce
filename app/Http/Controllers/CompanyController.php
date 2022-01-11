@@ -39,10 +39,11 @@ class CompanyController extends Controller
                 ->makeHidden(['password', 'created_at', 'updated_at'])->toArray();
             $company->locations = array_column($locations, 'locations');
 
-            $company->users = [];
+            $resultUser = [];
             foreach ($users as $user) {
-                array_push($company->users, $this->getPermission($user));
+                array_push($resultUser, $this->getPermission($user));
             }
+            $company->users = $resultUser;
 
             return response()->json([
                 'status' => 'success',
