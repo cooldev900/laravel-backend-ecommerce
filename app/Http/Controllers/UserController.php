@@ -69,16 +69,16 @@ class UserController extends Controller
     public function updateUser(Request $request)
     {
         try {
-            $request->validate([
-                'email' => 'required|regex:/^.+@.+$/i',
-                'name' => 'required|string',
-                'password' => 'string',
-                'company_name' => 'required|string',
-                'scopes' => 'array',
-                'store_views' => 'array',
-                'roles' => 'array',
-                'is_admin' => 'numeric',
-            ]);
+            // $request->validate([
+            //     'email' => 'required|regex:/^.+@.+$/i',
+            //     'name' => 'required|string',
+            //     'password' => 'string',
+            //     'company_name' => 'required|string',
+            //     'scopes' => 'array',
+            //     'store_views' => 'array',
+            //     'roles' => 'array',
+            //     'is_admin' => 'numeric',
+            // ]);
 
             $params = $request->route()->parameters();
 
@@ -89,8 +89,12 @@ class UserController extends Controller
                 'email' => $request->input('email'),
                 'company_name' => $request->input('company_name'),
                 'is_admin' => $request->input('is_admin'),
-                'password' => bcrypt($request->input('password')),
             ]);
+            if ($request->input('password') !== '') {
+                $user->update([
+                    'password' => bcrypt($request->input('password')),
+                ]);
+            };
 
             //Set user permissions
             $userPermissions = UserPermission::where('user_id', $params['id']);

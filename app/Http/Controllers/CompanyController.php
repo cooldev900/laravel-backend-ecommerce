@@ -119,7 +119,9 @@ class CompanyController extends Controller
                 if ($key === 'name' || $key === 'id') {
                     $company[$key] = $input;
                 } else {
-                    $company[$key] = encrypt($input);
+                    if ($input !== '') {
+                        $company[$key] = encrypt($input);
+                    }
                 }
             };
             $company->save();
