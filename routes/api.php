@@ -92,4 +92,7 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
         // Route::put('/{id}', [UserController::class, 'updateLocation'])->name('users.update');
         Route::delete('/{id}', [UserController::class, 'deleteUser'])->name('users.delete');
     });
+
+    Route::get('/roles', [StoreviewController::class, 'allRoles'])->name('roles.all');
+    Route::get('/scopes', [StoreviewController::class, 'allScopes'])->name('scopes.all');
 });

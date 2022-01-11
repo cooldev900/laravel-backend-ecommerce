@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
+use App\Models\Scope;
 use App\Models\StoreView;
 use App\Models\UserPermission;
 use Exception;
@@ -114,5 +116,26 @@ class StoreviewController extends Controller
                 'message' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function allRoles()
+    {
+        $result = Role::all()->toArray();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $result,
+        ], 200);
+
+    }
+
+    public function allScopes()
+    {
+        $result = Scope::all()->toArray();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $result,
+        ], 200);
     }
 }
