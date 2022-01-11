@@ -4,23 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\CompanyLocation;
 use App\Models\Location;
+use App\Models\UserLocation;
 use Exception;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
-    public function allLocations()
+    public function allLocations(Request $request)
     {
-        $locations = Location::all();
-
-        $result = [];
-        foreach ($locations as $location) {
-            array_push($result, $location);
+        $params = $request->route()->parameters();
+        if (isset($params['vsf_code'])) {
+            $locations = Location::where('vsf_store_id', $params['vsf_code'])->toArray();
+        } else {
+            $locations = Location::all()->toArray();
         }
 
         return response()->json([
             'status' => 'success',
-            'data' => $result,
+            'data' => $locations,
         ], 200);
     }
 
@@ -137,6 +138,8 @@ class LocationController extends Controller
     {
         try {
             $params = $request->route()->parameters();
+            $userLocations = UserLocation::where('location_id', $params['id']);
+            $userLocations->delete();
 
             $companyLocation = CompanyLocation::where('location_id', $params['id']);
             $companyLocation->delete();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserLocation;
 use App\Models\UserPermission;
 use Exception;
 use Illuminate\Http\Request;
@@ -47,6 +48,9 @@ class UserController extends Controller
     {
         try {
             $params = $request->route()->parameters();
+            $userLocations = UserLocation::where('user_id', $params['id']);
+            $userLocations->delete();
+
             $userPermissions = UserPermission::where('user_id', $params['id']);
             $userPermissions->delete();
 
@@ -111,6 +115,17 @@ class UserController extends Controller
                         $userPermission->save();
                     }
                 }
+            }
+
+            //Set user locations
+            $userLocations = UserLocation::where('user_id', $params['id']);
+            $userLocations->delete();
+
+            foreach ($request->input('locations') as $location) {
+                $newUserLocation = new UserLocation();
+                $newUserLocation->user_id = $user->id;
+                $newUserLocation->location_id = $location->id;
+                $newUserLocation->save();
             }
 
             return response()->json([

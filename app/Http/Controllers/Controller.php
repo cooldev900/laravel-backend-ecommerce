@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\NationalCodes;
+use App\Models\UserLocation;
 use App\Models\UserPermission;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
@@ -79,6 +80,9 @@ class Controller extends BaseController
         $_user['scopes'] = array_column($permissions_scopes_unique, 'scopes');
         $_user['store_views'] = array_column($permissions_store_views_unique, 'store_views');
         $_user['roles'] = array_column($permissions_roles_unique, 'roles');
+
+        $userLocations = UserLocation::where('user_id', $_user['id'])->get()->toArray();
+        $_user['locations'] = array_column($userLocations, 'locations');
 
         return $_user;
     }

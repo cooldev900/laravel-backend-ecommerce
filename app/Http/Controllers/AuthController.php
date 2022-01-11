@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\User;
+use App\Models\UserLocation;
 use App\Models\UserPermission;
 use Exception;
 use Illuminate\Http\Request;
@@ -172,6 +173,7 @@ class AuthController extends Controller
                 'scopes' => 'array',
                 'store_views' => 'array',
                 'roles' => 'array',
+                'locations' => 'array',
                 'is_admin' => 'numeric',
             ]);
 
@@ -219,6 +221,14 @@ class AuthController extends Controller
                         $newUserPermission->save();
                     }
                 }
+            }
+
+            //save userlocations
+            foreach ($request->input('locations') as $location) {
+                $newUserLocation = new UserLocation();
+                $newUserLocation->user_id = $newUser->id;
+                $newUserLocation->location_id = $location->id;
+                $newUserLocation->save();
             }
 
             return response()->json([
