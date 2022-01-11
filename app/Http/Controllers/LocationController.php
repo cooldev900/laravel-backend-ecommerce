@@ -62,19 +62,11 @@ class LocationController extends Controller
                 'latitude' => 'string',
             ]);
 
+            $inputs = $request->all();
             $newLocation = new Location();
-            $newLocation->location_name = $request->input('location_name');
-            $newLocation->location_order_id = $request->input('location_order_id');
-            $newLocation->vsf_store_id = $request->input('vsf_store_id');
-            $newLocation->address = $request->input('address');
-            $newLocation->phone = $request->input('phone');
-            $newLocation->is_hub = $request->input('is_hub');
-            $newLocation->collection = $request->input('collection');
-            $newLocation->fitment = $request->input('fitment');
-            $newLocation->delivery = $request->input('delivery');
-            $newLocation->brand = $request->input('brand');
-            $newLocation->longitude = $request->input('longitude');
-            $newLocation->latitude = $request->input('latitude');
+            foreach ($inputs as $key => $input) {
+                $newLocation[$key] = $input;
+            }
             $newLocation->save();
 
             $params = $request->route()->parameters();
@@ -133,7 +125,6 @@ class LocationController extends Controller
                 'status' => 'success',
                 'data' => $location,
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
