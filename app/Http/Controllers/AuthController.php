@@ -227,7 +227,7 @@ class AuthController extends Controller
             foreach ($request->input('locations') as $location) {
                 $newUserLocation = new UserLocation();
                 $newUserLocation->user_id = $newUser->id;
-                $newUserLocation->location_id = $location->id;
+                $newUserLocation->location_id = $location;
                 $newUserLocation->save();
             }
 
