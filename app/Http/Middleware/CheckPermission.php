@@ -30,7 +30,19 @@ class CheckPermission
         }
 
         // Check scope
-        $has_scope_access = in_array($scope, array_column($permissions->scopes, 'name'));
+        if ($scope === 'shipments' || $scope === 'invoices') {
+            $has_orders_scope_access = in_array('orders', array_column($permissions->scopes, 'name'));
+            $has_scope_access = in_array($scope, array_column($permissions->scopes, 'name'));
+
+            if ($has_scope_access || $has_orders_scope_access) {
+                $has_scope_access = true;
+            } else {
+                $has_scope_access = false;
+            }
+        } else {
+            $has_scope_access = in_array($scope, array_column($permissions->scopes, 'name'));
+        }
+
         if (!$has_scope_access) {
             return response()->json(['error' => 'scope_permission_denied'], 401);
         }

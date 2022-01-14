@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 
-class InvoiceController extends Controller
+class ShipmentController extends Controller
 {
     /**
-     * Get Magento invoices data.
+     * Get Magento shipments data.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function allInvoices(Request $request)
+    public function allShipments(Request $request)
     {
         try {
             $params = $request->route()->parameters();
@@ -25,7 +25,7 @@ class InvoiceController extends Controller
                 ],
             ];
 
-            $response = $client->request('GET', 'invoices', $query);
+            $response = $client->request('GET', 'shipments', $query);
 
             return response()->json([
                 'status' => 'success',
@@ -35,26 +35,25 @@ class InvoiceController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'could_not_get_invoices',
+                'error' => 'could_not_get_shipments',
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }
     }
 
     /**
-     * Get Magento an Order data.
+     * Get a shipment of Magento data.
      *
-     * @param String ID
      * @return \Illuminate\Http\JsonResponse
      */
 
-    public function getInvoice(Request $request)
+    public function getShipment(Request $request)
     {
         try {
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
 
-            $response = $client->request('GET', 'invoices/' . $params['id']);
+            $response = $client->request('GET', 'shipment/' . $params['shipmentId']);
 
             return response()->json([
                 'status' => 'success',
@@ -63,29 +62,33 @@ class InvoiceController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'could_not_get_invoice',
+                'error' => 'could_not_get_shipment',
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }
     }
 
     /**
-     * Get Magento an Order data.
+     * Create Magento a shipment data.
      *
      * @return \Illuminate\Http\JsonResponse
      */
 
-    public function createInvoice(Request $request)
+    public function createShipment(Request $request)
     {
-
         try {
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
 
-            //TODO: get body and send
+            $entity = $request->input('entity');
+            $payload = [
+                'entity' => $entity,
+            ];
 
-            // $params = $request->route()->parameters();
-            $response = $client->request('POST', 'invoices');
+            $response = $client->request('POST', 'shipment', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
 
             return response()->json([
                 'status' => 'success',

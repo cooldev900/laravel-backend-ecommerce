@@ -8,6 +8,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\StoreviewController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,12 @@ Route::prefix('{store_view}')->group(function () {
         Route::get('/customers', [CustomerController::class, 'allCustomers'])->name('customer.all');
         Route::get('/customers/{customerId}', [CustomerController::class, 'getCustomer'])->name('customer.index');
         Route::delete('/customers/{customerId}', [CustomerController::class, 'deleteCustomer'])->name('customer.delete');
+
+        /********** Shipments **********/
+        Route::get('/shipments', [ShipmentController::class, 'allShipments'])->name('shipments.all');
+        Route::get('/shipments/{shipmentId}', [ShipmentController::class, 'getShipment'])->name('shipments.index');
+        Route::post('/shipments', [ShipmentController::class, 'createShipment'])->name('shipments.create');
+        // Route::delete('/shipments/{shipmentId}', [CustomerController::class, 'deleteShipment'])->name('shipments.delete');
     });
 });
 
