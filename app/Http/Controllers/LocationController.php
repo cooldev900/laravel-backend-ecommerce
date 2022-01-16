@@ -13,15 +13,25 @@ class LocationController extends Controller
     public function allLocations(Request $request)
     {
         $params = $request->route()->parameters();
+        $companyLocations = CompanyLocation::where('company_id', $params['companyId'])->get()->toArray();
+        $allLocations = array_column($companyLocations, 'locations');
+
+        $result = [];
+
         if (isset($params['vsf_code'])) {
-            $locations = Location::where('vsf_store_id', $params['vsf_code'])->toArray();
+            foreach ($allLocations as $location) {
+                if ($location['id'] === $params['vsf_code']) {
+                    array_push($result, $location);
+                }
+
+            }
         } else {
-            $locations = Location::all()->toArray();
+            $result = $allLocations;
         }
 
         return response()->json([
             'status' => 'success',
-            'data' => $locations,
+            'data' => $result,
         ], 200);
     }
 
