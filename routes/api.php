@@ -47,6 +47,7 @@ Route::prefix('{store_view}')->group(function () {
         Route::get('/orders', [OrderController::class, 'allOrders'])->name('orders.all');
         Route::get('/orders/items', [OrderController::class, 'getOrderItems'])->name('orders.items.all');
         Route::get('/orders/{id}', [OrderController::class, 'getOrder'])->name('orders.index');
+        Route::post('/orders/{id}', [OrderController::class, 'getOrder'])->name('orders.index');
         Route::get('/orders/items/{id}', [OrderController::class, 'getOrderItem'])->name('orders.items.index');
 
         /********** Invoices **********/
@@ -85,7 +86,7 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
     });
 
     Route::prefix('/locations/{companyId}')->group(function () {
-        Route::get('/', [LocationController::class, 'allLocations'])->name('locations.all');
+        // Route::get('/', [LocationController::class, 'allLocations'])->name('locations.all');
         Route::get('/{id}', [LocationController::class, 'getLocation'])->name('locations.index');
         Route::post('/', [LocationController::class, 'createLocation'])->name('locations.create');
         Route::put('/{id}', [LocationController::class, 'updateLocation'])->name('locations.update');
@@ -103,3 +104,7 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
     Route::get('/roles', [StoreviewController::class, 'allRoles'])->name('roles.all');
     Route::get('/scopes', [StoreviewController::class, 'allScopes'])->name('scopes.all');
 });
+
+/***** Public apis *****/
+
+Route::get('/locations/{companyId}', [LocationController::class, 'allLocations'])->name('locations.all');
