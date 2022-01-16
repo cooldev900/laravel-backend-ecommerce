@@ -21,7 +21,7 @@ class LocationController extends Controller
 
         if (isset($vsf_code)) {
             foreach ($allLocations as $location) {
-                if ((int) $location['id'] === (int) $vsf_code) {
+                if ((int) $location['vsf_store_id'] === (int) $vsf_code) {
                     array_push($result, $location);
                 }
 
