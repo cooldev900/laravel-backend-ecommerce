@@ -17,10 +17,11 @@ class LocationController extends Controller
         $allLocations = array_column($companyLocations, 'locations');
 
         $result = [];
+        $vsf_code = $request->get('vsf_code');
 
-        if (isset($params['vsf_code'])) {
+        if (isset($vsf_code)) {
             foreach ($allLocations as $location) {
-                if ($location['id'] === $params['vsf_code']) {
+                if ((int) $location['id'] === (int) $vsf_code) {
                     array_push($result, $location);
                 }
 
