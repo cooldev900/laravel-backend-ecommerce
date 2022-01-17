@@ -47,7 +47,8 @@ Route::prefix('{store_view}')->group(function () {
         Route::get('/orders', [OrderController::class, 'allOrders'])->name('orders.all');
         Route::get('/orders/items', [OrderController::class, 'getOrderItems'])->name('orders.items.all');
         Route::get('/orders/{id}', [OrderController::class, 'getOrder'])->name('orders.index');
-        Route::post('/orders/{id}', [OrderController::class, 'getOrder'])->name('orders.index');
+        // Route::post('/orders/{id}', [OrderController::class, 'getOrder'])->name('orders.index');
+        Route::post('/orders/{orderId}/ship', [ShipmentController::class, 'createShipment'])->name('orders.shipment.create');
         Route::get('/orders/items/{id}', [OrderController::class, 'getOrderItem'])->name('orders.items.index');
 
         /********** Invoices **********/

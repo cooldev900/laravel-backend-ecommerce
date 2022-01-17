@@ -69,6 +69,8 @@ class ShipmentController extends Controller
     }
 
     /**
+     * https: //magento.redoc.ly/2.4.3-admin/tag/orderorderIdship#operation/salesShipOrderV1ExecutePost
+
      * Create Magento a shipment data.
      *
      * @return \Illuminate\Http\JsonResponse
@@ -79,15 +81,11 @@ class ShipmentController extends Controller
         try {
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
-
             $entity = $request->input('entity');
-            $payload = [
-                'entity' => $entity,
-            ];
 
-            $response = $client->request('POST', 'shipment', [
+            $response = $client->request('POST', 'order/' . $params['orderId'] . '/ship', [
                 'headers' => ['Content-Type' => 'application/json'],
-                'body' => json_encode($payload),
+                'body' => json_encode($entity),
             ]);
 
             return response()->json([
@@ -97,7 +95,7 @@ class ShipmentController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'could_not_get_invoice',
+                'error' => 'could_not_create_shipment',
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }
