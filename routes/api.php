@@ -55,7 +55,6 @@ Route::prefix('{store_view}')->group(function () {
         /********** Invoices **********/
         Route::get('/invoices', [InvoiceController::class, 'allInvoices'])->name('invoices.all');
         Route::get('/invoices/{id}', [InvoiceController::class, 'getInvoice'])->name('invoices.index');
-        Route::post('/invoices', [InvoiceController::class, 'createInvoice'])->name('invoices.create');
 
         /********** Customers **********/
         Route::get('/customers', [CustomerController::class, 'allCustomers'])->name('customer.all');
