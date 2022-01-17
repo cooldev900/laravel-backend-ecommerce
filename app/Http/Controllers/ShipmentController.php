@@ -102,4 +102,33 @@ class ShipmentController extends Controller
             ], $e->getCode());
         }
     }
+
+    public function createShipmentTrack(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
+            $entity = $request->input('entity');
+            $payload = [
+                'entity' => $entity,
+            ];
+
+            $response = $client->request('POST', 'shipment/track', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_create_shipment_track',
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
+    }
 }
