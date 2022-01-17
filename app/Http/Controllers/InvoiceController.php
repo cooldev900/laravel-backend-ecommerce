@@ -70,22 +70,24 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Get Magento an Order data.
+     * https: //magento.redoc.ly/2.4.3-admin/tag/orderorderIdinvoice
+
+     * Create Magento an Invoice data.
      *
      * @return \Illuminate\Http\JsonResponse
      */
 
     public function createInvoice(Request $request)
     {
-
         try {
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
+            $entity = $request->input('entity');
 
-            //TODO: get body and send
-
-            // $params = $request->route()->parameters();
-            $response = $client->request('POST', 'invoices');
+            $response = $client->request('POST', 'order/' . $params['orderId'] . '/invoice', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($entity),
+            ]);
 
             return response()->json([
                 'status' => 'success',
@@ -94,7 +96,7 @@ class InvoiceController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'could_not_get_invoice',
+                'error' => 'could_not_create_invoice',
                 'message' => $e->getMessage(),
             ], $e->getCode());
         }
