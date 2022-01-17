@@ -65,6 +65,7 @@ Route::prefix('{store_view}')->group(function () {
         Route::get('/shipments/{shipmentId}', [ShipmentController::class, 'getShipment'])->name('shipments.index');
         Route::post('/shipments', [ShipmentController::class, 'createShipment'])->name('shipments.create');
         Route::post('/shipments/track', [ShipmentController::class, 'createShipmentTrack'])->name('shipments.track.create');
+        Route::delete('/shipments/track/{trackId}', [ShipmentController::class, 'deleteShipmentTrack'])->name('shipments.track.delete');
         // Route::delete('/shipments/{shipmentId}', [CustomerController::class, 'deleteShipment'])->name('shipments.delete');
     });
 });

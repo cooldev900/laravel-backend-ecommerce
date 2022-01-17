@@ -131,4 +131,25 @@ class ShipmentController extends Controller
             ], $e->getCode());
         }
     }
+
+    public function deleteShipmentTrack(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
+            $client->request('DELETE', 'shipment/track/' . $params['trackId']);
+
+            return response()->json([
+                'status' => 'success',
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_create_shipment_track',
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
+
+    }
 }
