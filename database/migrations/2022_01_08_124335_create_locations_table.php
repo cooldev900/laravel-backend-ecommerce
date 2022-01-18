@@ -16,8 +16,8 @@ class CreateLocationsTable extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('location_name')->index();
-            $table->unsignedBigInteger('location_order_id')->default(-1)->index();
-            $table->unsignedBigInteger('vsf_store_id')->default(-1)->index();
+            $table->unsignedBigInteger('location_order_id')->index();
+            $table->unsignedBigInteger('vsf_store_id')->index();
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
             $table->boolean('is_hub')->default(false);
