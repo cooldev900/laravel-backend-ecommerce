@@ -84,6 +84,9 @@ class Controller extends BaseController
         $userLocations = UserLocation::where('user_id', $_user['id'])->get()->toArray();
         $_user['locations'] = array_column($userLocations, 'locations');
 
+        $company = Company::where('name', $_user['company_name'])->firstOrFail();
+        $_user['image_base_url'] = $company->image_base_url;
+
         return $_user;
     }
 }
