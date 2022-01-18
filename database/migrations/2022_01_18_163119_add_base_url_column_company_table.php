@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBaseUrlColumnUserTable extends Migration
+class AddBaseUrlColumnCompanyTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class AddBaseUrlColumnUserTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('companies', function (Blueprint $table) {
 
             // You probably want to make the new column nullable
-            $table->string('image_base_url')->default('')->after('email');
+            $table->string('image_base_url')->default('')->after('name');
         });
     }
 
@@ -27,7 +27,7 @@ class AddBaseUrlColumnUserTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('companies', function (Blueprint $table) {
 
             // Drop the column
             $table->dropColumn('image_base_url');

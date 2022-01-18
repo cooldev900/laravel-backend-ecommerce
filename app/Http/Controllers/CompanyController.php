@@ -107,6 +107,7 @@ class CompanyController extends Controller
                 'consumer_key' => 'string',
                 'consumer_secret' => 'string',
                 'token' => 'string',
+                'image_base_url' => 'string',
                 'token_secret' => 'string',
             ]);
 
@@ -116,7 +117,7 @@ class CompanyController extends Controller
             $company = Company::find($params['id'])
                 ->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
             foreach ($inputs as $key => $input) {
-                if ($key === 'name' || $key === 'id') {
+                if ($key === 'name' || $key === 'id' || $key === 'image_base_url') {
                     $company[$key] = $input;
                 } else {
                     if ($input !== '') {

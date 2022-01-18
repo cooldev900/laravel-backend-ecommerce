@@ -194,7 +194,6 @@ class AuthController extends Controller
             $newUser->name = $request->input('name');
             $newUser->company_name = $request->input('company_name');
             $newUser->is_admin = $request->input('is_admin');
-            $newUser->image_base_url = $request->input('image_base_url');
             $newUser->password = bcrypt($request->input('password'));
             $newUser->save();
 
@@ -208,6 +207,7 @@ class AuthController extends Controller
                 $newCompany->consumer_secret = encrypt($request->input('company_consumer_secret'));
                 $newCompany->token = encrypt($request->input('company_token'));
                 $newCompany->token_secret = encrypt($request->input('company_token_secret'));
+                $newCompany->image_base_url = $request->input('image_base_url');
                 $newCompany->save();
             }
 

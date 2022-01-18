@@ -16,5 +16,5 @@ class Company extends Model
      */
     protected $hidden = ['created_at', 'updated_at'];
 
-    protected $fillable = ['name', 'url', 'consumer_key', 'consumer_secret', 'token', 'token_secret', 'user_id'];
+    protected $fillable = ['name', 'url', 'consumer_key', 'consumer_secret', 'token', 'token_secret', 'user_id', 'image_base_url'];
 }
