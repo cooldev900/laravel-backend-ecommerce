@@ -36,6 +36,6 @@ class StoreView extends Model
 
     protected $fillable = [
         'code',
-        'magento_id',
+        'store_id',
     ];
 }
