@@ -92,6 +92,7 @@ class UserController extends Controller
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
                 'company_name' => $request->input('company_name'),
+                'image_base_url' => $request->input('image_base_url'),
                 'is_admin' => $request->input('is_admin'),
             ]);
             if (!empty($request->input('password'))) {

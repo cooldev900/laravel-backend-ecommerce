@@ -51,10 +51,12 @@ class StoreviewController extends Controller
         try {
             $request->validate([
                 'code' => 'required|string',
+                'store_id' => 'string',
             ]);
 
             $newStoreView = new StoreView();
             $newStoreView->code = $request->input('code');
+            $newStoreView->store_id = $request->input('store_id');
             $newStoreView->save();
 
             return response()->json([
@@ -98,11 +100,13 @@ class StoreviewController extends Controller
         try {
             $request->validate([
                 'code' => 'required|string',
+                'store_id' => 'string',
             ]);
 
             $params = $request->route()->parameters();
             $storeview = StoreView::find($params['id'])->update([
                 'code' => $request->input('code'),
+                'store_id' => $request->input('store_id'),
             ]);
 
             return response()->json([
