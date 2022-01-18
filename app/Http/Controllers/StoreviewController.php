@@ -51,7 +51,7 @@ class StoreviewController extends Controller
         try {
             $request->validate([
                 'code' => 'required|string',
-                'store_id' => 'string',
+                'store_id' => 'numeric',
             ]);
 
             $newStoreView = new StoreView();
@@ -66,7 +66,7 @@ class StoreviewController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'fail_save_storeview',
+                'error' => 'fail_create_storeview',
                 'message' => $e->getMessage(),
             ], 500);
         }
@@ -100,7 +100,7 @@ class StoreviewController extends Controller
         try {
             $request->validate([
                 'code' => 'required|string',
-                'store_id' => 'string',
+                'store_id' => 'numeric',
             ]);
 
             $params = $request->route()->parameters();
@@ -116,7 +116,7 @@ class StoreviewController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'fail_delete_storeview',
+                'error' => 'fail_update_storeview',
                 'message' => $e->getMessage(),
             ], 500);
         }
