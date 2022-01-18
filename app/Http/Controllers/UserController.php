@@ -94,7 +94,7 @@ class UserController extends Controller
                 'company_name' => $request->input('company_name'),
                 'is_admin' => $request->input('is_admin'),
             ]);
-            if ($request->input('password') !== '') {
+            if (!empty($request->input('password'))) {
                 $user->update([
                     'password' => bcrypt($request->input('password')),
                 ]);
