@@ -114,7 +114,8 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
 Route::get('/locations/{companyId}', [LocationController::class, 'allLocations'])->name('locations.all');
 
 Route::prefix('/enquiries')->group(function () {
-    Route::get('/{client_id}/{store_id}', [EnquiryController::class, 'allEnquiries'])->name('enquiries.all');
+    Route::get('/', [EnquiryController::class, 'allEnquiries'])->name('enquiries.all');
+    Route::get('/{client_id}/{store_id}', [EnquiryController::class, 'getEnquiries'])->name('enquiries.get');
     Route::post('/', [EnquiryController::class, 'createEnquiry'])->name('enquiries.create');
     Route::put('/{id}', [EnquiryController::class, 'updateEnquiry'])->name('enquiries.update');
 });
