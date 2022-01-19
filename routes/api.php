@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrderController;
@@ -111,3 +112,9 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
 /***** Public apis *****/
 
 Route::get('/locations/{companyId}', [LocationController::class, 'allLocations'])->name('locations.all');
+
+Route::prefix('/enquiries')->group(function () {
+    Route::get('/{client_id}/{store_id}', [EnquiryController::class, 'allEnquiries'])->name('enquiries.all');
+    Route::post('/', [EnquiryController::class, 'createEnquiry'])->name('enquiries.create');
+    Route::put('/{id}', [EnquiryController::class, 'updateEnquiry'])->name('enquiries.update');
+});

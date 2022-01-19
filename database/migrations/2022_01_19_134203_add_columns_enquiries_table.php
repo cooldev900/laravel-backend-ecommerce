@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBaseUrlColumnCompanyTable extends Migration
+class AddColumnsEnquiriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddBaseUrlColumnCompanyTable extends Migration
      */
     public function up()
     {
-        Schema::table('companies', function (Blueprint $table) {
-            $table->string('image_base_url')->default('')->after('name');
+        //Add columns
+        Schema::table('enquiries', function (Blueprint $table) {
+            $table->unsignedBigInteger('client_id');
+            $table->unsignedBigInteger('store_id');
         });
     }
 
@@ -25,10 +27,10 @@ class AddBaseUrlColumnCompanyTable extends Migration
      */
     public function down()
     {
-        Schema::table('companies', function (Blueprint $table) {
-
+        Schema::table('enquiries', function (Blueprint $table) {
             // Drop the column
-            $table->dropColumn('image_base_url');
+            $table->dropColumn('client_id');
+            $table->dropColumn('store_id');
         });
     }
 }
