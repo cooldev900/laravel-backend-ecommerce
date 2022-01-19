@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Enquiry;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -55,6 +56,8 @@ class EnquiryController extends Controller
             foreach ($inputs as $key => $input) {
                 $enquiry[$key] = $input;
             };
+            $enquiry->created_at = Carbon::now();
+            $enquiry->updated_at = Carbon::now();
             $enquiry->save();
 
             return response()->json([
@@ -93,6 +96,7 @@ class EnquiryController extends Controller
             foreach ($inputs as $key => $input) {
                 $enquiry[$key] = $input;
             };
+            $enquiry->updated_at = Carbon::now();
             $enquiry->save();
 
             return response()->json([

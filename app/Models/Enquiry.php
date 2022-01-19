@@ -9,8 +9,6 @@ class Enquiry extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $table = 'enquiries';
     protected $fillable = ['first_name', 'last_name', 'email', 'vin', 'item_required', 'message', 'phone', 'client_id', 'store_id'];
 }

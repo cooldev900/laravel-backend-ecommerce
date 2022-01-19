@@ -17,6 +17,7 @@ class AddColumnsEnquiriesTable extends Migration
         Schema::table('enquiries', function (Blueprint $table) {
             $table->unsignedBigInteger('client_id');
             $table->unsignedBigInteger('store_id');
+            $table->timestamps();
         });
     }
 
