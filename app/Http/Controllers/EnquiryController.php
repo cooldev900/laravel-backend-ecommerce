@@ -38,24 +38,12 @@ class EnquiryController extends Controller
         try {
             $params = $requset->route()->parameters();
 
-            $enquiries = Enquiry::query();
-            $enquiries->where('client_id', $params['client_id']);
-            $enquiries->where('store_id', $params['store_id'])->paginate(10);
-            $result = [
-                'enquiries' => $enquiries->get()->toArray(),
-                'pagination' => [
-                    'total' => $enquiries->total(),
-                    'per_page' => $enquiries->perPage(),
-                    'current_page' => $enquiries->currentPage(),
-                    'last_page' => $enquiries->lastPage(),
-                    'from' => $enquiries->firstItem(),
-                    'to' => $enquiries->lastItem(),
-                ],
-            ];
+            $enquiries = Enquiry::where('client_id', $params['client_id'])
+                ->where('store_id', $params['store_id'])->paginate(10);
 
             return response()->json([
                 'status' => 'success',
-                'data' => $result,
+                'data' => $enquiries,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
