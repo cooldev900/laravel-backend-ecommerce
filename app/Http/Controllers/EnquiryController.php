@@ -136,4 +136,25 @@ class EnquiryController extends Controller
             ], 500);
         }
     }
+
+    public function deleteEnquiry(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+
+            $enquiry = Enquiry::find($params['id']);
+            $enquiry->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $enquiry,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_delete_enquiry',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
