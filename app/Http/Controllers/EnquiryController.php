@@ -13,7 +13,6 @@ class EnquiryController extends Controller
     {
         try {
             $queries = $requset->all();
-            $params = $requset->route()->parameters();
 
             $enquiries = Enquiry::query();
             foreach ($queries as $key => $query) {
@@ -41,8 +40,18 @@ class EnquiryController extends Controller
 
             $enquiries = Enquiry::query();
             $enquiries->where('client_id', $params['client_id']);
-            $enquiries->where('store_id', $params['store_id'])->paginate(2);
-            $result = $enquiries->get()->toArray();
+            $enquiries->where('store_id', $params['store_id'])->paginate(10);
+            $result = [
+                'enquiries' => $enquiries->get()->toArray(),
+                'pagination' => [
+                    'total' => $enquiries->total(),
+                    'per_page' => $enquiries->perPage(),
+                    'current_page' => $enquiries->currentPage(),
+                    'last_page' => $enquiries->lastPage(),
+                    'from' => $enquiries->firstItem(),
+                    'to' => $enquiries->lastItem(),
+                ],
+            ];
 
             return response()->json([
                 'status' => 'success',
