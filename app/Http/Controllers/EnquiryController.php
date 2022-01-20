@@ -37,15 +37,11 @@ class EnquiryController extends Controller
     public function getEnquiries(Request $requset)
     {
         try {
-            $queries = $requset->all();
             $params = $requset->route()->parameters();
 
             $enquiries = Enquiry::query();
             $enquiries->where('client_id', $params['client_id']);
-            $enquiries->where('store_id', $params['store_id']);
-            foreach ($queries as $key => $query) {
-                $enquiries->where($key, $query);
-            }
+            $enquiries->where('store_id', $params['store_id'])->paginate(2);
             $result = $enquiries->get()->toArray();
 
             return response()->json([
