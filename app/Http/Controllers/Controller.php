@@ -72,6 +72,11 @@ class Controller extends BaseController
     public function getPermission($user)
     {
         $_user = $user;
+
+        $company = Company::where('name', $_user['company_name'])->firstOrFail();
+        $_user['image_base_url'] = $company->image_base_url;
+        $_user['client_id'] = $company->id;
+
         $permissions = UserPermission::where('user_id', $_user['id'])->get();
         $permissions_scopes_unique = json_decode(json_encode($permissions->unique('scopes')), true);
         $permissions_store_views_unique = json_decode(json_encode($permissions->unique('store_views')), true);
@@ -83,9 +88,6 @@ class Controller extends BaseController
 
         $userLocations = UserLocation::where('user_id', $_user['id'])->get()->toArray();
         $_user['locations'] = array_column($userLocations, 'locations');
-
-        $company = Company::where('name', $_user['company_name'])->firstOrFail();
-        $_user['image_base_url'] = $company->image_base_url;
 
         return $_user;
     }
