@@ -115,7 +115,7 @@ Route::get('/locations/{companyId}', [LocationController::class, 'allLocations']
 
 Route::prefix('/enquiries')->group(function () {
     Route::get('/', [EnquiryController::class, 'allEnquiries'])->name('enquiries.all');
-    Route::get('/{client_id}/{store_id}', [EnquiryController::class, 'enquiries.index'])->name('enquiries.get');
+    Route::get('/{client_id}/{store_id}', [EnquiryController::class, 'getEnquiries'])->name('enquiries.index');
     Route::post('/', [EnquiryController::class, 'createEnquiry'])->name('enquiries.create');
     Route::put('/{id}', [EnquiryController::class, 'updateEnquiry'])->name('enquiries.update');
     Route::delete('/{id}', [EnquiryController::class, 'deleteEnquiry'])->name('enquiries.delete');
