@@ -58,20 +58,24 @@ class LocationController extends Controller
     public function createLocation(Request $request)
     {
         try {
-            // $request->validate([
-            //     'location_name' => 'required|string',
-            //     'location_order_id' => 'numeric',
-            //     'vsf_store_id' => 'numeric',
-            //     'address' => 'string',
-            //     'phone' => 'string',
-            //     'is_hub' => 'numeric',
-            //     'collection' => 'numeric',
-            //     'fitment' => 'numeric',
-            //     'delivery' => 'numeric',
-            //     'brand' => 'string',
-            //     'longitude' => 'string',
-            //     'latitude' => 'string',
-            // ]);
+            $request->validate([
+                'location_name' => 'required|string',
+                'location_order_id' => 'nullable|numeric',
+                'vsf_store_id' => 'nullable|numeric',
+                'country' => 'nullable|string',
+                'region' => 'nullable|string',
+                'city' => 'nullable|string',
+                'street' => 'nullable|string',
+                'postcode' => 'nullable|string',
+                'phone' => 'nullable|string',
+                'is_hub' => 'nullable|numeric',
+                'collection' => 'nullable|numeric',
+                'fitment' => 'nullable|numeric',
+                'delivery' => 'nullable|numeric',
+                'brand' => 'nullable|string',
+                'longitude' => 'nullable|string',
+                'latitude' => 'nullable|string',
+            ]);
 
             $inputs = $request->all();
             $newLocation = new Location();
@@ -102,26 +106,35 @@ class LocationController extends Controller
     public function updateLocation(Request $request)
     {
         try {
-            // $request->validate([
-            //     'location_name' => 'required|string',
-            //     'location_order_id' => 'numeric',
-            //     'vsf_store_id' => 'numeric',
-            //     'address' => 'string',
-            //     'phone' => 'string',
-            //     'is_hub' => 'numeric',
-            //     'collection' => 'numeric',
-            //     'fitment' => 'numeric',
-            //     'delivery' => 'numeric',
-            //     'brand' => 'string',
-            //     'longitude' => 'string',
-            //     'latitude' => 'string',
-            // ]);
+            $request->validate([
+                'location_name' => 'required|string',
+                'location_order_id' => 'nullable|numeric',
+                'vsf_store_id' => 'nullable|numeric',
+                'country' => 'nullable|string',
+                'region' => 'nullable|string',
+                'city' => 'nullable|string',
+                'street' => 'nullable|string',
+                'postcode' => 'nullable|string',
+                'phone' => 'nullable|string',
+                'is_hub' => 'nullable|numeric',
+                'collection' => 'nullable|numeric',
+                'fitment' => 'nullable|numeric',
+                'delivery' => 'nullable|numeric',
+                'brand' => 'nullable|string',
+                'longitude' => 'nullable|string',
+                'latitude' => 'nullable|string',
+            ]);
+
             $params = $request->route()->parameters();
             $location = Location::find($params['id'])->update([
                 'location_name' => $request->input('location_name'),
                 'location_order_id' => $request->input('location_order_id'),
                 'vsf_store_id' => $request->input('vsf_store_id'),
-                'address' => $request->input('address'),
+                'country' => $request->input('address'),
+                'region' => $request->input('address'),
+                'city' => $request->input('address'),
+                'street' => $request->input('address'),
+                'postcode' => $request->input('address'),
                 'phone' => $request->input('phone'),
                 'is_hub' => $request->input('is_hub'),
                 'collection' => $request->input('collection'),
