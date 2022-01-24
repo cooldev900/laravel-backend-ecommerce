@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\StoreviewController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -69,6 +70,13 @@ Route::prefix('{store_view}')->group(function () {
         Route::post('/shipments/track', [ShipmentController::class, 'createShipmentTrack'])->name('shipments.track.create');
         Route::delete('/shipments/track/{trackId}', [ShipmentController::class, 'deleteShipmentTrack'])->name('shipments.track.delete');
         // Route::delete('/shipments/{shipmentId}', [CustomerController::class, 'deleteShipment'])->name('shipments.delete');
+
+        /********** Transactions **********/
+        Route::get('/transactions', [TransactionController::class, 'allTransactions'])->name('transactions.all');
+        Route::get('/transactions/{id}', [TransactionController::class, 'getTransaction'])->name('transactions.index');
+        // Route::post('/shipments', [ShipmentController::class, 'createShipment'])->name('shipments.create');
+        // Route::post('/shipments/track', [ShipmentController::class, 'createShipmentTrack'])->name('shipments.track.create');
+        // Route::delete('/shipments/track/{trackId}', [ShipmentController::class, 'deleteShipmentTrack'])->name('shipments.track.delete');
     });
 });
 
