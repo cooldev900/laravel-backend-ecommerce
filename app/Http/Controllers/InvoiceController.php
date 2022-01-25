@@ -101,4 +101,39 @@ class InvoiceController extends Controller
             ], $e->getCode());
         }
     }
+
+    /**
+     * https: //magento.redoc.ly/2.4.3-admin/tag/invoiceinvoiceIdrefund#operation/salesRefundInvoiceV1ExecutePost
+
+
+     * Refund Magento an Invoice data.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+
+    public function refundInvoice(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+            $entity = $request->input('entity');
+
+            $response = $client->request('POST', 'invoice/' . $params['id'] . '/refund', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($entity),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_refund_invoice',
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
+    }
+
 }
