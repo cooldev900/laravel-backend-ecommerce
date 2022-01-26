@@ -30,8 +30,7 @@ class StoreviewController extends Controller
     {
         try {
             $params = $request->route()->parameters();
-            $storeview = StoreView::find($params['id'])
-                ->makeHidden(['api_key_1', 'api_key_2', 'payment_additional_1', 'payment_additional_2', 'payment_additional_3']);
+            $storeview = StoreView::find($params['id']);
 
             return response()->json([
                 'status' => 'success',
