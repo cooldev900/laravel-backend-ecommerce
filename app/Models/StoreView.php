@@ -33,7 +33,7 @@ class StoreView extends Model
      *
      * @var array
      */
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $hidden = ['created_at', 'updated_at', 'company_id'];
 
     protected $with = ['company'];
 
@@ -43,6 +43,6 @@ class StoreView extends Model
 
     public function company()
     {
-        return $this->hasOne(Company::class, 'company_id');
+        return $this->hasOne(Company::class, 'id', 'company_id');
     }
 }
