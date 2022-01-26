@@ -30,7 +30,8 @@ class StoreviewController extends Controller
     {
         try {
             $params = $request->route()->parameters();
-            $storeview = StoreView::find($params['id']);
+            $storeview = StoreView::find($params['id'])
+                ->makeHidden(['api_key_1', 'api_key_2', 'payment_additional_1', 'payment_additional_2', 'payment_additional_3']);
 
             return response()->json([
                 'status' => 'success',
@@ -63,7 +64,15 @@ class StoreviewController extends Controller
             $inputs = $request->all();
             $newStoreView = new StoreView();
             foreach ($inputs as $key => $input) {
-                $newStoreView[$key] = $input;
+                if ($key === 'payment_provider' || $key === 'api_key_1'
+                    || $key === 'api_key_2' || $key === 'payment_additional_1'
+                    || $key === 'payment_additional_2' || $key === 'payment_additional_3') {
+                    $newStoreView[$key] = encrypt($input);
+                } else {
+                    $newStoreView[$key] = $input;
+
+                }
+
             }
             $newStoreView->save();
 
