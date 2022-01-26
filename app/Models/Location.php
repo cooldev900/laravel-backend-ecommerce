@@ -26,6 +26,10 @@ class Location extends Model
         'brand',
         'longitude',
         'latitude',
+        'print_label',
+        'api_url',
+        'api_token',
+        'api_user',
     ];
 
     public $timestamps = false;

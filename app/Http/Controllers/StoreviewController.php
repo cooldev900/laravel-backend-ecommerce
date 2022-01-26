@@ -43,7 +43,6 @@ class StoreviewController extends Controller
                 'message' => $e->getMessage(),
             ], 500);
         }
-
     }
 
     public function createStoreview(Request $request)
@@ -52,11 +51,20 @@ class StoreviewController extends Controller
             $request->validate([
                 'code' => 'required|string',
                 'store_id' => 'numeric',
+                'company_id' => 'required|numeric',
+                'payment_provider' => 'nullable|string',
+                'api_key_1' => 'nullable|string',
+                'api_key_2' => 'nullable|string',
+                'payment_additional_1' => 'nullable|string',
+                'payment_additional_2' => 'nullable|string',
+                'payment_additional_3' => 'nullable|string',
             ]);
 
+            $inputs = $request->all();
             $newStoreView = new StoreView();
-            $newStoreView->code = $request->input('code');
-            $newStoreView->store_id = $request->input('store_id');
+            foreach ($inputs as $key => $input) {
+                $newStoreView[$key] = $input;
+            }
             $newStoreView->save();
 
             return response()->json([
@@ -101,12 +109,26 @@ class StoreviewController extends Controller
             $request->validate([
                 'code' => 'required|string',
                 'store_id' => 'numeric',
+                'company_id' => 'required|numeric',
+                'payment_provider' => 'nullable|string',
+                'api_key_1' => 'nullable|string',
+                'api_key_2' => 'nullable|string',
+                'payment_additional_1' => 'nullable|string',
+                'payment_additional_2' => 'nullable|string',
+                'payment_additional_3' => 'nullable|string',
             ]);
 
             $params = $request->route()->parameters();
             $storeview = StoreView::find($params['id'])->update([
                 'code' => $request->input('code'),
                 'store_id' => $request->input('store_id'),
+                'company_id' => $request->input('company_id'),
+                'payment_provider' => $request->input('payment_provider'),
+                'api_key_1' => $request->input('api_key_1'),
+                'api_key_2' => $request->input('api_key_2'),
+                'payment_additional_1' => $request->input('payment_additional_1'),
+                'payment_additional_2' => $request->input('payment_additional_2'),
+                'payment_additional_3' => $request->input('payment_additional_3'),
             ]);
 
             return response()->json([

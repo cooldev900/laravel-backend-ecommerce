@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,8 +35,14 @@ class StoreView extends Model
      */
     protected $hidden = ['created_at', 'updated_at'];
 
+    protected $with = ['company'];
+
     protected $fillable = [
-        'code',
-        'store_id',
+        'code', 'store_id', 'company_id', 'payment_provider', 'api_key_1', 'api_key_2', 'payment_additional_1', 'payment_additional_2', 'payment_additional_3',
     ];
+
+    public function company()
+    {
+        return $this->hasOne(Company::class, 'company_id');
+    }
 }
