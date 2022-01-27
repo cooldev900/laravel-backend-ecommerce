@@ -15,6 +15,10 @@ class LocationController extends Controller
         $params = $request->route()->parameters();
         $companyLocations = CompanyLocation::where('company_id', $params['companyId'])->get()->toArray();
         $allLocations = array_column($companyLocations, 'locations');
+        foreach ($allLocations as $key => $location) {
+            unset($location['api_token']);
+            $allLocations[$key] = $location;
+        };
 
         $result = [];
         $vsf_code = $request->get('vsf_code');
@@ -40,7 +44,7 @@ class LocationController extends Controller
     {
         try {
             $params = $request->route()->parameters();
-            $location = Location::find($params['id']);
+            $location = Location::find($params['id'])->makeHidden(['api_token']);
 
             return response()->json([
                 'status' => 'success',
@@ -75,6 +79,10 @@ class LocationController extends Controller
                 'brand' => 'nullable|string',
                 'longitude' => 'nullable|string',
                 'latitude' => 'nullable|string',
+                'print_label' => 'nullable|string',
+                'api_url' => 'nullable|string',
+                'api_token' => 'nullable|string',
+                'api_user' => 'nullable|string',
             ]);
 
             $inputs = $request->all();
@@ -123,6 +131,10 @@ class LocationController extends Controller
                 'brand' => 'nullable|string',
                 'longitude' => 'nullable|string',
                 'latitude' => 'nullable|string',
+                'print_label' => 'nullable|string',
+                'api_url' => 'nullable|string',
+                'api_token' => 'nullable|string',
+                'api_user' => 'nullable|string',
             ]);
 
             $params = $request->route()->parameters();
@@ -143,6 +155,10 @@ class LocationController extends Controller
                 'brand' => $request->input('brand'),
                 'longitude' => $request->input('longitude'),
                 'latitude' => $request->input('latitude'),
+                'print_label' => $request->input('print_label'),
+                'api_url' => $request->input('api_url'),
+                'api_token' => $request->input('api_token'),
+                'api_user' => $request->input('api_user'),
             ]);
 
             return response()->json([
