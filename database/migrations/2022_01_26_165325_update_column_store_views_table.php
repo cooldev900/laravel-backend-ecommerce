@@ -21,7 +21,7 @@ class UpdateColumnStoreViewsTable extends Migration
             $table->string('payment_additional_1', 500)->nullable();
             $table->string('payment_additional_2', 500)->nullable();
             $table->string('payment_additional_3', 500)->nullable();
-            $table->string('code')->change();
+            $table->dropUnique('store_views_code_unique');
 
             $table->foreign('company_id')->references('id')->on('companies');
         });
