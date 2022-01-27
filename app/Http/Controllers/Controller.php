@@ -88,10 +88,12 @@ class Controller extends BaseController
 
         $userLocations = UserLocation::where('user_id', $_user['id'])->get()->toArray();
         $_user['locations'] = array_column($userLocations, 'locations');
-        foreach ($_user['locations'] as $key => $location) {
+        $result_ocations = [];
+        foreach ($_user['locations'] as $location) {
             unset($location['api_token']);
-            $_user['locations'][$key] = $location;
+            array_push($result_ocations, $location);
         }
+        $_user['locations'] = $result_ocations;
 
         return $_user;
     }
