@@ -11,10 +11,16 @@ use Illuminate\Http\Request;
 
 class StoreviewController extends Controller
 {
-    public function allStoreviews()
+    public function allStoreviews(Request $request)
     {
         try {
-            $storeViews = StoreView::all()->toArray();
+            $client_id = $request->get('client_id');
+
+            if (isset($client_id)) {
+                $storeViews = StoreView::where('company_id', $client_id)->get()->toArray();
+            } else {
+                $storeViews = StoreView::all()->toArray();
+            }
 
             $result = [];
             foreach ($storeViews as $storeView) {
