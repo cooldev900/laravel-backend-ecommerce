@@ -16,7 +16,7 @@ class AddColumnsLocationsTable extends Migration
         Schema::table('locations', function (Blueprint $table) {
             $table->boolean('print_label')->nullable();
             $table->string('api_url')->nullable();
-            $table->string('api_token')->nullable();
+            $table->string('api_token', 500)->nullable();
             $table->string('api_user')->nullable();
         });
     }
