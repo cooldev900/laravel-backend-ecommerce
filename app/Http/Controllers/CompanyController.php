@@ -35,6 +35,11 @@ class CompanyController extends Controller
                 ->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
             $company->url = decrypt($company->url);
             $locations = CompanyLocation::where('company_id', $params['id'])->get()->toArray();
+            foreach ($locations as $key => $location) {
+                unset($location['api_token']);
+                $locations[$key] = $location;
+            };
+
             $users = User::where('company_name', $company->name)->get()
                 ->makeHidden(['password', 'created_at', 'updated_at'])->toArray();
             $company->locations = array_column($locations, 'locations');
