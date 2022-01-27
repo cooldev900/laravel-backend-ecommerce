@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Stripe;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class Controller extends BaseController
@@ -62,6 +63,20 @@ class Controller extends BaseController
     }
 
     /**
+     * Get guzzle instance for stripe
+     *
+     * @return GuzzleHttp\Client;
+     */
+
+    protected function makeStripeClient()
+    {
+        // disabe
+        return $stripe = new \Stripe\StripeClient(
+            'sk_test_4eC39HqLyjWDarjtT1zdp7dc'
+        );
+    }
+
+    /**
      * Get the user permission based on JWT token.
      *
      * @param  \Model\User $user
@@ -83,17 +98,29 @@ class Controller extends BaseController
         $permissions_roles_unique = json_decode(json_encode($permissions->unique('roles')), true);
 
         $_user['scopes'] = array_column($permissions_scopes_unique, 'scopes');
-        $_user['store_views'] = array_column($permissions_store_views_unique, 'store_views');
         $_user['roles'] = array_column($permissions_roles_unique, 'roles');
+
+        $_user['store_views'] = array_column($permissions_store_views_unique, 'store_views');
+        $result_store_views = [];
+        foreach ($_user['store_views'] as $storeview) {
+            if ($storeview['company']) {
+                $storeview['company'] = [
+                    'id' => $storeview['company']['id'],
+                    'name' => $storeview['company']['name'],
+                ];
+            }
+            array_push($result_store_views, $storeview);
+        }
+        $_user['store_views'] = $result_store_views;
 
         $userLocations = UserLocation::where('user_id', $_user['id'])->get()->toArray();
         $_user['locations'] = array_column($userLocations, 'locations');
-        $result_ocations = [];
+        $result_locations = [];
         foreach ($_user['locations'] as $location) {
             unset($location['api_token']);
-            array_push($result_ocations, $location);
+            array_push($result_locations, $location);
         }
-        $_user['locations'] = $result_ocations;
+        $_user['locations'] = $result_locations;
 
         return $_user;
     }
