@@ -12,19 +12,27 @@ class CompanyController extends Controller
 {
     public function allCompanies()
     {
-        $companies = Company::all()->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
+        try {
+            $companies = Company::all()->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
 
-        $result = [];
-        foreach ($companies as $company) {
-            $company->url = decrypt($company->url);
+            $result = [];
+            foreach ($companies as $company) {
+                $company->url = decrypt($company->url);
 
-            array_push($result, $company);
+                array_push($result, $company);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $result,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_get_clients',
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $result,
-        ], 200);
     }
 
     public function getCompany(Request $request)
@@ -34,17 +42,14 @@ class CompanyController extends Controller
             $company = Company::find($params['id'])
                 ->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
             $company->url = decrypt($company->url);
-
             $locations = CompanyLocation::where('company_id', $params['id'])->get()->toArray();
-
             $users = User::where('company_name', $company->name)->get()
                 ->makeHidden(['password', 'created_at', 'updated_at'])->toArray();
-
             $company->locations = array_column($locations, 'locations');
             foreach ($company->locations as $key => $location) {
                 unset($location['api_token']);
                 $company->locations[$key] = $location;
-            };
+            }
 
             $resultUser = [];
             foreach ($users as $user) {
