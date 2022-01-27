@@ -13,17 +13,32 @@ class StoreviewController extends Controller
 {
     public function allStoreviews()
     {
-        $storeViews = StoreView::all();
+        try {
+            $storeViews = StoreView::all()->toArray();
 
-        $result = [];
-        foreach ($storeViews as $storeView) {
-            array_push($result, $storeView);
+            $result = [];
+            foreach ($storeViews as $storeView) {
+                if ($storeView['company']) {
+                    $storeView['company'] = [
+                        'id' => $storeView['company']['id'],
+                        'name' => $storeView['company']['name'],
+                    ];
+                }
+
+                array_push($result, $storeView);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $result,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_get_storeviews',
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $result,
-        ], 200);
     }
 
     public function getStoreview(Request $request)
@@ -31,6 +46,13 @@ class StoreviewController extends Controller
         try {
             $params = $request->route()->parameters();
             $storeview = StoreView::find($params['id']);
+
+            if ($storeview['company']) {
+                $hiddenColumns = ['consumer_key', 'consumer_secret', 'token', 'token_secret', 'url', 'magento_id'];
+                foreach ($hiddenColumns as $column) {
+                    unset($storeview['company'][$column]);
+                }
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -63,7 +85,7 @@ class StoreviewController extends Controller
             $inputs = $request->all();
             $newStoreView = new StoreView();
             foreach ($inputs as $key => $input) {
-                if ($key === 'payment_provider' || $key === 'api_key_1'
+                if ($key === 'api_key_1'
                     || $key === 'api_key_2' || $key === 'payment_additional_1'
                     || $key === 'payment_additional_2' || $key === 'payment_additional_3') {
                     $newStoreView[$key] = encrypt($input);
@@ -132,11 +154,11 @@ class StoreviewController extends Controller
                 'store_id' => $request->input('store_id'),
                 'company_id' => $request->input('company_id'),
                 'payment_provider' => $request->input('payment_provider'),
-                'api_key_1' => $request->input('api_key_1'),
-                'api_key_2' => $request->input('api_key_2'),
-                'payment_additional_1' => $request->input('payment_additional_1'),
-                'payment_additional_2' => $request->input('payment_additional_2'),
-                'payment_additional_3' => $request->input('payment_additional_3'),
+                'api_key_1' => encrypt($request->input('api_key_1')),
+                'api_key_2' => encrypt($request->input('api_key_2')),
+                'payment_additional_1' => encrypt($request->input('payment_additional_1')),
+                'payment_additional_2' => encrypt($request->input('payment_additional_2')),
+                'payment_additional_3' => encrypt($request->input('payment_additional_3')),
             ]);
 
             return response()->json([
