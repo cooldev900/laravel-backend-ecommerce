@@ -46,10 +46,12 @@ class CompanyController extends Controller
             $users = User::where('company_name', $company->name)->get()
                 ->makeHidden(['password', 'created_at', 'updated_at'])->toArray();
             $company->locations = array_column($locations, 'locations');
-            foreach ($company->locations as $key => $location) {
+            $_locations = [];
+            foreach ($company->locations as $location) {
                 unset($location['api_token']);
-                $company->locations[$key] = $location;
+                array_push($_locations, $location);
             }
+            $company->locations = $_locations;
 
             $resultUser = [];
             foreach ($users as $user) {
