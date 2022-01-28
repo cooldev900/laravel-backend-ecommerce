@@ -51,7 +51,7 @@ class CustomerController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_customers',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
 
         }
     }
@@ -78,7 +78,7 @@ class CustomerController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_customer',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
 
         }
     }
@@ -99,7 +99,7 @@ class CustomerController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_delete_customer',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 }

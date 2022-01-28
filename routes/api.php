@@ -81,7 +81,7 @@ Route::prefix('{store_view}')->group(function () {
         // Route::delete('/shipments/track/{trackId}', [ShipmentController::class, 'deleteShipmentTrack'])->name('shipments.track.delete');
 
         /********** Stripe **********/
-        Route::get('/stripe/transaction', [StripeController::class, 'getTransaction'])->name('stripe.transaction.index');
+        Route::post('/stripe/transaction', [StripeController::class, 'capturePaymentIntent'])->name('stripe.transaction.index');
         Route::post('/stripe/refund', [StripeController::class, 'createRefund'])->name('stripe.refund.create');
     });
 });

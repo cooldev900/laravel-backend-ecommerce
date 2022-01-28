@@ -37,7 +37,7 @@ class TransactionController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_transactions',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -64,7 +64,7 @@ class TransactionController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_transaction',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 }

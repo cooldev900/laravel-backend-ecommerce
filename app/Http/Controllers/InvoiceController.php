@@ -37,7 +37,7 @@ class InvoiceController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_invoices',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -65,7 +65,7 @@ class InvoiceController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_invoice',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -98,7 +98,7 @@ class InvoiceController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_create_invoice',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -132,7 +132,7 @@ class InvoiceController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_refund_invoice',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 

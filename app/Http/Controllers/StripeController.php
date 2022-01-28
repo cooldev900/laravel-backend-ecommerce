@@ -7,26 +7,29 @@ use Illuminate\Http\Request;
 
 class StripeController extends Controller
 {
-    public function getTransaction(Request $request)
+    public function capturePaymentIntent(Request $request)
     {
         try {
             $params = $request->route()->parameters();
             $stripe = $this->makeStripeClient($params['store_view']);
 
-            $refund = $stripe->refunds->create([
-                'charge' => 'ch_3KLtJRGfAlK9sk9k1rRZZZTr',
-            ]);
+            $payment_intent = $stripe->paymentIntents->capture(
+                $request->input('payment_id'),
+                [
+                    'amount_to_capture' => $request->input('amount_to_capture'),
+                ]
+            );
 
             return response()->json([
                 'status' => 'success',
-                'data' => $refund,
+                'data' => $payment_intent,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'could_not_get_orders',
+                'error' => 'could_not_get_transaction',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -48,9 +51,9 @@ class StripeController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'could_not_get_orders',
+                'error' => 'could_not_create_refund',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 }

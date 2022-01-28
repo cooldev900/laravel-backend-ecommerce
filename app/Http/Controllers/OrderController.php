@@ -36,7 +36,7 @@ class OrderController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_orders',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -64,7 +64,7 @@ class OrderController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_order',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -93,7 +93,7 @@ class OrderController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_order_item',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -127,7 +127,7 @@ class OrderController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_order_items',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 }

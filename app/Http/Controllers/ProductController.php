@@ -36,7 +36,7 @@ class ProductController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_products',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
 
         }
     }
@@ -63,7 +63,7 @@ class ProductController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_product',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
 
         }
     }
@@ -92,7 +92,7 @@ class ProductController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_update_product',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -112,7 +112,7 @@ class ProductController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_delete_product',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -141,7 +141,7 @@ class ProductController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_create_product',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -194,7 +194,7 @@ class ProductController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_delete_product',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 }

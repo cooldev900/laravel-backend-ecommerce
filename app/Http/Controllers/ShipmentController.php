@@ -37,7 +37,7 @@ class ShipmentController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_shipments',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -64,7 +64,7 @@ class ShipmentController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_shipment',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -97,7 +97,7 @@ class ShipmentController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_create_shipment',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -126,7 +126,7 @@ class ShipmentController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_create_shipment_track',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
     }
 
@@ -146,7 +146,7 @@ class ShipmentController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_create_shipment_track',
                 'message' => $e->getMessage(),
-            ], $e->getCode());
+            ], 500);
         }
 
     }
