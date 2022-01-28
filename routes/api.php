@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\StoreviewController;
+use App\Http\Controllers\StripeController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -78,6 +79,10 @@ Route::prefix('{store_view}')->group(function () {
         // Route::post('/shipments', [ShipmentController::class, 'createShipment'])->name('shipments.create');
         // Route::post('/shipments/track', [ShipmentController::class, 'createShipmentTrack'])->name('shipments.track.create');
         // Route::delete('/shipments/track/{trackId}', [ShipmentController::class, 'deleteShipmentTrack'])->name('shipments.track.delete');
+
+        /********** Stripe **********/
+        Route::get('/stripe/transaction', [StripeController::class, 'getTransaction'])->name('stripe.transaction.index');
+        Route::post('/stripe/refund', [StripeController::class, 'createRefund'])->name('stripe.refund.create');
     });
 });
 

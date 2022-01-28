@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\NationalCodes;
+use App\Models\StoreView;
 use App\Models\UserLocation;
 use App\Models\UserPermission;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
@@ -68,12 +70,23 @@ class Controller extends BaseController
      * @return GuzzleHttp\Client;
      */
 
-    protected function makeStripeClient()
+    protected function makeStripeClient($store_view)
     {
-        // disabe
-        return $stripe = new \Stripe\StripeClient(
-            'sk_test_4eC39HqLyjWDarjtT1zdp7dc'
-        );
+        try {
+            $user = JWTAuth::user();
+            $company = Company::where('name', $user->company_name)->firstOrFail();
+
+            $storeview = StoreView::where('company_id', $company->id)->where('code', $store_view)->firstOrFail();
+            $secret_key = decrypt($storeview->api_key_2);
+
+            return new \Stripe\StripeClient($secret_key);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_create_stripe_client',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
