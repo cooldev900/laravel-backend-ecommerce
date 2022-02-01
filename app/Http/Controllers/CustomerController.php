@@ -35,8 +35,7 @@ class CustomerController extends Controller
                         }
                     ]
                 }
-            }
-            ';
+            }';
             $j = $search_criteria ? $search_criteria : json_decode($json);
             $get_params = http_build_query($j);
 

@@ -90,6 +90,57 @@ class Controller extends BaseController
     }
 
     /**
+     * Get guzzle instance for paypal
+     *
+     * @return GuzzleHttp\Client;
+     */
+
+    protected function makePaypalClient($store_view)
+    {
+        try {
+            $user = JWTAuth::user();
+            $company = Company::where('name', $user->company_name)->firstOrFail();
+            $storeview = StoreView::where('company_id', $company->id)->where('code', $store_view)->firstOrFail();
+
+            $client_id = decrypt($storeview->api_key_1);
+            $secret_key = decrypt($storeview->api_key_2);
+            $uri = 'https://api.sandbox.paypal.com/v1/oauth2/token';
+
+            $authClient = new Client();
+            $response = $authClient->request('POST', $uri, [
+                'headers' =>
+                [
+                    'Accept' => 'application/json',
+                    'Accept-Language' => 'en_US',
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'body' => 'grant_type=client_credentials',
+
+                'auth' => [$client_id, $secret_key, 'basic'],
+            ]
+            );
+
+            $data = json_decode($response->getBody(), true);
+
+            $access_token = $data['access_token'];
+
+            return new Client([
+                'base_uri' => 'https://api-m.sandbox.paypal.com/v2/',
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => "Bearer $access_token",
+                ],
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_create_paypal_client',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Get the user permission based on JWT token.
      *
      * @param  \Model\User $user

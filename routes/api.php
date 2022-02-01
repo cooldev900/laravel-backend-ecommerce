@@ -8,6 +8,7 @@ use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\StoreviewController;
@@ -83,6 +84,10 @@ Route::prefix('{store_view}')->group(function () {
         /********** Stripe **********/
         Route::post('/stripe/transaction', [StripeController::class, 'capturePaymentIntent'])->name('stripe.transaction.index');
         Route::post('/stripe/refund', [StripeController::class, 'createRefund'])->name('stripe.refund.create');
+
+        /********** Paypal **********/
+        Route::post('/paypal/transaction', [PaypalController::class, 'capturePaymentIntent'])->name('paypal.transaction.index');
+        Route::post('/paypal/refund', [PaypalController::class, 'createRefund'])->name('payapl.refund.create');
     });
 });
 

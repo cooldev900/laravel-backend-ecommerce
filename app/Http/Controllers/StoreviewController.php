@@ -91,9 +91,9 @@ class StoreviewController extends Controller
             $inputs = $request->all();
             $newStoreView = new StoreView();
             foreach ($inputs as $key => $input) {
-                if ($key === 'api_key_1'
+                if (($key === 'api_key_1'
                     || $key === 'api_key_2' || $key === 'payment_additional_1'
-                    || $key === 'payment_additional_2' || $key === 'payment_additional_3') {
+                    || $key === 'payment_additional_2' || $key === 'payment_additional_3') && ($input !== null && trim($input) !== '')) {
                     $newStoreView[$key] = encrypt($input);
                 } else {
                     $newStoreView[$key] = $input;
