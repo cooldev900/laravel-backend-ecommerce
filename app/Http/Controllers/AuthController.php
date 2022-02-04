@@ -7,8 +7,6 @@ use App\Models\Company;
 use App\Models\User;
 use App\Models\UserLocation;
 use App\Models\UserPermission;
-use Carbon\Carbon;
-use DB;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -39,14 +37,6 @@ class AuthController extends Controller
         try {
             $request->validate([
                 'email' => 'required|email|exists:users',
-            ]);
-
-            $token = Str::random(64);
-
-            DB::table('password_resets')->insert([
-                'email' => $request->email,
-                'token' => $token,
-                'created_at' => Carbon::now(),
             ]);
 
             $status = Password::sendResetLink(
