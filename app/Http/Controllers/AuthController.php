@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Mail;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -48,20 +49,27 @@ class AuthController extends Controller
                 'created_at' => Carbon::now(),
             ]);
 
-            Mail::send('email.forgetPassword', ['token' => $token], function ($message) use ($request) {
-                $message->to($request->email);
-                $message->subject('Reset Password');
-            });
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
 
-            return response()->json([
-                'message' => 'We have e-mailed your password reset link!',
-                'data' => 'success',
-            ]);
+            if ($status === Password::RESET_LINK_SENT) {
+                return response()->json([
+                    'message' => 'We have e-mailed your password reset link!',
+                    'data' => $status,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Fail_sent_reset_email',
+                    'message' => $status,
+                ], 500);
+            }
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'error' => 'Fail_sent_reset_email',
-                'message' => 'Email could not be sent to this email address.',
+                'message' => $e->getMessage(),
             ], 500);
         }
     }

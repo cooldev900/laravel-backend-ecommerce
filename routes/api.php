@@ -32,7 +32,7 @@ Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     // Send reset password mail
-    Route::post('forget-password', [AuthController::class, 'sendPasswordResetLink']);
+    Route::post('forgot-password', [AuthController::class, 'sendPasswordResetLink']);
     // handle reset password form process
     Route::post('reset-password', [AuthController::class, 'callResetPassword']);
 });
