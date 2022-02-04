@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -123,6 +124,8 @@ class User extends Authenticatable implements JWTSubject
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new \App\Notifications\MailResetPasswordNotification($token));
+        $url = 'http://localhost:3001/reset-password' . $token;
+
+        $this->notify(new ResetPasswordNotification($url));
     }
 }
