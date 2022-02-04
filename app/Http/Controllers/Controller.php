@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\CompanyLocation;
 use App\Models\NationalCodes;
 use App\Models\StoreView;
 use App\Models\UserLocation;
@@ -135,6 +136,43 @@ class Controller extends BaseController
             return response()->json([
                 'status' => 'error',
                 'error' => 'could_not_create_paypal_client',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get guzzle instance for paypal
+     *
+     * @return GuzzleHttp\Client;
+     */
+
+    protected function makeCourierClient($location_id)
+    {
+        try {
+            $user = JWTAuth::user();
+            $company = Company::where('name', $user->company_name)->firstOrFail();
+            $_locations = CompanyLocation::where('company_id', $company->id)->get()->toArray();
+            $locations = array_column($_locations, 'locations');
+            $location = [];
+            foreach ($locations as $_location) {
+                if ($_location['id'] == $location_id) {
+                    $location = $_location;
+                }
+            }
+
+            return new Client([
+                'base_uri' => $location['api_url'],
+                'headers' => [
+                    'api-user' => $location['api_user'],
+                    'api-token' => $location['api_token'],
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_create_courier_client',
                 'message' => $e->getMessage(),
             ], 500);
         }

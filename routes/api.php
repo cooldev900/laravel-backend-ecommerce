@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CourierController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\InvoiceController;
@@ -27,14 +28,21 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
  */
-
-Route::post('/auth/login', [AuthController::class, 'login'])->name('login');
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login'])->name('login');
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    // Send reset password mail
+    Route::post('forget-password', [AuthController::class, 'sendPasswordResetLink']);
+    // handle reset password form process
+    Route::post('reset-password', [AuthController::class, 'callResetPassword']);
+});
 
 Route::middleware(['jwt_auth'])->group(function () {
-    Route::post('/auth/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::get('/nationalcodes', [Controller::class, 'allNationalCodes'])->name('nationalcodes');
 
+    /********** Courier **********/
+    Route::post('/courier/{location_id}/label', [CourierController::class, 'createSmartLabel'])->name('courier.label.create');
 });
 
 Route::prefix('{store_view}')->group(function () {

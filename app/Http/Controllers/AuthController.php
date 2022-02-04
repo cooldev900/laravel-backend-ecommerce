@@ -7,8 +7,12 @@ use App\Models\Company;
 use App\Models\User;
 use App\Models\UserLocation;
 use App\Models\UserPermission;
+use Carbon\Carbon;
+use DB;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Mail;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -22,7 +26,52 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('jwt_auth', ['except' => ['login', 'refresh', 'logout']]);
+        $this->middleware('jwt_auth', ['except' => ['login', 'refresh', 'logout', 'sendPasswordResetLink', 'callResetPassword']]);
+    }
+
+    /**
+     * Send password reset link.
+     */
+
+    public function sendPasswordResetLink(Request $request)
+    {
+        try {
+            $request->validate([
+                'email' => 'required|email|exists:users',
+            ]);
+
+            $token = Str::random(64);
+
+            DB::table('password_resets')->insert([
+                'email' => $request->email,
+                'token' => $token,
+                'created_at' => Carbon::now(),
+            ]);
+
+            Mail::send('email.forgetPassword', ['token' => $token], function ($message) use ($request) {
+                $message->to($request->email);
+                $message->subject('Reset Password');
+            });
+
+            return response()->json([
+                'message' => 'We have e-mailed your password reset link!',
+                'data' => 'success',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'Fail_sent_reset_email',
+                'message' => 'Email could not be sent to this email address.',
+            ], 500);
+        }
+    }
+
+    /**
+     * Handle reset password
+     */
+    public function callResetPassword(Request $request)
+    {
+        return $this->reset($request);
     }
 
     /**
