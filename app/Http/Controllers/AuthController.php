@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ResetPassword;
 use App\Models\Company;
 use App\Models\User;
 use App\Models\UserLocation;
 use App\Models\UserPermission;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Mail;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -36,23 +37,28 @@ class AuthController extends Controller
     {
         try {
             $request->validate([
-                'email' => 'required|email|exists:users',
+                'email' => 'required|email',
             ]);
 
-            $status = Password::sendResetLink(
-                $request->only('email')
-            );
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return back()->with('failed', 'Failed! email is not registered.');
+            }
 
-            if ($status === Password::RESET_LINK_SENT) {
+            $token = Str::random(60);
+
+            Mail::to($request->email)->send(new ResetPassword($user->name, $token));
+
+            if (Mail::failures() != 0) {
                 return response()->json([
-                    'message' => 'We have e-mailed your password reset link!',
-                    'data' => $status,
+                    'message' => 'Success! password reset link has been sent to your email',
+                    'status' => 'success',
                 ]);
             } else {
                 return response()->json([
                     'status' => 'error',
                     'error' => 'Fail_sent_reset_email',
-                    'message' => $status,
+                    'message' => 'Failed! there is some issue with email provider',
                 ], 500);
             }
         } catch (Exception $e) {
