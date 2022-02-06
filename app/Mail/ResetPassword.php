@@ -37,6 +37,5 @@ class ResetPassword extends Mailable
         return $this->from("webdev.rds@gmail.com", "Omni Automtoive")
             ->subject('Password Reset Link')
             ->view('reset-password', ['user' => $user]);
-
     }
 }

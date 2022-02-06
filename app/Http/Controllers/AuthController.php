@@ -47,12 +47,13 @@ class AuthController extends Controller
                 return back()->with('failed', 'Failed! email is not registered.');
             }
 
-            $token = Str::random(60);
+            DB::table('password_resets')->where(['email' => $request->email])->delete();
 
+            $token = Str::random(60);
             DB::table('password_resets')->insert([
                 'email' => $request->email,
                 'token' => $token,
-                'created_at' => Carbon::now()->setMinutes(2),
+                'created_at' => Carbon::now(),
             ]);
 
             Mail::to($request->email)->send(new ResetPassword($user->name, $token));
@@ -85,7 +86,7 @@ class AuthController extends Controller
     {
         try {
             $this->validate($request, [
-                'email' => 'required|exists:email',
+                'email' => 'required',
                 'password' => 'required|min:6',
                 'confirm_password' => 'required|same:password',
             ]);
@@ -96,13 +97,21 @@ class AuthController extends Controller
                     'token' => $request->token,
                 ])
                 ->first();
-
             if (!$updatePassword) {
                 return response()->json([
                     'status' => 'error',
                     'error' => 'Fail_reset_password',
                     'message' => 'Password reset token is invalid',
                 ], 500);
+            }
+
+            $difference = Carbon::now()->diffInSeconds($updatePassword->created_at);
+            if ($difference > 900) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Fail_reset_password',
+                    'message' => 'Token expired',
+                ], 400);
             }
 
             User::where('email', $request->email)
