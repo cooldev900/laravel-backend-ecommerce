@@ -8,10 +8,12 @@ use App\Models\Company;
 use App\Models\User;
 use App\Models\UserLocation;
 use App\Models\UserPermission;
+use Carbon\Carbon;
+use DB;
 use Exception;
+use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -47,6 +49,12 @@ class AuthController extends Controller
 
             $token = Str::random(60);
 
+            DB::table('password_resets')->insert([
+                'email' => $request->email,
+                'token' => $token,
+                'created_at' => Carbon::now()->setMinutes(2),
+            ]);
+
             Mail::to($request->email)->send(new ResetPassword($user->name, $token));
 
             if (Mail::failures() != 0) {
@@ -75,7 +83,44 @@ class AuthController extends Controller
      */
     public function callResetPassword(Request $request)
     {
-        return $this->reset($request);
+        try {
+            $this->validate($request, [
+                'email' => 'required|exists:email',
+                'password' => 'required|min:6',
+                'confirm_password' => 'required|same:password',
+            ]);
+
+            $updatePassword = DB::table('password_resets')
+                ->where([
+                    'email' => $request->email,
+                    'token' => $request->token,
+                ])
+                ->first();
+
+            if (!$updatePassword) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Fail_reset_password',
+                    'message' => 'Password reset token is invalid',
+                ], 500);
+            }
+
+            User::where('email', $request->email)
+                ->update(['password' => Hash::make($request->password)]);
+
+            DB::table('password_resets')->where(['email' => $request->email])->delete();
+
+            return response()->json([
+                'message' => 'Success! Your password has been changed!',
+                'status' => 'success',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'Fail_reset_password',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

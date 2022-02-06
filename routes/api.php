@@ -34,7 +34,7 @@ Route::prefix('auth')->group(function () {
     // Send reset password mail
     Route::post('forgot-password', [AuthController::class, 'sendPasswordResetLink']);
     // handle reset password form process
-    Route::post('reset-password', [AuthController::class, 'callResetPassword']);
+    Route::post('reset-password/{token}', [AuthController::class, 'callResetPassword']);
 });
 
 Route::middleware(['jwt_auth'])->group(function () {
