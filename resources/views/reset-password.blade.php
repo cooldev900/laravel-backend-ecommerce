@@ -295,9 +295,8 @@
                                                                 <p
                                                                     style="font-size: 14px; line-height: 140%; text-align: center;">
                                                                     <span
-                                                                        style="font-size: 28px; line-height: 39.2px; color: #ffffff; font-family: Lato, sans-serif;"><a
-                                                                            href="{{'http://localhost:3001/auth/reset-password/'.$user['token']}}">Reset
-                                                                            your password</a></span>
+                                                                        style="font-size: 28px; line-height: 39.2px; color: #ffffff; font-family: Lato, sans-serif;">Reset
+                                                                        your password</span>
                                                                 </p>
                                                             </div>
 
@@ -377,7 +376,7 @@
 
                                                             <div align="left">
                                                                 <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:'Lato',sans-serif;"><tr><td style="font-family:'Lato',sans-serif;" align="left"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:51px; v-text-anchor:middle; width:205px;" arcsize="2%" stroke="f" fillcolor="#18163a"><w:anchorlock/><center style="color:#FFFFFF;font-family:'Lato',sans-serif;"><![endif]-->
-                                                                <a href="" target="_blank"
+                                                                <a href="{{'http://localhost:3001/auth/reset-password/'.$user['token']}}"
                                                                     style="box-sizing: border-box;display: inline-block;font-family:'Lato',sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #18163a; border-radius: 1px;-webkit-border-radius: 1px; -moz-border-radius: 1px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
                                                                     <span
                                                                         style="display:block;padding:15px 40px;line-height:120%;"><span
