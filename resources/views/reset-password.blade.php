@@ -65,7 +65,7 @@
                                         </p>
 
                                         <p style="text-align: center;">
-                                            <a href="{{'http://localhost:3001/forgot-password/'.$user['token']}}"
+                                            <a href="{{'http://localhost:3001/auth/reset-password/'.$user['token']}}"
                                                 class="btn">Reset your password</a>
                                         </p>
 
