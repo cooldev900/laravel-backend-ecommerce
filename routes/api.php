@@ -30,7 +30,6 @@ use Illuminate\Support\Facades\Route;
  */
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     // Send reset password mail
     Route::post('forgot-password', [AuthController::class, 'sendPasswordResetLink']);
     // handle reset password form process
@@ -40,6 +39,7 @@ Route::prefix('auth')->group(function () {
 Route::middleware(['jwt_auth'])->group(function () {
     Route::get('/me', [AuthController::class, 'me'])->name('me');
     Route::get('/nationalcodes', [Controller::class, 'allNationalCodes'])->name('nationalcodes');
+    Route::post('/auth/logout', [AuthController::class, 'logout'])->name('logout');
 
     /********** Courier **********/
     Route::post('/courier/{location_id}/label', [CourierController::class, 'createSmartLabel'])->name('courier.label.create');

@@ -59,7 +59,7 @@ class Controller extends BaseController
         $stack->push($middleware);
 
         return new Client([
-            'base_uri' => decrypt($company->url) . $store_view . '/V1/',
+            'base_uri' => $company->url . $store_view . '/V1/',
             'handler' => $stack,
             'auth' => 'oauth',
         ]);
@@ -186,7 +186,7 @@ class Controller extends BaseController
      * @return Object $user with permissions
      */
 
-    public function getPermission($user)
+    public static function getPermission($user)
     {
         $_user = $user;
 

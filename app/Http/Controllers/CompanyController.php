@@ -7,24 +7,18 @@ use App\Models\CompanyLocation;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class CompanyController extends Controller
 {
     public function allCompanies()
     {
         try {
-            $companies = Company::all()->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
-
-            $result = [];
-            foreach ($companies as $company) {
-                $company->url = decrypt($company->url);
-
-                array_push($result, $company);
-            }
+            $companies = Company::all()->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret'])->toArray();
 
             return response()->json([
                 'status' => 'success',
-                'data' => $result,
+                'data' => $companies,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -41,7 +35,6 @@ class CompanyController extends Controller
             $params = $request->route()->parameters();
             $company = Company::find($params['id'])
                 ->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
-            $company->url = decrypt($company->url);
             $locations = CompanyLocation::where('company_id', $params['id'])->get()->toArray();
             $users = User::where('company_name', $company->name)->get()
                 ->makeHidden(['password', 'created_at', 'updated_at'])->toArray();
@@ -77,17 +70,19 @@ class CompanyController extends Controller
         try {
             $request->validate([
                 'name' => 'required|string',
-                'url' => 'string',
-                'consumer_key' => 'string',
-                'consumer_secret' => 'string',
-                'token' => 'string',
-                'token_secret' => 'string',
+                'url' => 'nullable|string',
+                'consumer_key' => 'nullable|string',
+                'consumer_secret' => 'nullable|string',
+                'token' => 'nullable|string',
+                'token_secret' => 'nullable|string',
+                'image_base_url' => 'nullable|string'
             ]);
             $inputs = $request->all();
 
             $company = new Company();
+            $nonEncryptedFields = ['name', 'id', 'image_base_url', 'url'];
             foreach ($inputs as $key => $input) {
-                if ($key === 'name' || $key === 'id') {
+                if (array_search($key, $nonEncryptedFields) !== false) {
                     $company[$key] = $input;
                 } else {
                     $company[$key] = encrypt($input);
@@ -97,7 +92,6 @@ class CompanyController extends Controller
             $company->save();
 
             $result = $company->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
-            $result->url = decrypt($result->url);
 
             return response()->json([
                 'status' => 'success',
@@ -117,25 +111,26 @@ class CompanyController extends Controller
         try {
             $request->validate([
                 'name' => 'required|string',
-                'url' => 'string',
-                'consumer_key' => 'string',
-                'consumer_secret' => 'string',
-                'token' => 'string',
-                'image_base_url' => 'string',
-                'token_secret' => 'string',
+                'url' => 'nullable|string',
+                'consumer_key' => 'nullable|string',
+                'consumer_secret' => 'nullable|string',
+                'token' => 'nullable|string',
+                'token_secret' => 'nullable|string',
+                'image_base_url' => 'nullable|string'
             ]);
 
             $params = $request->route()->parameters();
             $inputs = $request->all();
 
+            $nonEncryptedFields = ['name', 'id', 'image_base_url', 'url'];
             $company = Company::find($params['id'])
                 ->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
-            foreach ($inputs as $key => $input) {
-                if ($key === 'name' || $key === 'id' || $key === 'image_base_url') {
-                    $company[$key] = $input;
+            foreach ($inputs as $key => $value) {
+                if (array_search($key, $nonEncryptedFields) !== false) {
+                    $company[$key] = $value;
                 } else {
-                    if ($input !== '') {
-                        $company[$key] = encrypt($input);
+                    if ($value !== '' && $value) {
+                        $company[$key] = encrypt($value);
                     }
                 }
             };
