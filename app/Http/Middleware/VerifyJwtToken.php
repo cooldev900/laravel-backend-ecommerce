@@ -37,13 +37,13 @@ class VerifyJwtToken
             } catch (JWTException $e) {
                 return response()->json([
                     'success' => false,
-                    'error' => 'token_not_refreshable',
+                    'error' => 'Token is not refreshable',
                 ], 401); //means auth error in the api
             }
         } catch (JWTException $e) {
             return response()->json([
                 'success' => false,
-                'error' => 'invalid_token',
+                'error' => 'Invalid Token',
             ], 401); //means auth error in the api
         }
 
