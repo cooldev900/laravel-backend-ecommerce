@@ -309,7 +309,7 @@ class AuthController extends Controller
             if ($company === null) {
                 $newCompany = new Company();
                 $newCompany->name = $request->input('company_name');
-                $newCompany->url = encrypt($request->input('company_url'));
+                $newCompany->url = $request->input('company_url');
                 $newCompany->consumer_key = encrypt($request->input('company_consumer_key'));
                 $newCompany->consumer_secret = encrypt($request->input('company_consumer_secret'));
                 $newCompany->token = encrypt($request->input('company_token'));
