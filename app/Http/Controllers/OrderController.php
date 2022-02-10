@@ -157,7 +157,7 @@ class OrderController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'could_not_get_order_items',
+                'error' => 'could_not_get_notify',
                 'message' => $e->getMessage(),
             ], 500);
         }
