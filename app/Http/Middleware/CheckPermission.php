@@ -26,7 +26,7 @@ class CheckPermission
         // Check store_view
         $has_store_view_access = in_array($params['store_view'], array_column($permissions->store_views, 'code'));
         if (!$has_store_view_access) {
-            return response()->json(['error' => 'store_view_permission_denied'], 401);
+            return response()->json(['error' => 'Storeview permission denied'], 403);
         }
 
         // Check scope
@@ -47,26 +47,25 @@ class CheckPermission
         }
 
         if (!$has_scope_access) {
-            return response()->json(['error' => 'scope_permission_denied'], 401);
+            return response()->json(['error' => 'Scope permission denied'], 403); // 403: Permission Denied
         }
 
         // Check role
         if ($action == 'GET') {
             $has_read_role = in_array('read', array_column($permissions->roles, 'name'));
             if (!$has_read_role) {
-                return response()->json(['error' => 'no_read_role'], 405); // 405: Method Not Allowed
+                return response()->json(['error' => 'No read role'], 403); // 403: Permission Denied
             }
         } else if ($action == 'DELETE') {
             $has_delete_role = in_array('delete', array_column($permissions->roles, 'name'));
             if (!$has_delete_role) {
-                return response()->json(['error' => 'no_delete_role'], 405); // 405: Method Not Allowed
+                return response()->json(['error' => 'No delete role'], 403); // 403: Permission Denied
             }
         } else {
             $has_write_role = in_array('write', array_column($permissions->roles, 'name'));
             if (!$has_write_role) {
-                return response()->json(['error' => 'no_write_role'], 405); // 405: Method Not Allowed
+                return response()->json(['error' => 'No write role'], 403); // 403: Permission Denied
             }
-
         }
 
         return $next($request);
