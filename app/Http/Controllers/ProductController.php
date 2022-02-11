@@ -135,7 +135,6 @@ class ProductController extends Controller
                 'status' => 'success',
                 'data' => json_decode($response->getBody()),
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -193,6 +192,108 @@ class ProductController extends Controller
             return response()->json([
                 'status' => 'error',
                 'error' => 'could_not_delete_product',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getAttributes(Request $request)
+    {
+        try {
+            $client = $this->makeHttpClient('default');
+            $search_criteria = json_decode($request->get('searchCriteria'));
+            $query = [
+                'query' => [
+                    'searchCriteria' => $search_criteria ? $search_criteria : '',
+                ],
+            ];
+            $response = $client->request('GET', 'products/attributes', $query);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_get_attributes',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function createAttributes(Request $request)
+    {
+        try {
+            $client = $this->makeHttpClient('default');
+            $attribute = $request->input('attribute');
+            $payload = [
+                'attribute' => $attribute,
+            ];
+
+            $response = $client->request('POST', 'products/attributes', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_create_attributes',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getAttributeOptions(Request $request)
+    {
+        try {
+            $client = $this->makeHttpClient('default');
+            $params = $request->route()->parameters();
+
+            $response = $client->request('GET', 'products/attributes/' . $params['attributeCode'] . '/options');
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_get_attributes_options',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function createAttributeOptions(Request $request)
+    {
+        try {
+            $client = $this->makeHttpClient('default');
+            $params = $request->route()->parameters();
+
+            $option = $request->input('option');
+            $payload = [
+                'option' => $option,
+            ];
+
+            $response = $client->request('POST', 'products/attributes/' . $params['attributeCode'] . '/options', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_get_attribute',
                 'message' => $e->getMessage(),
             ], 500);
         }

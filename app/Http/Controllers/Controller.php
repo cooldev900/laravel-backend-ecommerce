@@ -44,7 +44,7 @@ class Controller extends BaseController
      * @return GuzzleHttp\Client;
      */
 
-    protected function makeHttpClient($store_view)
+    protected function makeHttpClient($store_view = null)
     {
         $user = JWTAuth::user();
         $stack = HandlerStack::create();
@@ -58,11 +58,19 @@ class Controller extends BaseController
         ]);
         $stack->push($middleware);
 
-        return new Client([
-            'base_uri' => $company->url . $store_view . '/V1/',
-            'handler' => $stack,
-            'auth' => 'oauth',
-        ]);
+        if (!$store_view) {
+            return new Client([
+                'base_uri' => $company->url . 'V1/',
+                'handler' => $stack,
+                'auth' => 'oauth',
+            ]);
+        } else {
+            return new Client([
+                'base_uri' => $company->url . $store_view . '/V1/',
+                'handler' => $stack,
+                'auth' => 'oauth',
+            ]);
+        }
     }
 
     /**

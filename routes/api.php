@@ -47,6 +47,12 @@ Route::middleware(['jwt_auth'])->group(function () {
 
 Route::prefix('{store_view}')->group(function () {
     Route::middleware(['jwt_auth', 'permission'])->group(function () {
+        /********** Products-attributes **********/
+        Route::get('/products/attributes', [ProductController::class, 'getAttributes'])->name('products.attributes.all');
+        Route::post('/products/attributes', [ProductController::class, 'createAttributes'])->name('products.attributes.create');
+        Route::get('/products/attributes/{attributeCode}/options', [ProductController::class, 'getAttributeOptions'])->name('products.attributes.options.all');
+        Route::post('/products/attributes/{attributeCode}/options', [ProductController::class, 'createAttributeOptions'])->name('products.attributes.options.create');
+
         /********** Products **********/
         Route::get('/products', [ProductController::class, 'allProducts'])->name('products.all');
         Route::post('/products', [ProductController::class, 'createProduct'])->name('products.create');
@@ -54,6 +60,7 @@ Route::prefix('{store_view}')->group(function () {
         Route::delete('/products/{sku}', [ProductController::class, 'deleteProduct'])->name('products.delete');
         Route::put('/products/{sku}', [ProductController::class, 'updateProduct'])->name('products.update');
         Route::post('/products/{sku}/media', [ProductController::class, 'updateMedia'])->name('products.media.update');
+
 
         /********** Orders **********/
         Route::get('/orders', [OrderController::class, 'allOrders'])->name('orders.all');

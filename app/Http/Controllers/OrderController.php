@@ -136,7 +136,8 @@ class OrderController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
 
-    public function getNotify(Request $request) {
+    public function getNotify(Request $request)
+    {
         try {
             $order_ids = $request->input('orderIds');
 
