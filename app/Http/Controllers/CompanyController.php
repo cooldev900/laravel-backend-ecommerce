@@ -123,8 +123,8 @@ class CompanyController extends Controller
             $inputs = $request->all();
 
             $nonEncryptedFields = ['name', 'id', 'image_base_url', 'url'];
-            $company = Company::find($params['id'])
-                ->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
+            $company = Company::find($params['id']);
+
             foreach ($inputs as $key => $value) {
                 if (array_search($key, $nonEncryptedFields) !== false) {
                     $company[$key] = $value;
@@ -137,7 +137,6 @@ class CompanyController extends Controller
             $company->save();
 
             $result = $company->makeHidden(['consumer_key', 'consumer_secret', 'token', 'token_secret']);
-            $result->url = decrypt($result->url);
 
             return response()->json([
                 'status' => 'success',
