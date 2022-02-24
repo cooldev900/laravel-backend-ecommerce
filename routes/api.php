@@ -133,6 +133,8 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
     });
 
     Route::post('/auth/register', [AuthController::class, 'register'])->name('register');
+
+    Route::get('/users/logs', [AuthController::class, 'getLogs'])->name('users.logs.all');
     Route::prefix('/users/{companyId}')->group(function () {
         Route::get('/', [UserController::class, 'allUsers'])->name('users.all');
         Route::get('/{id}', [UserController::class, 'getUser'])->name('users.index');

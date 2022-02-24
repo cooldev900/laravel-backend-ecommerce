@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\User;
 use App\Models\UserLocation;
 use App\Models\UserPermission;
+use App\Providers\LoginHistory;
 use Carbon\Carbon;
 use DB;
 use Exception;
@@ -193,14 +194,13 @@ class AuthController extends Controller
         }
 
         $user = JWTAuth::user();
-        // $magento = $user->magento;
+        event(new LoginHistory($user));
 
         return response()->json([
             'status' => 'success',
             'user' => $this->getPermission($user),
             'token' => $token,
         ], 200);
-
     }
 
     /**
@@ -378,5 +378,27 @@ class AuthController extends Controller
             'status' => 'success',
             'message' => 'Successfully logged out',
         ]);
+    }
+
+    /**
+     * Get User log info
+     */
+
+    public function getLogs() {
+        try {
+            $result = User::where('is_admin', 0)
+                ->get()
+                ->makeHidden(['password', 'created_at', 'updated_at', 'is_admin']);
+            return response()->json([
+                'status' => 'success',
+                'result' => $result,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_get_logs',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
