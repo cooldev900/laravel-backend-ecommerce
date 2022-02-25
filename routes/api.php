@@ -28,13 +28,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
  */
-Route::prefix('auth')->group(function () {
-    Route::post('login', [AuthController::class, 'login'])->name('login');
-    // Send reset password mail
-    Route::post('forgot-password', [AuthController::class, 'sendPasswordResetLink']);
-    // handle reset password form process
-    Route::post('reset-password/{token}', [AuthController::class, 'callResetPassword']);
-});
 
 Route::middleware(['jwt_auth'])->group(function () {
     Route::get('/me', [AuthController::class, 'me'])->name('me');
@@ -71,6 +64,14 @@ Route::prefix('{store_view}')->group(function () {
         Route::post('/orders/{orderId}/invoice', [InvoiceController::class, 'createInvoice'])->name('orders.invoice.create');
         Route::get('/orders/items/{id}', [OrderController::class, 'getOrderItem'])->name('orders.items.index');
         Route::post('/orders/notify-orders-are-ready-for-pickup', [OrderController::class, 'getNotify'])->name('orders.notify');
+
+        /********** Enquiries **********/
+        Route::prefix('/enquiries')->group(function () {
+            Route::get('/getAll', [EnquiryController::class, 'allEnquiries'])->name('enquiries.all');
+            Route::get('/{client_id}/{store_id}', [EnquiryController::class, 'getEnquiries'])->name('enquiries.index');
+            Route::put('/{id}', [EnquiryController::class, 'updateEnquiry'])->name('enquiries.update');
+            Route::delete('/{id}', [EnquiryController::class, 'deleteEnquiry'])->name('enquiries.delete');
+        });
 
         /********** Invoices **********/
         Route::get('/invoices', [InvoiceController::class, 'allInvoices'])->name('invoices.all');
@@ -149,11 +150,12 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
 /***** Public apis *****/
 
 Route::get('/locations/{companyId}', [LocationController::class, 'allLocations'])->name('locations.all');
+Route::post('/enquiries', [EnquiryController::class, 'createEnquiry'])->name('enquiries.create');
 
-Route::prefix('/enquiries')->group(function () {
-    Route::post('/getAll', [EnquiryController::class, 'allEnquiries'])->name('enquiries.all');
-    Route::get('/{client_id}/{store_id}', [EnquiryController::class, 'getEnquiries'])->name('enquiries.index');
-    Route::post('/', [EnquiryController::class, 'createEnquiry'])->name('enquiries.create');
-    Route::put('/{id}', [EnquiryController::class, 'updateEnquiry'])->name('enquiries.update');
-    Route::delete('/{id}', [EnquiryController::class, 'deleteEnquiry'])->name('enquiries.delete');
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login'])->name('login');
+    // Send reset password mail
+    Route::post('forgot-password', [AuthController::class, 'sendPasswordResetLink']);
+    // handle reset password form process
+    Route::post('reset-password/{token}', [AuthController::class, 'callResetPassword']);
 });
