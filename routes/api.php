@@ -67,7 +67,7 @@ Route::prefix('{store_view}')->group(function () {
 
         /********** Enquiries **********/
         Route::prefix('/enquiries')->group(function () {
-            Route::get('/getAll', [EnquiryController::class, 'allEnquiries'])->name('enquiries.all');
+            Route::get('/', [EnquiryController::class, 'allEnquiries'])->name('enquiries.all');
             Route::get('/{client_id}/{store_id}', [EnquiryController::class, 'getEnquiries'])->name('enquiries.index');
             Route::put('/{id}', [EnquiryController::class, 'updateEnquiry'])->name('enquiries.update');
             Route::delete('/{id}', [EnquiryController::class, 'deleteEnquiry'])->name('enquiries.delete');
