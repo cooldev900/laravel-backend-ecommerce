@@ -52,6 +52,7 @@ class StripeController extends Controller
 
             $refund = $stripe->refunds->create([
                 'charge' => $charge_id,
+                'amount' => $request->input('amount_to_capture')
             ]);
 
             return response()->json([
