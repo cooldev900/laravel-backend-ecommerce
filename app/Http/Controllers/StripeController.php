@@ -37,8 +37,18 @@ class StripeController extends Controller
     {
         try {
             $params = $request->route()->parameters();
-            $charge_id = $request->input('charge_id');
+            $payment_id = $request->input('payment_id');
             $stripe = $this->makeStripeClient($params['store_view']);
+
+            $charges = $stripe->charges->all([
+                'limit' => 3,
+                'payment_intent' => $payment_id
+            ]);
+
+            $charge_id = null;
+            if (sizeof($charges['data']) > 0) {
+                $charge_id = $charges['data'][0]['id'];
+            }
 
             $refund = $stripe->refunds->create([
                 'charge' => $charge_id,

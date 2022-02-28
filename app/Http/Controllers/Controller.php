@@ -76,7 +76,7 @@ class Controller extends BaseController
     /**
      * Get guzzle instance for stripe
      *
-     * @return GuzzleHttp\Client;
+     * @return Stripe\StripeClient
      */
 
     protected function makeStripeClient($store_view)
