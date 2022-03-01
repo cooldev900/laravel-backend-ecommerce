@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -10,7 +12,7 @@ class ProductController extends Controller
     /**
      * Get Magento data.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
 
     public function allProducts(Request $request)
@@ -44,7 +46,9 @@ class ProductController extends Controller
     /**
      * Get Magento data.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
+     * @throws GuzzleException
      */
 
     public function getProduct(Request $request)

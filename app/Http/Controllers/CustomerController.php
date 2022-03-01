@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -10,7 +12,9 @@ class CustomerController extends Controller
     /**
      * Get Magento data.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
+     * @throws GuzzleException
      */
 
     public function allCustomers(Request $request)
@@ -58,7 +62,9 @@ class CustomerController extends Controller
     /**
      * Get Magento data.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
+     * @throws GuzzleException
      */
 
     public function getCustomer(Request $request)
@@ -76,6 +82,102 @@ class CustomerController extends Controller
             return response()->json([
                 'status' => 'error',
                 'error' => 'could_not_get_customer',
+                'message' => $e->getMessage(),
+            ], 500);
+
+        }
+    }
+
+    /**
+     * Get Magento data.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws GuzzleException
+     */
+
+    public function updateCustomer(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+            $customer = $request->input('customer');
+
+            // can modify payload (passwordHash)
+            $payload = [
+                'customer' => $customer,
+            ];
+            $response = $client->request('PUT', 'customers/' . $params['customerId'], [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_update_customer',
+                'message' => $e->getMessage(),
+            ], 500);
+
+        }
+    }
+
+    /**
+     * Get Magento data.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws GuzzleException
+     */
+
+    public function getCustomerBillingAddress(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+            $response = $client->request('GET', 'customers/' . $params['customerId'] . '/billingAddress');
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_get_customer_billing_address',
+                'message' => $e->getMessage(),
+            ], 500);
+
+        }
+    }
+
+    /**
+     * Get Magento data.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws GuzzleException
+     */
+
+    public function getCustomerShippingAddress(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+            $response = $client->request('GET', 'customers/' . $params['customerId'] . '/shippingAddress');
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_get_customer_shipping_address',
                 'message' => $e->getMessage(),
             ], 500);
 

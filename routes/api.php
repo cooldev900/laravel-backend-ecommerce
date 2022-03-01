@@ -81,6 +81,9 @@ Route::prefix('{store_view}')->group(function () {
         /********** Customers **********/
         Route::get('/customers', [CustomerController::class, 'allCustomers'])->name('customer.all');
         Route::get('/customers/{customerId}', [CustomerController::class, 'getCustomer'])->name('customer.index');
+        Route::put('/customers/{customerId}', [CustomerController::class, 'updateCustomer'])->name('customer.index');
+        Route::get('/customers/{customerId}/billingAddress', [CustomerController::class, 'getCustomerBillingAddress'])->name('customer.index');
+        Route::get('/customers/{customerId}/shippingAddress', [CustomerController::class, 'getCustomerShippingAddress'])->name('customer.index');
         Route::delete('/customers/{customerId}', [CustomerController::class, 'deleteCustomer'])->name('customer.delete');
 
         /********** Shipments **********/
