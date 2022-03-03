@@ -133,7 +133,9 @@ class OrderController extends Controller
     /**
      * Get Magento an Order data.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
 
     public function getNotify(Request $request)
@@ -159,6 +161,41 @@ class OrderController extends Controller
             return response()->json([
                 'status' => 'error',
                 'error' => 'could_not_get_notify',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Update Magento comment.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+
+    public function createOrderComment(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+            $statusHistory = $request->input('statusHistory');
+
+            $response = $client->request('POST', 'orders/' . $params['orderId'] . '/comments', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode([
+                    'statusHistory' => $statusHistory
+                ]),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_create_comments',
                 'message' => $e->getMessage(),
             ], 500);
         }
