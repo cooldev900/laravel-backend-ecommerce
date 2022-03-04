@@ -66,6 +66,7 @@ class EnquiryController extends Controller
                 'message' => 'nullable|string',
                 'phone' => 'nullable|string',
                 'client_id' => 'required|numeric',
+                'status' => 'required|string',
                 'store_id' => 'required|numeric',
             ]);
 
@@ -74,8 +75,6 @@ class EnquiryController extends Controller
             foreach ($inputs as $key => $input) {
                 $enquiry[$key] = $input;
             };
-            $enquiry->created_at = Carbon::now();
-            $enquiry->updated_at = Carbon::now();
             $enquiry->save();
 
             return response()->json([
