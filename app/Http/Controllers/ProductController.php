@@ -25,6 +25,7 @@ class ProductController extends Controller
             $query = [
                 'query' => [
                     'searchCriteria' => $search_criteria ? $search_criteria : '',
+                    'fields' => 'items[name,price,type_id,sku,status,custom_attributes,media_gallery_entries]'
                 ],
             ];
             $response = $client->request('GET', 'products', $query);
