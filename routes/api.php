@@ -17,6 +17,7 @@ use App\Http\Controllers\StripeController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BarclayCardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -109,6 +110,11 @@ Route::prefix('{store_view}')->group(function () {
         /********** Paypal **********/
         Route::post('/paypal/transaction', [PaypalController::class, 'capturePaymentIntent'])->name('paypal.transaction.index');
         Route::post('/paypal/refund', [PaypalController::class, 'createRefund'])->name('payapl.refund.create');
+
+        /********** BarclayCard **********/
+        Route::get('/barclaycard/transaction', [BarclayCardController::class, 'getTransaction'])->name('barclaycard.transaction');
+        Route::post('/barclaycard/capture', [BarclayCardController::class, 'capturePaymentIntent'])->name('barclaycard.capture');
+        Route::post('/barclaycard/refund', [BarclayCardController::class, 'createRefund'])->name('barclaycard.refund');
     });
 });
 

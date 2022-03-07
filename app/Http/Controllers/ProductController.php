@@ -12,7 +12,9 @@ class ProductController extends Controller
     /**
      * Get Magento data.
      *
+     * @param Request $request
      * @return JsonResponse
+     * @throws GuzzleException
      */
 
     public function allProducts(Request $request)

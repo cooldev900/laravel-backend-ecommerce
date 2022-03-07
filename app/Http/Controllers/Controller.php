@@ -90,11 +90,7 @@ class Controller extends BaseController
 
             return new \Stripe\StripeClient($secret_key);
         } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'error' => 'could_not_create_stripe_client',
-                'message' => $e->getMessage(),
-            ], 500);
+            new Exception('could_not_create_stripe_client');
         }
     }
 
@@ -117,16 +113,16 @@ class Controller extends BaseController
 
             $authClient = new Client();
             $response = $authClient->request('POST', $uri, [
-                'headers' =>
-                [
-                    'Accept' => 'application/json',
-                    'Accept-Language' => 'en_US',
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                ],
-                'body' => 'grant_type=client_credentials',
+                    'headers' =>
+                        [
+                            'Accept' => 'application/json',
+                            'Accept-Language' => 'en_US',
+                            'Content-Type' => 'application/x-www-form-urlencoded',
+                        ],
+                    'body' => 'grant_type=client_credentials',
 
-                'auth' => [$client_id, $secret_key, 'basic'],
-            ]
+                    'auth' => [$client_id, $secret_key, 'basic'],
+                ]
             );
 
             $data = json_decode($response->getBody(), true);
@@ -141,55 +137,66 @@ class Controller extends BaseController
                 ],
             ]);
         } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'error' => 'could_not_create_paypal_client',
-                'message' => $e->getMessage(),
-            ], 500);
+            new Exception('could_not_create_paypal_client');
         }
     }
 
     /**
      * Get guzzle instance for paypal
      *
-     * @return GuzzleHttp\Client;
+     * @param $store_view
+     * @return Stripe\StripeClient ;
      */
 
-    protected function makeCourierClient($location_id)
+    protected function makeCourierClient($store_view)
     {
         try {
             $user = JWTAuth::user();
             $company = Company::where('name', $user->company_name)->firstOrFail();
-            $_locations = CompanyLocation::where('company_id', $company->id)->get()->toArray();
-            $locations = array_column($_locations, 'locations');
-            $location = [];
-            foreach ($locations as $_location) {
-                if ($_location['id'] == $location_id) {
-                    $location = $_location;
-                }
-            }
+
+            $storeview = StoreView::where('company_id', $company->id)->where('code', $store_view)->firstOrFail();
+            $secret_key = decrypt($storeview->api_key_2);
+
+            return new \Stripe\StripeClient($secret_key);
+        } catch (Exception $e) {
+            new Exception('could_not_create_courier_client');
+        }
+    }
+
+    /**
+     * Get guzzle instance for BarclayCard
+     *
+     * @param $store_view
+     * @return Client ;
+     */
+
+    protected function makeBarclayCardClient($store_view)
+    {
+        try {
+            $user = JWTAuth::user();
+            $company = Company::where('name', $user->company_name)->firstOrFail();
+            $db_store_view = StoreView::where('company_id', $company->id)->where('code', $store_view)->firstOrFail();
 
             return new Client([
-                'base_uri' => $location['api_url'],
+                'base_uri' => 'https://mdepayments.epdq.co.uk/ncol/test/querydirect.asp',
+//                'form_params' => [
+//                    'PSPID' => decrypt($db_store_view->payment_additional_1),
+//                    'PSPWD' => decrypt($db_store_view->api_key_2),
+//                    'USERID' => decrypt($db_store_view->api_key_1)
+//                ],
                 'headers' => [
-                    'api-user' => $location['api_user'],
-                    'api-token' => $location['api_token'],
-                    'Content-Type' => 'application/json',
-                ],
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ]
             ]);
         } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'error' => 'could_not_create_courier_client',
-                'message' => $e->getMessage(),
-            ], 500);
+            new Exception('could_not_create_courier_client');
         }
     }
 
     /**
      * Get the user permission based on JWT token.
      *
-     * @param  \Model\User $user
+     * @param \Model\User $user
      *
      * @return Object $user with permissions
      */
