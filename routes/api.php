@@ -14,7 +14,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\StoreviewController;
 use App\Http\Controllers\StripeController;
-use App\Http\Controllers\TransactionController;
+//use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\RefundController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BarclayCardController;
@@ -66,6 +67,7 @@ Route::prefix('{store_view}')->group(function () {
         Route::post('/orders/{orderId}/comments', [OrderController::class, 'createOrderComment'])->name('orders.comments.create');
         Route::get('/orders/items/{id}', [OrderController::class, 'getOrderItem'])->name('orders.items.index');
         Route::post('/orders/notify-orders-are-ready-for-pickup', [OrderController::class, 'getNotify'])->name('orders.notify');
+        Route::post('/orders/{orderId}/refund', [OrderController::class, 'refundOrder'])->name('orders.refund');
 
         /********** Enquiries **********/
         Route::prefix('/enquiries')->group(function () {
@@ -78,7 +80,7 @@ Route::prefix('{store_view}')->group(function () {
         /********** Invoices **********/
         Route::get('/invoices', [InvoiceController::class, 'allInvoices'])->name('invoices.all');
         Route::get('/invoices/{id}', [InvoiceController::class, 'getInvoice'])->name('invoices.index');
-        Route::post('/invoices/{id}/refund', [InvoiceController::class, 'refundInvoice'])->name('invoices.refund');
+//        Route::post('/invoices/{id}/refund', [InvoiceController::class, 'refundInvoice'])->name('invoices.refund');
 
         /********** Customers **********/
         Route::get('/customers', [CustomerController::class, 'allCustomers'])->name('customer.all');
@@ -96,12 +98,8 @@ Route::prefix('{store_view}')->group(function () {
         Route::delete('/shipments/track/{trackId}', [ShipmentController::class, 'deleteShipmentTrack'])->name('shipments.track.delete');
         // Route::delete('/shipments/{shipmentId}', [CustomerController::class, 'deleteShipment'])->name('shipments.delete');
 
-        /********** Transactions **********/
-        Route::get('/transactions', [TransactionController::class, 'allTransactions'])->name('transactions.all');
-        Route::get('/transactions/{id}', [TransactionController::class, 'getTransaction'])->name('transactions.index');
-        // Route::post('/shipments', [ShipmentController::class, 'createShipment'])->name('shipments.create');
-        // Route::post('/shipments/track', [ShipmentController::class, 'createShipmentTrack'])->name('shipments.track.create');
-        // Route::delete('/shipments/track/{trackId}', [ShipmentController::class, 'deleteShipmentTrack'])->name('shipments.track.delete');
+        /********** Refunds **********/
+        Route::get('/refunds', [RefundController::class, 'allRefunds'])->name('refunds.all');
 
         /********** Stripe **********/
         Route::post('/stripe/transaction', [StripeController::class, 'capturePaymentIntent'])->name('stripe.transaction.index');

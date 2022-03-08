@@ -41,7 +41,6 @@ class ProductController extends Controller
                 'error' => 'could_not_get_products',
                 'message' => $e->getMessage(),
             ], 500);
-
         }
     }
 

@@ -200,4 +200,37 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Refund Order.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+
+    public function refundOrder(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+            $inputs = $request->all();
+
+            $response = $client->request('POST', 'order/' . $params['orderId'] . '/refund', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($inputs),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_refund_invoice',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
