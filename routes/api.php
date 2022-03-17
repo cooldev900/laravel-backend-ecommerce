@@ -59,6 +59,7 @@ Route::prefix('{store_view}')->group(function () {
 
         /********** Orders **********/
         Route::get('/orders', [OrderController::class, 'allOrders'])->name('orders.all');
+        Route::post('/orders', [OrderController::class, 'createOrder'])->name('orders.create');
         Route::get('/orders/items', [OrderController::class, 'getOrderItems'])->name('orders.items.all');
         Route::get('/orders/{id}', [OrderController::class, 'getOrder'])->name('orders.index');
         // Route::post('/orders/{id}', [OrderController::class, 'getOrder'])->name('orders.index');
@@ -102,7 +103,8 @@ Route::prefix('{store_view}')->group(function () {
         Route::get('/refunds', [RefundController::class, 'allRefunds'])->name('refunds.all');
 
         /********** Stripe **********/
-        Route::post('/stripe/transaction', [StripeController::class, 'capturePaymentIntent'])->name('stripe.transaction.index');
+        Route::post('/stripe/transaction', [StripeController::class, 'getTransaction'])->name('stripe.transaction.index');
+        Route::post('/stripe/capture', [StripeController::class, 'capturePaymentIntent'])->name('stripe.refund.create');
         Route::post('/stripe/refund', [StripeController::class, 'createRefund'])->name('stripe.refund.create');
 
         /********** Paypal **********/

@@ -7,17 +7,14 @@ use Illuminate\Http\Request;
 
 class StripeController extends Controller
 {
-    public function capturePaymentIntent(Request $request)
+    public function getTransaction(Request $request)
     {
         try {
             $params = $request->route()->parameters();
             $stripe = $this->makeStripeClient($params['store_view']);
 
-            $payment_intent = $stripe->paymentIntents->capture(
+            $payment_intent = $stripe->paymentIntents->retrieve(
                 $request->input('payment_id'),
-                [
-                    'amount_to_capture' => $request->input('amount_to_capture'),
-                ]
             );
 
             return response()->json([
@@ -28,6 +25,40 @@ class StripeController extends Controller
             return response()->json([
                 'status' => 'error',
                 'error' => 'could_not_get_transaction',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function capturePaymentIntent(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $payment_id = $request->input('payment_id');
+            $stripe = $this->makeStripeClient($params['store_view']);
+
+            $charges = $stripe->charges->all([
+                'limit' => 3,
+                'payment_intent' => $payment_id
+            ]);
+
+            $charge_id = null;
+            if (sizeof($charges['data']) > 0) {
+                $charge_id = $charges['data'][0]['id'];
+            }
+
+            $capture = $stripe->charges->capture($charge_id, [
+                'amount' => $request->input('amount')
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $capture,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_capture',
                 'message' => $e->getMessage(),
             ], 500);
         }

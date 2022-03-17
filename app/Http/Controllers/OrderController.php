@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -10,7 +12,7 @@ class OrderController extends Controller
     /**
      * Get Magento Orders data.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function allOrders(Request $request)
     {
@@ -43,7 +45,7 @@ class OrderController extends Controller
     /**
      * Get Magento an Order data.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
 
     public function getOrder(Request $request)
@@ -68,11 +70,40 @@ class OrderController extends Controller
         }
     }
 
+    public function createOrder(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+            $order = $request->input('entity');
+            $payload = [
+                'entity' => $order,
+            ];
+
+            $response = $client->request('POST', 'orders', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (GuzzleException $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_create_order',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     /**
      * Get Magento an Order data.
      *
-     * @param String The order item ID.
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
 
     public function getOrderItem(Request $request)
@@ -99,7 +130,7 @@ class OrderController extends Controller
     /**
      * Get Magento an Order data.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
 
     public function getOrderItems(Request $request)
@@ -134,7 +165,7 @@ class OrderController extends Controller
      * Get Magento an Order data.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
 
@@ -170,7 +201,7 @@ class OrderController extends Controller
      * Update Magento comment.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
 
@@ -205,7 +236,7 @@ class OrderController extends Controller
      * Refund Order.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
 
