@@ -227,6 +227,25 @@ class ProductController extends Controller
         }
     }
 
+    public function getAttributeSets(Request $request)
+    {
+        try {
+            $client = $this->makeHttpClient('default');
+            $params = $request->route()->parameters();
+            $response = $client->request('GET', 'products/attribute-sets/'.$params['attributeSetId'].'/attributes');
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_get_attributes_sets',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function createAttributes(Request $request)
     {
         try {

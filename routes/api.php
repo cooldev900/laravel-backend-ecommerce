@@ -46,6 +46,7 @@ Route::prefix('{store_view}')->group(function () {
         Route::get('/products/attributes', [ProductController::class, 'getAttributes'])->name('products.attributes.all');
         Route::post('/products/attributes', [ProductController::class, 'createAttributes'])->name('products.attributes.create');
         Route::get('/products/attributes/{attributeCode}/options', [ProductController::class, 'getAttributeOptions'])->name('products.attributes.options.all');
+        Route::get('/products/attribute-sets/{attributeSetId}/attributes', [ProductController::class, 'getAttributeSets'])->name('products.attributes.set.all');
         Route::post('/products/attributes/{attributeCode}/options', [ProductController::class, 'createAttributeOptions'])->name('products.attributes.options.create');
 
         /********** Products **********/
