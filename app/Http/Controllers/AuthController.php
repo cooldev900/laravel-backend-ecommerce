@@ -387,7 +387,8 @@ class AuthController extends Controller
      * Get User log info
      */
 
-    public function getLogs() {
+    public function getLogs()
+    {
         try {
             $result = User::where('is_admin', 0)
                 ->get()
