@@ -12,7 +12,9 @@ use App\Providers\LoginHistory;
 use Carbon\Carbon;
 use DB;
 use Exception;
+use GraphQL\Query;
 use Hash;
+use http\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -387,7 +389,8 @@ class AuthController extends Controller
      * Get User log info
      */
 
-    public function getLogs() {
+    public function getLogs()
+    {
         try {
             $result = User::where('is_admin', 0)
                 ->get()
@@ -402,6 +405,53 @@ class AuthController extends Controller
                 'error' => 'could_not_get_logs',
                 'message' => $e->getMessage(),
             ], 500);
+        }
+    }
+
+    public function graphql()
+    {
+        $client = new Client(
+            'https://graphql-pokemon.now.sh/'
+        );
+        $gql = (new Query('pokemon'))
+            ->setVariables([new Variable('name', 'String', true)])
+            ->setArguments(['name' => '$name'])
+            ->setSelectionSet(
+                [
+                    'id',
+                    'number',
+                    'name',
+                    (new Query('evolutions'))
+                        ->setSelectionSet(
+                            [
+                                'id',
+                                'number',
+                                'name',
+                                (new Query('attacks'))
+                                    ->setSelectionSet(
+                                        [
+                                            (new Query('fast'))
+                                                ->setSelectionSet(
+                                                    [
+                                                        'name',
+                                                        'type',
+                                                        'damage',
+                                                    ]
+                                                )
+                                        ]
+                                    )
+                            ]
+                        )
+                ]
+            );
+
+        try {
+            $name = readline('Enter pokemon name: ');
+            $results = $client->runQuery($gql, true, ['name' => $name]);
+
+            dd($results);
+        } catch (QueryError $exception) {
+            exit;
         }
     }
 }

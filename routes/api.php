@@ -19,6 +19,7 @@ use App\Http\Controllers\RefundController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BarclayCardController;
+use App\Http\Controllers\ElasticSearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,7 @@ Route::middleware(['jwt_auth'])->group(function () {
 
     /********** Courier **********/
     Route::post('/courier/{location_id}/label', [CourierController::class, 'createSmartLabel'])->name('courier.label.create');
+    Route::get('/graphql', [AuthController::class, 'graphql'])->name('graphql');
 });
 
 Route::prefix('{store_view}')->group(function () {
@@ -169,4 +171,8 @@ Route::prefix('auth')->group(function () {
     Route::post('forgot-password', [AuthController::class, 'sendPasswordResetLink']);
     // handle reset password form process
     Route::post('reset-password/{token}', [AuthController::class, 'callResetPassword']);
+});
+
+Route::prefix('vehicle')->group(function () {
+    Route::get('vehicle-selector', [ElasticSearchController::class, 'getSelectorStepData']);
 });
