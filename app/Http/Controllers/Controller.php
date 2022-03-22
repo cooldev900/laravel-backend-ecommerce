@@ -60,17 +60,43 @@ class Controller extends BaseController
 
         if (!$store_view) {
             return new Client([
-                'base_uri' => $company->url . 'V1/',
+                'base_uri' => $company->url . '/rest/V1/',
                 'handler' => $stack,
                 'auth' => 'oauth',
             ]);
         } else {
             return new Client([
-                'base_uri' => $company->url . $store_view . '/V1/',
+                'base_uri' => $company->url . '/rest/' . $store_view . '/V1/',
                 'handler' => $stack,
                 'auth' => 'oauth',
             ]);
         }
+    }
+
+    /**
+     * Get graphQl guzzle instance for Magento
+     *
+     * @return GuzzleHttp\Client;
+     */
+    protected function makeGraphqlClient()
+    {
+        $user = JWTAuth::user();
+        $stack = HandlerStack::create();
+        $company = Company::where('name', $user->company_name)->firstOrFail();
+
+        $middleware = new Oauth1([
+            'consumer_key' => decrypt($company->consumer_key),
+            'consumer_secret' => decrypt($company->consumer_secret),
+            'token' => decrypt($company->token),
+            'token_secret' => decrypt($company->token_secret),
+        ]);
+        $stack->push($middleware);
+
+        return new Client([
+            'base_uri' => 'https://countries.trevorblades.com/graphql',
+            'handler' => $stack,
+            'auth' => 'oauth',
+        ]);
     }
 
     /**

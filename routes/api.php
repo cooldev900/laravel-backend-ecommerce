@@ -39,7 +39,6 @@ Route::middleware(['jwt_auth'])->group(function () {
 
     /********** Courier **********/
     Route::post('/courier/{location_id}/label', [CourierController::class, 'createSmartLabel'])->name('courier.label.create');
-    Route::get('/graphql', [AuthController::class, 'graphql'])->name('graphql');
 });
 
 Route::prefix('{store_view}')->group(function () {
@@ -174,5 +173,8 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::prefix('vehicle')->group(function () {
-    Route::get('vehicle-selector', [ElasticSearchController::class, 'getSelectorStepData']);
+    Route::post('vehicle-selector/national-code', [ElasticSearchController::class, 'getNationalCodeData']);
+    Route::post('vehicle-selector/step/{key}', [ElasticSearchController::class, 'getSelectorStepData']);
 });
+
+Route::get('/graphql', [ElasticSearchController::class, 'graphql'])->name('graphql');
