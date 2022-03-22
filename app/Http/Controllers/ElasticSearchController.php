@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use http\Client;
 
 use Elasticsearch\ClientBuilder;
+use GraphQL\Query;
 
 class ElasticSearchController extends Controller
 {
@@ -42,5 +44,52 @@ class ElasticSearchController extends Controller
         ]);
 
         dd($item);
+    }
+
+    public function graphql()
+    {
+        $client = new Client(
+            'https://graphql-pokemon.now.sh/'
+        );
+        $gql = (new Query('pokemon'))
+            ->setVariables([new Variable('name', 'String', true)])
+            ->setArguments(['name' => '$name'])
+            ->setSelectionSet(
+                [
+                    'id',
+                    'number',
+                    'name',
+                    (new Query('evolutions'))
+                        ->setSelectionSet(
+                            [
+                                'id',
+                                'number',
+                                'name',
+                                (new Query('attacks'))
+                                    ->setSelectionSet(
+                                        [
+                                            (new Query('fast'))
+                                                ->setSelectionSet(
+                                                    [
+                                                        'name',
+                                                        'type',
+                                                        'damage',
+                                                    ]
+                                                )
+                                        ]
+                                    )
+                            ]
+                        )
+                ]
+            );
+
+        try {
+            $name = readline('Enter pokemon name: ');
+            $results = $client->runQuery($gql, true, ['name' => $name]);
+
+            dd($results);
+        } catch (QueryError $exception) {
+            exit;
+        }
     }
 }
