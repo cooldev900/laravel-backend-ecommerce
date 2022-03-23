@@ -6,6 +6,7 @@ use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class ProductController extends Controller
 {
@@ -44,6 +45,95 @@ class ProductController extends Controller
         }
     }
 
+    public function gqlProducts(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeGraphqlClient($params['store_view']);
+
+            $search = $request->get('search') ?? '';
+            $pageSize = $request->get('pageSize') ?? 25;
+            $currentPage = $request->get('currentPage') ?? 1;
+            $filter = json_decode($request->get('filter')) ?? json_decode('{}');
+
+            $query = '
+                query productsList($search: String = "", $filter: ProductAttributeFilterInput, $pageSize: Int = 25, $currentPage: Int = 1){
+                    products(
+                        search: $search
+                        filter: $filter
+                        pageSize: $pageSize
+                        currentPage: $currentPage
+                    ) {
+                        page_info {
+                            current_page
+                            page_size
+                            total_pages
+                        }
+                        items {
+                            id
+                            sku
+                            name
+                            attribute_set_id
+                            enhanced_title
+                            price {
+                                regularPrice {
+                                    amount {
+                                        value
+                                        currency
+                                    }
+                                    adjustments {
+                                        amount {
+                                            value
+                                            currency
+                                        }
+                                        code
+                                        description
+                                    }
+                                }
+                            }
+                            type_id
+                            created_at
+                            updated_at
+                            ... on PhysicalProductInterface {
+                                weight
+                            }
+                            media_gallery_entries {
+                                file
+                            }
+                        }
+                    }
+                }
+            ';
+
+            $response = $client->request('POST', '', [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'query' => $query,
+                    'variables' => [
+                        'pageSize' => $pageSize,
+                        'currentPage' => $currentPage,
+                        'filter' => $filter,
+                        'search' => $search
+                    ]
+                ]
+            ]);
+
+            $data = json_decode($response->getBody()->getContents())->data;
+            return response()->json([
+                'status' => 'success',
+                'data' => $data->products ?? [],
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_get_products',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     /**
      * Get Magento data.
      *
@@ -69,7 +159,6 @@ class ProductController extends Controller
                 'error' => 'could_not_get_product',
                 'message' => $e->getMessage(),
             ], 500);
-
         }
     }
 
@@ -232,7 +321,7 @@ class ProductController extends Controller
         try {
             $client = $this->makeHttpClient('default');
             $params = $request->route()->parameters();
-            $response = $client->request('GET', 'products/attribute-sets/'.$params['attributeSetId'].'/attributes');
+            $response = $client->request('GET', 'products/attribute-sets/' . $params['attributeSetId'] . '/attributes');
             return response()->json([
                 'status' => 'success',
                 'data' => json_decode($response->getBody()),

@@ -78,7 +78,7 @@ class Controller extends BaseController
      *
      * @return GuzzleHttp\Client;
      */
-    protected function makeGraphqlClient()
+    protected function makeGraphqlClient($store_view = null)
     {
         $user = JWTAuth::user();
         $stack = HandlerStack::create();
@@ -92,11 +92,19 @@ class Controller extends BaseController
         ]);
         $stack->push($middleware);
 
+        // if (!$store_view) {
         return new Client([
-            'base_uri' => 'https://countries.trevorblades.com/graphql',
+            'base_uri' => $company->url . '/graphql',
             'handler' => $stack,
             'auth' => 'oauth',
         ]);
+        // } else {
+        //     return new Client([
+        //         'base_uri' => $company->url . '/graphql/' . $store_view,
+        //         'handler' => $stack,
+        //         'auth' => 'oauth',
+        //     ]);
+        // }
     }
 
     /**

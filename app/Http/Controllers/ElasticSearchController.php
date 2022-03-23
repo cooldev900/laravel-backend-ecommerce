@@ -290,28 +290,4 @@ class ElasticSearchController extends Controller
             ], 500);
         }
     }
-
-    public function graphql()
-    {
-        $endPoint = 'https://countries.trevorblades.com/graphql';
-        $graphQLquery = '{"query": "query { continents { code } countries { code } languages { code } } "}';
-
-        $response = (new Client)->request('post', $endPoint, [
-            'headers' => [
-                'Content-Type' => 'application/json'
-            ],
-            'body' => $graphQLquery
-        ]);
-
-        dd(json_decode($response->getBody()));
-
-        // try {
-        //     $name = readline('Enter pokemon name: ');
-        //     $results = $client->runQuery($gql, true, ['name' => $name]);
-
-        //     dd($results);
-        // } catch (QueryError $exception) {
-        //     exit;
-        // }
-    }
 }
