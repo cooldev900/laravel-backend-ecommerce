@@ -64,6 +64,7 @@ class ProductController extends Controller
                         pageSize: $pageSize
                         currentPage: $currentPage
                     ) {
+                        total_count                        
                         page_info {
                             current_page
                             page_size

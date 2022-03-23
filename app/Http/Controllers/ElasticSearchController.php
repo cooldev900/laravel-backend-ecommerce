@@ -6,10 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Elasticsearch\ClientBuilder;
-use GraphQL\Query;
-use GraphQL\Variable;
 use Exception;
-use GuzzleHttp\Client;
 
 class ElasticSearchController extends Controller
 {
