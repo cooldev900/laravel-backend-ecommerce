@@ -14,9 +14,9 @@ class AddEsFieldsToStoreviewTable extends Migration
     public function up()
     {
         Schema::table('store_views', function (Blueprint $table) {
-            $table->string('es_url')->nullable();
+            $table->string('es_url', 500)->nullable();
             $table->string('es_username')->nullable();
-            $table->string('es_password')->nullable();
+            $table->string('es_password', 500)->nullable();
         });
     }
 
