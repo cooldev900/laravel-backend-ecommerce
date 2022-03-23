@@ -170,8 +170,8 @@ class StoreviewController extends Controller
                 'payment_additional_1' => encrypt($request->input('payment_additional_1')),
                 'payment_additional_2' => encrypt($request->input('payment_additional_2')),
                 'payment_additional_3' => encrypt($request->input('payment_additional_3')),
-                'es_url' => encrypt($request->input('es_url')),
-                'es_username' => encrypt($request->input('es_username')),
+                'es_url' => $request->input('es_url'),
+                'es_username' => $request->input('es_username'),
                 'es_password' => encrypt($request->input('es_password')),
             ]);
 
