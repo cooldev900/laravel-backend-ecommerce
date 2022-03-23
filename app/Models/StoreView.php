@@ -33,12 +33,14 @@ class StoreView extends Model
      *
      * @var array
      */
-    protected $hidden = ['created_at', 'updated_at', 'company_id', 'api_key_1', 'api_key_2', 'payment_additional_1', 'payment_additional_2', 'payment_additional_3'];
+    protected $hidden = ['created_at', 'updated_at', 'company_id', 'api_key_1', 'api_key_2', 'payment_additional_1',
+        'payment_additional_2', 'payment_additional_3', 'es_password'];
 
     protected $with = ['company'];
 
     protected $fillable = [
-        'code', 'store_id', 'company_id', 'payment_provider', 'api_key_1', 'api_key_2', 'payment_additional_1', 'payment_additional_2', 'payment_additional_3',
+        'code', 'store_id', 'company_id', 'payment_provider', 'api_key_1', 'api_key_2', 'payment_additional_1',
+        'payment_additional_2', 'payment_additional_3', 'es_url', 'es_username', 'es_password'
     ];
 
     public function company()

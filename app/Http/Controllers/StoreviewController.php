@@ -86,6 +86,9 @@ class StoreviewController extends Controller
                 'payment_additional_1' => 'nullable|string',
                 'payment_additional_2' => 'nullable|string',
                 'payment_additional_3' => 'nullable|string',
+                'es_url' => 'nullable|string',
+                'es_username' => 'nullable|string',
+                'es_password' => 'nullable|string',
             ]);
 
             $inputs = $request->all();
@@ -93,13 +96,12 @@ class StoreviewController extends Controller
             foreach ($inputs as $key => $input) {
                 if (($key === 'api_key_1'
                     || $key === 'api_key_2' || $key === 'payment_additional_1'
-                    || $key === 'payment_additional_2' || $key === 'payment_additional_3') && ($input !== null && trim($input) !== '')) {
+                    || $key === 'payment_additional_2' || $key === 'payment_additional_3'
+                    || $key === 'es_password') && ($input !== null && trim($input) !== '')) {
                     $newStoreView[$key] = encrypt($input);
                 } else {
                     $newStoreView[$key] = $input;
-
                 }
-
             }
             $newStoreView->save();
 
@@ -152,6 +154,9 @@ class StoreviewController extends Controller
                 'payment_additional_1' => 'nullable|string',
                 'payment_additional_2' => 'nullable|string',
                 'payment_additional_3' => 'nullable|string',
+                'es_url' => 'nullable|string',
+                'es_username' => 'nullable|string',
+                'es_password' => 'nullable|string',
             ]);
 
             $params = $request->route()->parameters();
@@ -165,6 +170,9 @@ class StoreviewController extends Controller
                 'payment_additional_1' => encrypt($request->input('payment_additional_1')),
                 'payment_additional_2' => encrypt($request->input('payment_additional_2')),
                 'payment_additional_3' => encrypt($request->input('payment_additional_3')),
+                'es_url' => encrypt($request->input('es_url')),
+                'es_username' => encrypt($request->input('es_username')),
+                'es_password' => encrypt($request->input('es_password')),
             ]);
 
             return response()->json([
@@ -188,7 +196,6 @@ class StoreviewController extends Controller
             'status' => 'success',
             'data' => $result,
         ], 200);
-
     }
 
     public function allScopes()
