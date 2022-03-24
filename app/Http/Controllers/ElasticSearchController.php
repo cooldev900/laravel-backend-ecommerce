@@ -158,9 +158,15 @@ class ElasticSearchController extends Controller
     public function allProducts(Request $request)
     {
         try {
-            $client = $this->makeESClient('default')['client'];
+            $params = $request->route()->parameters();
+            $pageSize = $request->get('pageSize') ?? 25;
+            $currentPage = $request->get('currentPage') ?? 1;
+            $filter = json_decode($request->get('filter')) ?? json_decode('{}');            
+
+            $client = $this->makeESClient($params['store_view'])['client'];
+            $esIndex = $this->makeESClient($params['store_view'])['index'];
             $body = json_decode(
-                '{
+                sprintf('{
                     "query": {
                         "bool": {
                             "must": [
@@ -172,22 +178,32 @@ class ElasticSearchController extends Controller
                             "should": []
                         }
                     },
-                    "from": 0,
-                    "size": 10,
+                    "from": %d,
+                    "size": %d,
                     "sort": [],
-                    "aggs": {}
-                }'
+                    "aggs": {} ,
+                }', $pageSize * $currentPage, $pageSize)
             );
+
+            $totalCount = $client->count([
+                'index' => "{$esIndex}_product",
+            ]);
+
             $response = $client->search([
-                'index' => 'glynhopkinprod_1_product',
+                'index' => "{$esIndex}_product",
                 'body' => $body
             ]);
 
-            $result = $response['hits']['hits'];
+            $hits = $response['hits']['hits'];
+            $result = array_column($hits, '_source');
+            
 
             return response()->json([
                 'status' => 'success',
-                'result' => $result,
+                'result' => [
+                    'items' => $result,
+                    'total_count' => $totalCount['count'],
+                ],
             ], 200);
         } catch (Exception $e) {
             return response()->json([

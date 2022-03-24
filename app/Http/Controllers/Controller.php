@@ -155,7 +155,7 @@ class Controller extends BaseController
                 'client' => ClientBuilder::create()
                             ->setHosts($hosts)
                             ->build(),
-                'host' => $storeview->es_url
+                'index' => $storeview->es_index
             ];
         } catch (Exception $e) {
             new Exception('could_not_create_elasticsearch_client');
