@@ -87,6 +87,7 @@ class StoreviewController extends Controller
                 'payment_additional_2' => 'nullable|string',
                 'payment_additional_3' => 'nullable|string',
                 'es_url' => 'nullable|string',
+                'es_index' => 'nullable|string',
                 'es_username' => 'nullable|string',
                 'es_password' => 'nullable|string',
             ]);
@@ -155,6 +156,7 @@ class StoreviewController extends Controller
                 'payment_additional_2' => 'nullable|string',
                 'payment_additional_3' => 'nullable|string',
                 'es_url' => 'nullable|string',
+                'es_index' => 'nullable|string',
                 'es_username' => 'nullable|string',
                 'es_password' => 'nullable|string',
             ]);
@@ -171,6 +173,7 @@ class StoreviewController extends Controller
                 'payment_additional_2' => encrypt($request->input('payment_additional_2')),
                 'payment_additional_3' => encrypt($request->input('payment_additional_3')),
                 'es_url' => $request->input('es_url'),
+                'es_index' => $request->input('es_index'),
                 'es_username' => $request->input('es_username'),
                 'es_password' => encrypt($request->input('es_password')),
             ]);

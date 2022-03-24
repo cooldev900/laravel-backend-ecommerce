@@ -18,6 +18,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Stripe;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Elasticsearch\ClientBuilder;
 
 class Controller extends BaseController
 {
@@ -113,7 +114,7 @@ class Controller extends BaseController
      * @return Stripe\StripeClient
      */
 
-    protected function makeStripeClient($store_view)
+    protected function makeStripeClient($store_view = null)
     {
         try {
             $user = JWTAuth::user();
@@ -125,6 +126,39 @@ class Controller extends BaseController
             return new \Stripe\StripeClient($secret_key);
         } catch (Exception $e) {
             new Exception('could_not_create_stripe_client');
+        }
+    }
+
+    /**
+     * Get ElasticSearch Instance
+     *
+     * @return Elasticsearch
+     */
+
+    protected function makeESClient($store_view = null) {
+        try {
+            $user = JWTAuth::user();
+            $company = Company::where('name', $user->company_name)->firstOrFail();
+            $storeview = StoreView::where('company_id', $company->id)->where('code', $store_view)->firstOrFail();
+
+            $hosts = [
+                [
+                    'host' => $storeview->es_url,
+                    'port' => '9243',
+                    'scheme' => 'https',
+                    'user' => $storeview->es_username,
+                    'pass' => decrypt($storeview->es_password)
+                ]
+            ];
+
+            return [
+                'client' => ClientBuilder::create()
+                            ->setHosts($hosts)
+                            ->build(),
+                'host' => $storeview->es_url
+            ];
+        } catch (Exception $e) {
+            new Exception('could_not_create_elasticsearch_client');
         }
     }
 

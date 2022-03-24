@@ -155,125 +155,35 @@ class ElasticSearchController extends Controller
         }
     }
 
-    public function getSelectorStepData(Request $request)
+    public function allProducts(Request $request)
     {
         try {
-            $queryParams = $request->route()->parameters();
-            $stepKey = $queryParams['key'];
-            $params = $request->all();
-            $query = [];
-
-            $aggKeys = [
-                'model' => 'MLOName',
-                'year' => 'YearRanges',
-                'bodystyle' => 'MLTName1',
-                'fuel' => 'Fuel',
-                'transmission' => 'Transmission',
-                'trim' => 'Trim',
-                'engine' => 'TYPName'
-            ];
-
-            foreach (array_keys($params) as $key) {
-                if ($key == 'Brand') {
-                    array_push(
-                        $query,
-                        [
-                            'term' => [
-                                'MAKVehType' => $params['Brand']['type']
-                            ]
-                        ],
-                        [
-                            'term' => [
-                                'TYPMakCd' => $params['Brand']['code']
-                            ]
-                        ]
-                    );
-                } else if ($key == 'Year' && isset($params['Year'])) {
-                    array_push(
-                        $query,
-                        [
-                            'range' => [
-                                'start_year' => [
-                                    'lte' => $params['Year']
-                                ]
-                            ]
-                        ],
-                        [
-                            'range' => [
-                                'end_year' => [
-                                    'gte' => $params['Year']
-                                ]
-                            ]
-                        ]
-                    );
-                } else if ($key == 'Engine' && isset($params['Engine'])) {
-                    array_push(
-                        $query,
-                        [
-                            'term' => [
-                                'TYPName' => $params['Engine']
-                            ]
-                        ],
-                    );
-                } else {
-                    if (isset($params[$key])) {
-                        array_push(
-                            $query,
-                            [
-                                'term' => [
-                                    strtolower($aggKeys[$key]) => $params[$key]
-                                ]
+            $client = $this->makeESClient('default')['client'];
+            $body = json_decode(
+                '{
+                    "query": {
+                        "bool": {
+                            "must": [
+                                {
+                                    "match_all": {}
+                                }
                             ],
-                        );
-                    }
-                }
-            }
-
-            $response = $this->elasticsearch->search([
-                'index' => 'vehicle-selector-v2',
-                'body' => [
-                    'query' => [
-                        'bool' => [
-                            'must' => $query
-                        ]
-                    ],
-                    'size' => 0,
-                    'aggs' => [
-                        'result' => [
-                            'terms' => [
-                                'field' => $aggKeys[$stepKey],
-                                'size' => 100
-                            ]
-                        ]
-                    ]
-                ]
+                            "must_not": [],
+                            "should": []
+                        }
+                    },
+                    "from": 0,
+                    "size": 10,
+                    "sort": [],
+                    "aggs": {}
+                }'
+            );
+            $response = $client->search([
+                'index' => 'glynhopkinprod_1_product',
+                'body' => $body
             ]);
 
-            $hits = $response['aggregations']['result']['buckets'];
-            $result = [];
-            if ($stepKey == 'year') {
-                $sortedHits = [];
-                foreach ($hits as $hit) {
-                    if ($hit['key'] != '-') {
-                        array_push($sortedHits, $hit['key']);
-                    }
-                }
-
-                foreach ($sortedHits as $hit) {
-                    $years = explode(',', $hit);
-                    foreach ($years as $year) {
-                        if (array_search($year, $result) == false) {
-                            array_push($result, $year);
-                        }
-                    }
-                }
-            } else {
-                foreach ($hits as $hit) {
-                    if ($hit['key'] != '-') {
-                        array_push($result, $hit['key']);
-                    }
-                }
-            }
+            $result = $response['hits']['hits'];
 
             return response()->json([
                 'status' => 'success',

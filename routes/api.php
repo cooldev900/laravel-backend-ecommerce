@@ -53,6 +53,7 @@ Route::prefix('{store_view}')->group(function () {
         /********** Products **********/
         Route::get('/products', [ProductController::class, 'allProducts'])->name('products.all');
         Route::get('/products/graphql', [ProductController::class, 'gqlProducts'])->name('products.gql.all');
+        Route::get('/products/elasticsearch', [ElasticSearchController::class, 'allProducts'])->name('products.elasticsearch.all');
         Route::post('/products', [ProductController::class, 'createProduct'])->name('products.create');
         Route::get('/products/{sku}', [ProductController::class, 'getProduct'])->name('products.index');
         Route::delete('/products/{sku}', [ProductController::class, 'deleteProduct'])->name('products.delete');
