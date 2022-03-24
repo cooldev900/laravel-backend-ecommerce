@@ -161,7 +161,7 @@ class ElasticSearchController extends Controller
             $params = $request->route()->parameters();
             $pageSize = $request->get('pageSize') ?? 25;
             $currentPage = $request->get('currentPage') ?? 1;
-            $filter = json_decode($request->get('filter')) ?? json_decode('{}');            
+            $filter = json_decode($request->get('filter'));
 
             $client = $this->makeESClient($params['store_view'])['client'];
             $esIndex = $this->makeESClient($params['store_view'])['index'];
@@ -169,21 +169,18 @@ class ElasticSearchController extends Controller
             $body = [
                 'query' => [
                     'bool' => [
-                        'must' => [],
-                        'must_not' => [],
-                        'should' => []
+                        'must' => $filter ?? [],
                     ]
                 ],
-                'from' => ($pageSize - 1) * $currentPage,
+                'from' => ($currentPage - 1) * $currentPage,
                 'size' => $pageSize
             ];
 
-            
             $response = $client->search([
                 'index' => "{$esIndex}_product",
                 'body' => $body
             ]);
-            
+
             // $totalCount = $client->count([
             //     'index' => "{$esIndex}_product",
             //     'body' => [
@@ -197,8 +194,8 @@ class ElasticSearchController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'items' => $result ?? [],
                     'total_count' => $totalCount,
+                    'items' => $result ?? [],
                 ],
             ], 200);
         } catch (Exception $e) {
