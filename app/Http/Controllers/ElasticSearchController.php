@@ -320,6 +320,7 @@ class ElasticSearchController extends Controller
             //         'query' => $body['query'],
             //     ],
             // ]);
+
             $totalCount = $response['hits']['total']['value'];
             $hits = $response['hits']['hits'];
             $result = array_column($hits, '_source');
