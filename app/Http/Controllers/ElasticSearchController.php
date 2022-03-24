@@ -184,21 +184,21 @@ class ElasticSearchController extends Controller
                 'body' => $body
             ]);
             
-            $totalCount = $client->count([
-                'index' => "{$esIndex}_product",
-                'body' => [
-                    'query' => $body['query'],
-                ],
-            ]);
+            // $totalCount = $client->count([
+            //     'index' => "{$esIndex}_product",
+            //     'body' => [
+            //         'query' => $body['query'],
+            //     ],
+            // ]);
+            $totalCount = $response['hits']['total']['value'];
             $hits = $response['hits']['hits'];
             $result = array_column($hits, '_source');
-            
 
             return response()->json([
                 'status' => 'success',
                 'data' => [
                     'items' => $result ?? [],
-                    'total_count' => $totalCount['count'],
+                    'total_count' => $totalCount,
                 ],
             ], 200);
         } catch (Exception $e) {
