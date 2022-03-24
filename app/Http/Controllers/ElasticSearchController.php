@@ -196,8 +196,8 @@ class ElasticSearchController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'result' => [
-                    'items' => $result,
+                'data' => [
+                    'items' => $result ?? [],
                     'total_count' => $totalCount['count'],
                 ],
             ], 200);
