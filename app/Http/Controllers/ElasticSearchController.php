@@ -165,35 +165,31 @@ class ElasticSearchController extends Controller
 
             $client = $this->makeESClient($params['store_view'])['client'];
             $esIndex = $this->makeESClient($params['store_view'])['index'];
-            $body = json_decode(
-                sprintf('{
-                    "query": {
-                        "bool": {
-                            "must": [
-                                {
-                                    "match_all": {}
-                                }
-                            ],
-                            "must_not": [],
-                            "should": []
-                        }
-                    },
-                    "from": %d,
-                    "size": %d,
-                    "sort": [],
-                    "aggs": {} ,
-                }', $pageSize * $currentPage, $pageSize)
-            );
 
-            $totalCount = $client->count([
-                'index' => "{$esIndex}_product",
-            ]);
+            $body = [
+                'query' => [
+                    'bool' => [
+                        'must' => [],
+                        'must_not' => [],
+                        'should' => []
+                    ]
+                ],
+                'from' => ($pageSize - 1) * $currentPage,
+                'size' => $pageSize
+            ];
 
+            
             $response = $client->search([
                 'index' => "{$esIndex}_product",
                 'body' => $body
             ]);
-
+            
+            $totalCount = $client->count([
+                'index' => "{$esIndex}_product",
+                'body' => [
+                    'query' => $body['query'],
+                ],
+            ]);
             $hits = $response['hits']['hits'];
             $result = array_column($hits, '_source');
             
