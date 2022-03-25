@@ -90,6 +90,8 @@ class StoreviewController extends Controller
                 'es_index' => 'nullable|string',
                 'es_username' => 'nullable|string',
                 'es_password' => 'nullable|string',
+                'vsf_url' => 'nullable|string',
+                'vsf_preview' => 'nullable|string',
             ]);
 
             $inputs = $request->all();
@@ -159,23 +161,34 @@ class StoreviewController extends Controller
                 'es_index' => 'nullable|string',
                 'es_username' => 'nullable|string',
                 'es_password' => 'nullable|string',
+                'vsf_url' => 'nullable|string',
+                'vsf_preview' => 'nullable|string',
             ]);
 
             $params = $request->route()->parameters();
-            $storeview = StoreView::find($params['id'])->update([
+            $originStoreview = StoreView::find($params['id']);
+            $storeview = $originStoreview->update([
                 'code' => $request->input('code'),
                 'store_id' => $request->input('store_id'),
                 'company_id' => $request->input('company_id'),
-                'payment_provider' => $request->input('payment_provider'),
-                'api_key_1' => encrypt($request->input('api_key_1')),
-                'api_key_2' => encrypt($request->input('api_key_2')),
-                'payment_additional_1' => encrypt($request->input('payment_additional_1')),
-                'payment_additional_2' => encrypt($request->input('payment_additional_2')),
-                'payment_additional_3' => encrypt($request->input('payment_additional_3')),
-                'es_url' => $request->input('es_url'),
-                'es_index' => $request->input('es_index'),
-                'es_username' => $request->input('es_username'),
-                'es_password' => encrypt($request->input('es_password')),
+                'payment_provider' => $request->input('payment_provider') ?? $originStoreview->payment_provider,
+                'api_key_1' => $request->input('api_key_1') ?
+                                encrypt($request->input('api_key_1')) : $originStoreview->api_key_1,
+                'api_key_2' => $request->input('api_key_2') ?
+                                encrypt($request->input('api_key_2')) : $originStoreview->api_key_2,
+                'payment_additional_1' => $request->input('payment_additional_1') ?
+                                            encrypt($request->input('payment_additional_1')) : $originStoreview->payment_additional_1,
+                'payment_additional_2' => $request->input('payment_additional_2') ?
+                                            encrypt($request->input('payment_additional_2')) : $originStoreview->payment_additional_1,
+                'payment_additional_3' => $request->input('payment_additional_3') ?
+                                            encrypt($request->input('payment_additional_3')) : $originStoreview->payment_additional_1,
+                'es_url' => $request->input('es_url') ?? $originStoreview->es_url,
+                'es_index' => $request->input('es_index') ?? $originStoreview->es_index,
+                'es_username' => $request->input('es_username') ?? $originStoreview->es_username,
+                'es_password' => $request->input('es_password') ?
+                                    encrypt($request->input('es_password')) : $originStoreview->es_password,
+                'vsf_url' => $request->input('vsf_url') ?? $originStoreview->vsf_url,
+                'vsf_preview' => $request->input('vsf_preview') ?? $originStoreview->vsf_preview,
             ]);
 
             return response()->json([

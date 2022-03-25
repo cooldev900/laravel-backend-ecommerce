@@ -39,8 +39,9 @@ class StoreView extends Model
     protected $with = ['company'];
 
     protected $fillable = [
-        'code', 'store_id', 'company_id', 'payment_provider', 'api_key_1', 'api_key_2', 'payment_additional_1',
-        'payment_additional_2', 'payment_additional_3', 'es_url', 'es_index', 'es_username', 'es_password',
+        'code', 'store_id', 'company_id', 'payment_provider', 'api_key_1', 'api_key_2',
+        'payment_additional_1', 'payment_additional_2', 'payment_additional_3', 'es_url',
+        'es_index', 'es_username', 'es_password', 'vsf_url', 'vsf_preview'
     ];
 
     public function company()
