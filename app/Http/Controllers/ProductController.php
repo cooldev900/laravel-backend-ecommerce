@@ -425,11 +425,11 @@ class ProductController extends Controller
              * {
                 "childSku": "MS-Champ-S"
                 }
-             */
+            */
 
             $response = $client->request('POST', 'configurable-products/' . $params['sku'] . '/child', [
                 'headers' => ['Content-Type' => 'application/json'],
-                'body' => $request->all(),
+                'body' => json_encode($request->all()),
             ]);
 
             return response()->json([
