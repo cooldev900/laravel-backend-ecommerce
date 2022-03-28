@@ -303,6 +303,11 @@ class ElasticSearchController extends Controller
                 'query' => [
                     'bool' => [
                         'must' => $filter ?? [],
+                        'must_not' => [
+                            'term' => [
+                                'visibility' => '1'
+                            ]
+                        ]
                     ]
                 ],
                 'from' => ($currentPage - 1) * $currentPage,
