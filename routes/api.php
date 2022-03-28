@@ -59,6 +59,7 @@ Route::prefix('{store_view}')->group(function () {
         Route::delete('/products/{sku}', [ProductController::class, 'deleteProduct'])->name('products.delete');
         Route::put('/products/{sku}', [ProductController::class, 'updateProduct'])->name('products.update');
         Route::post('/products/{sku}/media', [ProductController::class, 'updateMedia'])->name('products.media.update');
+        Route::post('/configurable-products/{sku}/child', [ProductController::class, 'assignChildProducts'])->name('products.configurableProducts.assign');
 
 
         /********** Orders **********/

@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use PhpParser\Node\Expr;
 
 class ProductController extends Controller
 {
@@ -410,6 +411,37 @@ class ProductController extends Controller
                 'error' => 'fail_get_attribute',
                 'message' => $e->getMessage(),
             ], 500);
+        }
+    }
+
+    public function assignChildProducts(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
+            /***
+             * sample payload
+             * {
+                "childSku": "MS-Champ-S"
+                }
+             */
+
+            $response = $client->request('POST', 'configurable-products/' . $params['sku'] . '/child', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => $request->all(),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_assign_configurable_products',
+                'message' => $e->getMessage(),
+            ], 500);            
         }
     }
 }
