@@ -451,26 +451,30 @@ class ProductController extends Controller
             $client = $this->makeHttpClient($params['store_view']);
 
             $options = $request->input('options');
-
             /***
-                {
-                    "option": {
-                        "attribute_id": "141",
-                        "label": "Size",
-                        "position": 0,
-                        "is_use_default": true,
-                            "values": [
-                            {
-                                "value_index": 9
-                            }
-                        ]
-                    }
-                }
+                [
+                    {
+                        "option": {
+                            "attribute_id": "141",
+                            "label": "Size",
+                            "position": 0,
+                            "is_use_default": true,
+                                "values": [
+                                {
+                                    "value_index": 9
+                                }
+                            ]
+                        }
+                    },
+                    ...
+                ]
              */
             foreach ($options as $option) {
                 $response = $client->request('POST', 'configurable-products/' . $params['sku'] . '/options', [
                     'headers' => ['Content-Type' => 'application/json'],
-                    'body' => json_encode($option),
+                    'body' => json_encode([
+                        'option' => $option
+                    ]),
                 ]);
             }
 
