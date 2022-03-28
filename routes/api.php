@@ -60,6 +60,7 @@ Route::prefix('{store_view}')->group(function () {
         Route::put('/products/{sku}', [ProductController::class, 'updateProduct'])->name('products.update');
         Route::post('/products/{sku}/media', [ProductController::class, 'updateMedia'])->name('products.media.update');
         Route::post('/configurable-products/{sku}/child', [ProductController::class, 'assignChildProducts'])->name('products.configurableProducts.assign');
+        Route::post('/configurable-products/{sku}/options', [ProductController::class, 'setConfigurableAttribute'])->name('products.configurableProducts.set');
 
 
         /********** Orders **********/

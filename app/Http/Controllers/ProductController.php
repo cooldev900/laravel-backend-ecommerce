@@ -444,4 +444,43 @@ class ProductController extends Controller
             ], 500);            
         }
     }
+
+    public function setConfigurableAttribute(Request $request) {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
+            /***
+                {
+                    "option": {
+                        "attribute_id": "141",
+                        "label": "Size",
+                        "position": 0,
+                        "is_use_default": true,
+                            "values": [
+                            {
+                                "value_index": 9
+                            }
+                        ]
+                    }
+                }
+             */
+
+            $response = $client->request('POST', 'configurable-products/' . $params['sku'] . '/options', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($request->all()),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_assign_configurable_products',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
