@@ -450,6 +450,8 @@ class ProductController extends Controller
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
 
+            $options = $request->input('options');
+
             /***
                 {
                     "option": {
@@ -465,11 +467,12 @@ class ProductController extends Controller
                     }
                 }
              */
-
-            $response = $client->request('POST', 'configurable-products/' . $params['sku'] . '/options', [
-                'headers' => ['Content-Type' => 'application/json'],
-                'body' => json_encode($request->all()),
-            ]);
+            foreach ($options as $option) {
+                $response = $client->request('POST', 'configurable-products/' . $params['sku'] . '/options', [
+                    'headers' => ['Content-Type' => 'application/json'],
+                    'body' => json_encode($option),
+                ]);
+            }
 
             return response()->json([
                 'status' => 'success',
