@@ -295,6 +295,7 @@ class ElasticSearchController extends Controller
             $pageSize = $request->get('pageSize') ?? 25;
             $currentPage = $request->get('currentPage') ?? 1;
             $filter = json_decode($request->get('filter'));
+            $productType = json_decode($request->get('product_type'));
 
             $client = $this->makeESClient($params['store_view'])['client'];
             $esIndex = $this->makeESClient($params['store_view'])['index'];
@@ -312,6 +313,11 @@ class ElasticSearchController extends Controller
                             ],
                             'term' => [
                                 'type_id' => 'grouped'
+                            ]
+                        ],
+                        'filter' => [
+                            'terms' => [
+                                'product_type' => $productType
                             ]
                         ]
                     ]
