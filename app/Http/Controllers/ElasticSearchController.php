@@ -306,6 +306,12 @@ class ElasticSearchController extends Controller
                         'must_not' => [
                             'term' => [
                                 'visibility' => '1'
+                            ],
+                            'term' => [
+                                'is_epc' => true
+                            ],
+                            'term' => [
+                                'type_id' => 'grouped'
                             ]
                         ]
                     ]
