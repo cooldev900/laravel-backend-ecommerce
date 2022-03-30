@@ -297,7 +297,9 @@ class ElasticSearchController extends Controller
             $mustQuery = json_decode($request->get('filter'));
             $filterQuery = json_decode($request->get('product_type')) ?
                 [
-                    'product_type' => json_decode($request->get('product_type'))
+                    'terms' => [
+                        'product_type' => json_decode($request->get('product_type'))
+                    ]
                 ] : [];
 
             $client = $this->makeESClient($params['store_view'])['client'];
@@ -318,9 +320,7 @@ class ElasticSearchController extends Controller
                                 'type_id' => 'grouped'
                             ]
                         ],
-                        'filter' => [
-                            'terms' => $filterQuery ?? []
-                        ]
+                        'filter' => $filterQuery ?? []
                     ]
                 ],
                 'from' => ($currentPage - 1) * $currentPage,
