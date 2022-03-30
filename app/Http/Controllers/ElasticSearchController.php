@@ -294,8 +294,11 @@ class ElasticSearchController extends Controller
             $params = $request->route()->parameters();
             $pageSize = $request->get('pageSize') ?? 25;
             $currentPage = $request->get('currentPage') ?? 1;
-            $filter = json_decode($request->get('filter'));
-            $productType = json_decode($request->get('product_type'));
+            $mustQuery = json_decode($request->get('filter'));
+            $filterQuery = json_decode($request->get('product_type')) ?
+                [
+                    'product_type' => json_decode($request->get('product_type'))
+                ] : [];
 
             $client = $this->makeESClient($params['store_view'])['client'];
             $esIndex = $this->makeESClient($params['store_view'])['index'];
@@ -303,7 +306,7 @@ class ElasticSearchController extends Controller
             $body = [
                 'query' => [
                     'bool' => [
-                        'must' => $filter ?? [],
+                        'must' => $mustQuery ?? [],
                         'must_not' => [
                             'term' => [
                                 'visibility' => '1'
@@ -316,9 +319,7 @@ class ElasticSearchController extends Controller
                             ]
                         ],
                         'filter' => [
-                            'terms' => [
-                                'product_type' => $productType
-                            ]
+                            'terms' => $filterQuery ?? []
                         ]
                     ]
                 ],
