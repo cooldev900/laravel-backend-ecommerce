@@ -37,17 +37,17 @@ class StripeController extends Controller
             $payment_id = $request->input('payment_id');
             $stripe = $this->makeStripeClient($params['store_view']);
 
-            $charges = $stripe->charges->all([
-                'limit' => 3,
-                'payment_intent' => $payment_id
-            ]);
+            // $charges = $stripe->charges->all([
+            //     'limit' => 3,
+            //     'payment_intent' => $payment_id
+            // ]);
 
-            $charge_id = null;
-            if (sizeof($charges['data']) > 0) {
-                $charge_id = $charges['data'][0]['id'];
-            }
+            // $charge_id = null;
+            // if (sizeof($charges['data']) > 0) {
+            //     $charge_id = $charges['data'][0]['id'];
+            // }
 
-            $capture = $stripe->charges->capture($charge_id, [
+            $capture = $stripe->paymentIntents->capture($payment_id, [
                 'amount' => $request->input('amount')
             ]);
 
