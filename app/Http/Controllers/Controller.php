@@ -19,6 +19,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Stripe;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Elasticsearch\ClientBuilder;
+use Illuminate\Http\Request;
 
 class Controller extends BaseController
 {
@@ -259,6 +260,32 @@ class Controller extends BaseController
         } catch (Exception $e) {
             new Exception('could_not_create_courier_client');
         }
+    }
+
+    public function sendEmail(Request $request) {
+        $recipient = $request->input('email');
+        $message = $request->input('message');
+        $name = $request->input('name');
+
+        $mailClient = new Client();
+        $mailClient->request(
+            'POST',
+            'https://api.eu.mailgun.net/v3/omninext.app/messages',
+            [
+                'auth' => ['api', 'b2b1a89441a950c8be234e8e5a7679be-38029a9d-90131eb5'],
+                'form_params' => [
+                    'from' => 'Mailgun Sandbox <noreply@omninext.app>',
+                    'to' => $name . ' <' . $recipient . '>',
+                    'subject' => 'Hello Tom Brown',
+                    'template' => 'order',
+                    'h:X-Mailgun-Variables' => '{"message": "' . $message . '"}'
+                ]
+            ]
+        );
+
+        return response()->json([
+            'status' => 'success',
+        ], 200);
     }
 
     /**
