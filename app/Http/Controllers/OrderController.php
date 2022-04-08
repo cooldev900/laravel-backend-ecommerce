@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class OrderController extends Controller
 {
@@ -74,6 +75,9 @@ class OrderController extends Controller
     public function createOrder(Request $request)
     {
         try {
+            $user = JWTAuth::user();
+            $storeview = $user['store_views'][0];
+
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
             $order = $request->input('entity');
@@ -83,11 +87,11 @@ class OrderController extends Controller
                 $mailClient = new Client();
                 $mailClient->request(
                     'POST',
-                    'https://api.eu.mailgun.net/v3/omninext.app/messages',
+                    'https://api.eu.mailgun.net/v3/' . $storeview['email_domain'] . '/messages',
                     [
-                        'auth' => ['api', 'b2b1a89441a950c8be234e8e5a7679be-38029a9d-90131eb5'],
+                        'auth' => ['api', $storeview['email_password']],
                         'form_params' => [
-                            'from' => 'Mailgun Sandbox <noreply@omninext.app>',
+                            'from' => 'Mailgun Sandbox <' . $storeview['email_sender'] . '>',
                             'to' => $order['customer_firstname'] . ' ' . $order['customer_lastname'] . ' <' . $order['customer_email'] . '>',
                             'subject' => 'Hello Tom Brown',
                             'template' => 'order',

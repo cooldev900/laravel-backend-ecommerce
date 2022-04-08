@@ -39,6 +39,9 @@ Route::middleware(['jwt_auth'])->group(function () {
 
     /********** Courier **********/
     Route::post('/courier/{location_id}/label', [CourierController::class, 'createSmartLabel'])->name('courier.label.create');
+
+    /********** Sending Email **********/
+    Route::post('/send-email', [Controller::class, 'sendEmail'])->name('email.send');
 });
 
 Route::prefix('{store_view}')->group(function () {

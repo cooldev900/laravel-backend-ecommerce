@@ -54,7 +54,7 @@ class StoreviewController extends Controller
             $storeview = StoreView::find($params['id']);
 
             if ($storeview['company']) {
-                $hiddenColumns = ['consumer_key', 'consumer_secret', 'token', 'token_secret', 'url', 'magento_id'];
+                $hiddenColumns = ['consumer_key', 'consumer_secret', 'token', 'token_secret', 'url', 'magento_id', 'email_password'];
                 foreach ($hiddenColumns as $column) {
                     unset($storeview['company'][$column]);
                 }
@@ -92,6 +92,9 @@ class StoreviewController extends Controller
                 'es_password' => 'nullable|string',
                 'vsf_url' => 'nullable|string',
                 'vsf_preview' => 'nullable|string',
+                'email_domain' => 'nullable|string',
+                'email_password' => 'nullable|string',
+                'email_sender' => 'nullable|string',
             ]);
 
             $inputs = $request->all();
@@ -100,7 +103,7 @@ class StoreviewController extends Controller
                 if (($key === 'api_key_1'
                     || $key === 'api_key_2' || $key === 'payment_additional_1'
                     || $key === 'payment_additional_2' || $key === 'payment_additional_3'
-                    || $key === 'es_password') && ($input !== null && trim($input) !== '')) {
+                    || $key === 'es_password' || $key === 'email_password') && ($input !== null && trim($input) !== '')) {
                     $newStoreView[$key] = encrypt($input);
                 } else {
                     $newStoreView[$key] = $input;
@@ -163,6 +166,9 @@ class StoreviewController extends Controller
                 'es_password' => 'nullable|string',
                 'vsf_url' => 'nullable|string',
                 'vsf_preview' => 'nullable|string',
+                'email_domain' => 'nullable|string',
+                'email_password' => 'nullable|string',
+                'email_sender' => 'nullable|string',                
             ]);
 
             $params = $request->route()->parameters();
@@ -179,9 +185,9 @@ class StoreviewController extends Controller
                 'payment_additional_1' => $request->input('payment_additional_1') ?
                                             encrypt($request->input('payment_additional_1')) : $originStoreview->payment_additional_1,
                 'payment_additional_2' => $request->input('payment_additional_2') ?
-                                            encrypt($request->input('payment_additional_2')) : $originStoreview->payment_additional_1,
+                                            encrypt($request->input('payment_additional_2')) : $originStoreview->payment_additional_3,
                 'payment_additional_3' => $request->input('payment_additional_3') ?
-                                            encrypt($request->input('payment_additional_3')) : $originStoreview->payment_additional_1,
+                                            encrypt($request->input('payment_additional_3')) : $originStoreview->payment_additional_3,
                 'es_url' => $request->input('es_url') ?? $originStoreview->es_url,
                 'es_index' => $request->input('es_index') ?? $originStoreview->es_index,
                 'es_username' => $request->input('es_username') ?? $originStoreview->es_username,
@@ -189,6 +195,9 @@ class StoreviewController extends Controller
                                     encrypt($request->input('es_password')) : $originStoreview->es_password,
                 'vsf_url' => $request->input('vsf_url') ?? $originStoreview->vsf_url,
                 'vsf_preview' => $request->input('vsf_preview') ?? $originStoreview->vsf_preview,
+                'email_domain' => $request->input('email_domain') ?? $originStoreview->email_domain,
+                'email_password' => $request->input('email_password') ?? encrypt($originStoreview->email_password),
+                'email_sender' => $request->input('email_sender') ?? $originStoreview->email_sender,
             ]);
 
             return response()->json([
