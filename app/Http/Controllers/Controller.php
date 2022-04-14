@@ -288,6 +288,10 @@ class Controller extends BaseController
         ], 200);
     }
 
+    public function getImageBlob(Request $request) {
+        return file_get_contents($request->input('url'));
+    }
+
     /**
      * Get the user permission based on JWT token.
      *

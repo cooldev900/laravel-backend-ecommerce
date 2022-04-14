@@ -256,29 +256,37 @@ class ProductController extends Controller
 
             $count = 0;
             foreach ($files as $file) {
-                $extension = explode('/', mime_content_type($file['data']['fileBase64']))[1];
-                $base64Content = explode('base64,', $file['data']['fileBase64']);
+                if ($file['action'] === 'new') {
+                    $extension = explode('/', mime_content_type($file['data']['fileBase64']))[1];
+                    $base64Content = explode('base64,', $file['data']['fileBase64']);
 
-                $payload = [
-                    'entry' => [
-                        'media_type' => 'image',
-                        'position' => $count++,
-                        'label' => 'new_picture',
-                        'disabled' => false,
-                        'types' => ['image'],
-                        'file' => $params['sku'] . implode(explode(' ', $file['name'])),
-                        'content' => [
-                            'base64_encoded_data' => $base64Content[1],
-                            'type' => 'image/' . $extension,
-                            'name' => implode(explode(' ', $file['name'])),
+                    $payload = [
+                        'entry' => [
+                            'media_type' => 'image',
+                            'position' => $count++,
+                            'label' => $file['name'],
+                            'disabled' => false,
+                            'types' => ['thumbnail', 'image', 'small_image'],
+                            'content' => [
+                                'base64_encoded_data' => $base64Content[1],
+                                'type' => 'image/' . $extension,
+                                'name' => implode(explode(' ', $file['name'])),
+                            ],
                         ],
-                    ],
-                ];
+                    ];
 
-                $client->request('POST', 'products/' . $params['sku'] . '/media', [
-                    'headers' => ['Content-Type' => 'application/json'],
-                    'body' => json_encode($payload),
-                ]);
+                    $client->request('POST', 'products/' . $params['sku'] . '/media', [
+                        'headers' => ['Content-Type' => 'application/json'],
+                        'body' => json_encode($payload),
+                    ]);
+                } else if ($file['action'] === 'remove') {
+                    $client->request('DELETE', 'products/' . $params['sku'] . '/' . $file['magento_id'], [
+                        'headers' => ['Content-Type' => 'application/json'],
+                    ]);
+                    $count--;
+                } else if ($file['action'] === 'keep') {
+                    $count++;
+                }
             }
 
             return response()->json([
@@ -425,7 +433,7 @@ class ProductController extends Controller
              * {
                 "childSku": "MS-Champ-S"
                 }
-            */
+             */
 
             $response = $client->request('POST', 'configurable-products/' . $params['sku'] . '/child', [
                 'headers' => ['Content-Type' => 'application/json'],
@@ -441,11 +449,12 @@ class ProductController extends Controller
                 'status' => 'error',
                 'error' => 'fail_assign_configurable_products',
                 'message' => $e->getMessage(),
-            ], 500);            
+            ], 500);
         }
     }
 
-    public function setConfigurableAttribute(Request $request) {
+    public function setConfigurableAttribute(Request $request)
+    {
         try {
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
