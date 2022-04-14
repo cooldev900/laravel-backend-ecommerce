@@ -283,7 +283,21 @@ class ProductController extends Controller
                     $client->request('DELETE', 'products/' . $params['sku'] . '/media/' . $file['data']['magento_id']);
                     $count--;
                 } else if ($file['action'] === 'keep') {
-                    $count++;
+                    $payload = [
+                        'entry' => [
+                            'media_type' => 'image',
+                            'position' => $count++,
+                            'label' => $file['name'],
+                            'disabled' => false,
+                            'types' => ['thumbnail', 'image', 'small_image'],
+                            'id' => $file['data']['magento_id']
+                        ],
+                    ];
+
+                    $client->request('PUT', 'products/' . $params['sku'] . '/media/' . $file['data']['magento_id'], [
+                        'headers' => ['Content-Type' => 'application/json'],
+                        'body' => json_encode($payload),
+                    ]);
                 }
             }
 
