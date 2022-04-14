@@ -245,14 +245,14 @@ class ProductController extends Controller
         try {
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
-            $deleteClient = $this->makeHttpClient('all');
+            // $deleteClient = $this->makeHttpClient('all');
 
             $files = $request->input('files');
-            $imageIds = $request->input('imageIds');
+            // $imageIds = $request->input('imageIds');
 
-            foreach ($imageIds as $id) {
-                $deleteClient->request('DELETE', 'products/' . $params['sku'] . '/media/' . $id);
-            }
+            // foreach ($imageIds as $id) {
+            //     $deleteClient->request('DELETE', 'products/' . $params['sku'] . '/media/' . $id);
+            // }
 
             $count = 0;
             foreach ($files as $file) {
@@ -280,9 +280,7 @@ class ProductController extends Controller
                         'body' => json_encode($payload),
                     ]);
                 } else if ($file['action'] === 'remove') {
-                    $client->request('DELETE', 'products/' . $params['sku'] . '/' . $file['magento_id'], [
-                        'headers' => ['Content-Type' => 'application/json'],
-                    ]);
+                    $client->request('DELETE', 'products/' . $params['sku'] . '/media/' . $file['data']['magento_id']);
                     $count--;
                 } else if ($file['action'] === 'keep') {
                     $count++;
