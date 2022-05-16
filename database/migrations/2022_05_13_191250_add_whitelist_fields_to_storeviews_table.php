@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddWebsiteIdFieldsToStoreviewsTable extends Migration
+class AddWhitelistFieldsToStoreviewsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddWebsiteIdFieldsToStoreviewsTable extends Migration
     public function up()
     {
         Schema::table('store_views', function (Blueprint $table) {
-            $table->string('website_id')->nullable();
+            $table->string('whitelist')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddWebsiteIdFieldsToStoreviewsTable extends Migration
     public function down()
     {
         Schema::table('store_views', function (Blueprint $table) {
-            $table->dropColumn('website_id');
+            $table->dropColumn('whitelist');
         });
     }
 }

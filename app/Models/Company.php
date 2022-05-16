@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Models\Attribute;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,4 +18,9 @@ class Company extends Model
     protected $hidden = ['created_at', 'updated_at'];
 
     protected $fillable = ['name', 'url', 'consumer_key', 'consumer_secret', 'token', 'token_secret', 'user_id', 'image_base_url'];
+
+    public function attributes()
+    {
+        return $this->hasMany(Attribute::class);
+    }
 }

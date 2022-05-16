@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddWebsiteIdFieldsToStoreviewsTable extends Migration
+class AddOptionFieldsToAttributesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddWebsiteIdFieldsToStoreviewsTable extends Migration
      */
     public function up()
     {
-        Schema::table('store_views', function (Blueprint $table) {
-            $table->string('website_id')->nullable();
+        Schema::table('attributes', function (Blueprint $table) {
+            $table->boolean('used_as_product_option')->default(0);
         });
     }
 
@@ -25,8 +25,8 @@ class AddWebsiteIdFieldsToStoreviewsTable extends Migration
      */
     public function down()
     {
-        Schema::table('store_views', function (Blueprint $table) {
-            $table->dropColumn('website_id');
+        Schema::table('attributes', function (Blueprint $table) {
+            $table->dropColumn('used_as_product_option');
         });
     }
 }

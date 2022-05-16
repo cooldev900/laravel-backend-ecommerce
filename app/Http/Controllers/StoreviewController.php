@@ -95,7 +95,8 @@ class StoreviewController extends Controller
                 'email_domain' => 'nullable|string',
                 'email_password' => 'nullable|string',
                 'email_sender' => 'nullable|string',
-                'website_id' => 'nullable|string'
+                'website_id' => 'nullable|string',
+                'whitelist' => 'nullable|string'
             ]);
 
             $inputs = $request->all();
@@ -170,7 +171,8 @@ class StoreviewController extends Controller
                 'email_domain' => 'nullable|string',
                 'email_password' => 'nullable|string',
                 'email_sender' => 'nullable|string', 
-                'website_id' => 'nullable|string'               
+                'website_id' => 'nullable|string',
+                'whitelist' => 'nullable|string'               
             ]);
 
             $params = $request->route()->parameters();
@@ -200,7 +202,8 @@ class StoreviewController extends Controller
                 'email_domain' => $request->input('email_domain') ?? $originStoreview->email_domain,
                 'email_password' => $request->input('email_password') ?? encrypt($originStoreview->email_password),
                 'email_sender' => $request->input('email_sender') ?? $originStoreview->email_sender,
-                'website_id' => $request->input('website_id') ?? $originStoreview->website_id
+                'website_id' => $request->input('website_id') ?? $originStoreview->website_id,
+                'whitelist' => $request->input('whitelist') ?? $originStoreview->whitelist
             ]);
 
             return response()->json([

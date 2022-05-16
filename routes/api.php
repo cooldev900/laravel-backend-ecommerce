@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\ProductController;
@@ -128,6 +129,8 @@ Route::prefix('{store_view}')->group(function () {
 });
 
 Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
+    Route::get('/products/getAllAttributes', [ProductController::class, 'getAttributeSets'])->name('products.attributes.set.all');
+
     Route::prefix('storeviews')->group(function () {
         Route::get('/', [StoreviewController::class, 'allStoreviews'])->name('storeviews.all');
         Route::get('/{id}', [StoreviewController::class, 'getStoreview'])->name('storeviews.index');
@@ -150,6 +153,14 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
         Route::post('/', [LocationController::class, 'createLocation'])->name('locations.create');
         Route::put('/{id}', [LocationController::class, 'updateLocation'])->name('locations.update');
         Route::delete('/{id}', [LocationController::class, 'deleteLocation'])->name('locations.delete');
+    });
+
+    Route::prefix('/attributes/{companyId}')->group(function () {
+        Route::get('/', [AttributeController::class, 'allattributes'])->name('attributes.all');
+        Route::get('/{id}', [AttributeController::class, 'getAttribute'])->name('attributes.index');
+        Route::post('/', [AttributeController::class, 'createAttribute'])->name('attributes.create');
+        Route::put('/{id}', [AttributeController::class, 'updateAttribute'])->name('attributes.update');
+        Route::delete('/{id}', [AttributeController::class, 'deleteAttribute'])->name('attributes.delete');
     });
 
     Route::post('/auth/register', [AuthController::class, 'register'])->name('register');

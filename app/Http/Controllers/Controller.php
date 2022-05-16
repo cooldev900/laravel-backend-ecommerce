@@ -337,6 +337,7 @@ class Controller extends BaseController
             array_push($result_locations, $location);
         }
         $_user['locations'] = $result_locations;
+        $_user['attributes'] = $company->attributes()->get()->toArray();
 
         return $_user;
     }
