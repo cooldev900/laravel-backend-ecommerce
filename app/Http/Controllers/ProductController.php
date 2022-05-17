@@ -283,16 +283,28 @@ class ProductController extends Controller
                     $client->request('DELETE', 'products/' . $params['sku'] . '/media/' . $file['data']['magento_id']);
                     $count--;
                 } else if ($file['action'] === 'keep') {
-                    $payload = [
-                        'entry' => [
-                            'media_type' => 'image',
-                            'position' => $count++,
-                            'label' => $file['name'],
-                            'disabled' => false,
-                            'types' => ['thumbnail', 'image', 'small_image'],
-                            'id' => $file['data']['magento_id']
-                        ],
-                    ];
+                    if ($file['data']['position'] === 0) {
+                        $extension = explode('.', $file['data']['thumb']);
+                        $extension1 = $extension[sizeof($extension) - 1];
+
+                        $payload = [
+                                'media_type' => 'image',
+                                'position' => $file['data']['position'],
+                                'label' => $file['name'],
+                                'disabled' => false,
+                                'types' => ['image', 'small_image', 'thumbnail', 'swatch_image'],
+                                'id' => $file['data']['magento_id'],
+                                'media_type' => 'image',
+                                'file' => $file['data']['thumb']
+                        ];
+                    } else {
+                        $payload =  [
+                                'media_type' => 'image',
+                                'position' => $file['data']['position'],
+                                'id' => $file['data']['magento_id'],
+                                'types' => ['thumbnail', 'image', 'small_image'],
+                        ];
+                    }
 
                     $client->request('PUT', 'products/' . $params['sku'] . '/media/' . $file['data']['magento_id'], [
                         'headers' => ['Content-Type' => 'application/json'],

@@ -14,7 +14,7 @@ class AddEnhanceTitleFieldsToAttributesTable extends Migration
     public function up()
     {
         Schema::table('attributes', function (Blueprint $table) {
-            $table->string('enhance_title')->nullable();
+            $table->unsignedInteger('group')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddEnhanceTitleFieldsToAttributesTable extends Migration
     public function down()
     {
         Schema::table('attributes', function (Blueprint $table) {
-            $table->dropColumn('enhance_title');
+            $table->dropColumn('group');
         });
     }
 }

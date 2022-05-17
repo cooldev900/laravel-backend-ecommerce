@@ -34,7 +34,7 @@ class AttributeController extends Controller
             $request->validate([
                 'name' => 'nullable|string',
                 'code' => 'nullable|string',
-                'enhance_title' => 'nullable|string',
+                'group' => 'nullable|integer',
                 'used_as_product_option' => 'boolean',
             ]);
 
@@ -75,7 +75,7 @@ class AttributeController extends Controller
                 'name' => 'nullable|string',
                 'code' => 'nullable|string',
                 'used_as_product_option' => 'boolean',
-                'enhance_title' => 'nullable|string',
+                'group' => 'nullable|integer',
             ]);
 
             $params = $request->route()->parameters();
@@ -83,7 +83,7 @@ class AttributeController extends Controller
                 'name' => $request->input('name'),
                 'code' => $request->input('code'),
                 'used_as_product_option' => $request->input('used_as_product_option'),
-                'enhance_title' => $request->input('enhance_title'),
+                'group' => $request->input('group'),
             ]);           
 
             return response()->json([
