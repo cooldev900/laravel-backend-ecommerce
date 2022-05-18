@@ -46,15 +46,15 @@ class CompanyController extends Controller
                 array_push($_locations, $location);
             }
             $return_data = $company->get()->toArray();
-            // $company->locations = $_locations;
-            $return_data['locations'] = $return_data;
+            $company->locations = $_locations;
+            // $return_data['locations'] = $return_data;
 
             $resultUser = [];
             foreach ($users as $user) {
                 array_push($resultUser, $this->getPermission($user));
             }
-            // $company->users = $resultUser;
-            $return_data['users'] = $resultUser;
+            $company->users = $resultUser;
+            // $return_data['users'] = $resultUser;
             $return_data['attributes'] = $company->attributes;
 
             return response()->json([
