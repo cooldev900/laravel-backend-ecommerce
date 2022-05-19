@@ -284,25 +284,25 @@ class ProductController extends Controller
                     $count--;
                 } else if ($file['action'] === 'keep') {
                     if ($file['data']['position'] === 0) {
-                        $extension = explode('.', $file['data']['thumb']);
-                        $extension1 = $extension[sizeof($extension) - 1];
-
                         $payload = [
+                            'entry' => [
                                 'media_type' => 'image',
                                 'position' => $file['data']['position'],
                                 'label' => $file['name'],
                                 'disabled' => false,
                                 'types' => ['image', 'small_image', 'thumbnail', 'swatch_image'],
                                 'id' => $file['data']['magento_id'],
-                                'media_type' => 'image',
-                                'file' => $file['data']['thumb']
+                                'media_type' => 'image'
+                            ]
                         ];
                     } else {
                         $payload =  [
+                            'entry' => [
                                 'media_type' => 'image',
                                 'position' => $file['data']['position'],
                                 'id' => $file['data']['magento_id'],
                                 'types' => ['thumbnail', 'image', 'small_image'],
+                            ]
                         ];
                     }
 
