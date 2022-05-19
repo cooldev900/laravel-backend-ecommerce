@@ -301,7 +301,6 @@ class ProductController extends Controller
                                 'media_type' => 'image',
                                 'position' => $file['data']['position'],
                                 'id' => $file['data']['magento_id'],
-                                'types' => ['thumbnail', 'image', 'small_image'],
                             ]
                         ];
                     }
