@@ -48,7 +48,7 @@ class AttributeGroupController extends Controller
 
             foreach($request->input('store_views') as $storeview) {
                 $new = new AttributeGroupStoreView();
-                $new->store_view = 'sdf';
+                $new->store_view =  $storeview;
                 $new->save();
                 $newAttribute->storeviews()->save($new);
             }            
