@@ -82,19 +82,22 @@ class AttributeGroupController extends Controller
             ]);
 
             $params = $request->route()->parameters();
-            $attribute = Company::findOrFail($params['companyId'])->attributes()->findorFail($params['id'])->update([
-                'name' => $request->input('name'),
-                'attribute_id' => $request->input('attribute_id')
-            ]);
-
-            $attribute->storeviews()->delete();
-
-            foreach($input['store_views'] as $storeview) {
-                $new = new AttributeGroupStoreView();
-                $new->store_view = $storeview;
-                $new->save();
-                $newAttribute->save($new);
-            }  
+            $attribute = Company::findOrFail($params['companyId'])->attribute_groups()->findorFail($params['id']);
+            if ($attribute) {
+                $attribute->update([
+                    'name' => $request->input('name'),
+                    'attribute_id' => $request->input('attribute_id')
+                ]);
+    
+                if ($attribute) $attribute->storeviews()->delete();
+    
+                foreach($request->input('store_views') as $storeview) {
+                    $new = new AttributeGroupStoreView();
+                    $new->store_view =  $storeview;
+                    $new->save();
+                    $attribute->storeviews()->save($new);
+                }
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -114,7 +117,7 @@ class AttributeGroupController extends Controller
         try {
 
             $params = $request->route()->parameters();
-            $attribute = Company::findOrFail($params['companyId'])->attributes()->findorFail($params['id'])->delete();
+            $attribute = Company::findOrFail($params['companyId'])->attribute_groups()->findorFail($params['id'])->delete();
 
             return response()->json([
                 'status' => 'success',
