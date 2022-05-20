@@ -314,11 +314,11 @@ class ElasticSearchController extends Controller
                                 'visibility' => '1'
                             ],
                             'term' => [
-                                'is_epc' => true
+                                'type_id' => 'grouped'
                             ],
                             'term' => [
-                                'type_id' => 'grouped'
-                            ]
+                                'is_epc' => true
+                            ],
                         ],
                         'filter' => $filterQuery ?? []
                     ]
