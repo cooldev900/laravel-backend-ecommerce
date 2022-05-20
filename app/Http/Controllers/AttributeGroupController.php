@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Attribute;
+use App\Models\AttributeGroup;
 use App\Models\Company;
+use App\Models\AttributeGroupStoreView;
 use Exception;
 use Illuminate\Http\Request;
 
-class AttributeController extends Controller
+class AttributeGroupController extends Controller
 {
 
     public function getAttribute(Request $request)
@@ -33,28 +34,29 @@ class AttributeController extends Controller
         try {
             $request->validate([
                 'name' => 'nullable|string',
-                'code' => 'nullable|string',
-                'group' => 'nullable|integer',
-                'used_as_product_option' => 'boolean',
-                'variant_product_field' => 'boolean',
-                'details' => 'nullable|string',
+                'attribute_id' => 'nullable|string',
+                'store_views' => 'nullable|array',
             ]);
 
             $inputs = $request->all();
-            $newAttribute = new Attribute();
+            $newAttribute = new AttributeGroup();
             foreach ($inputs as $key => $input) {
-                if ($key === 'client_id') {  
-                    $newAttribute['company_id'] = $input;                      
-                    continue;
-                }
+                if ($key == 'store_views') continue;
                 $newAttribute[$key] = $input;
             }
             $newAttribute->save();
 
+            foreach($request->input('store_views') as $storeview) {
+                $new = new AttributeGroupStoreView();
+                $new->store_view = 'sdf';
+                $new->save();
+                $newAttribute->storeviews()->save($new);
+            }            
+
             $params = $request->route()->parameters();
             $company = Company::find($params['companyId']);
             if ($company) {
-                $company->attributes()->save($newAttribute);
+                $company->attribute_groups()->save($newAttribute);
             }
 
             return response()->json([
@@ -73,22 +75,26 @@ class AttributeController extends Controller
     public function updateAttribute(Request $request)
     {
         try {
-            $request->validate([                
+            $request->validate([
                 'name' => 'nullable|string',
-                'code' => 'nullable|string',
-                'used_as_product_option' => 'boolean',
-                'group' => 'nullable|integer',
-                'variant_product_field' => 'boolean',
-                'details' => 'nullable|string',
+                'attribute_id' => 'nullable|string',
+                'store_views' => 'nullable|array',
             ]);
 
             $params = $request->route()->parameters();
             $attribute = Company::findOrFail($params['companyId'])->attributes()->findorFail($params['id'])->update([
                 'name' => $request->input('name'),
-                'code' => $request->input('code'),
-                'used_as_product_option' => $request->input('used_as_product_option'),
-                'group' => $request->input('group'),
-            ]);           
+                'attribute_id' => $request->input('attribute_id')
+            ]);
+
+            $attribute->storeviews()->delete();
+
+            foreach($input['store_views'] as $storeview) {
+                $new = new AttributeGroupStoreView();
+                $new->store_view = $storeview;
+                $new->save();
+                $newAttribute->save($new);
+            }  
 
             return response()->json([
                 'status' => 'success',

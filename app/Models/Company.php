@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use App\Models\Attribute;
+use App\Models\AttributeGroup;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,5 +23,9 @@ class Company extends Model
     public function attributes()
     {
         return $this->hasMany(Attribute::class);
+    }
+
+    public function attribute_groups() {
+        return $this->hasMany(AttributeGroup::class);
     }
 }

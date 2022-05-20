@@ -9,6 +9,7 @@ use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\AttributeController;
+use App\Http\Controllers\AttributeGroupController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\ProductController;
@@ -47,6 +48,7 @@ Route::middleware(['jwt_auth'])->group(function () {
 
 Route::prefix('{store_view}')->group(function () {
     Route::middleware(['jwt_auth', 'permission'])->group(function () {
+
         /********** Products-attributes **********/
         Route::get('/products/attributes', [ProductController::class, 'getAttributes'])->name('products.attributes.all');
         Route::post('/products/attributes', [ProductController::class, 'createAttributes'])->name('products.attributes.create');
@@ -161,6 +163,14 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
         Route::post('/', [AttributeController::class, 'createAttribute'])->name('attributes.create');
         Route::put('/{id}', [AttributeController::class, 'updateAttribute'])->name('attributes.update');
         Route::delete('/{id}', [AttributeController::class, 'deleteAttribute'])->name('attributes.delete');
+    });
+
+    Route::prefix('/attributeGroup/{companyId}')->group(function () {
+        Route::get('/', [AttributeGroupController::class, 'allattributes'])->name('attributes.all');
+        Route::get('/{id}', [AttributeGroupController::class, 'getAttribute'])->name('attributes.index');
+        Route::post('/', [AttributeGroupController::class, 'createAttribute'])->name('attributes.create');
+        Route::put('/{id}', [AttributeGroupController::class, 'updateAttribute'])->name('attributes.update');
+        Route::delete('/{id}', [AttributeGroupController::class, 'deleteAttribute'])->name('attributes.delete');
     });
 
     Route::post('/auth/register', [AuthController::class, 'register'])->name('register');
