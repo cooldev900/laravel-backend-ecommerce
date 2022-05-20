@@ -308,20 +308,43 @@ class ElasticSearchController extends Controller
             $body = [
                 'query' => [
                     'bool' => [
-                        'must' => $mustQuery ?? [],
-                        'must_not' => [
-                            'term' => [
-                                'visibility' => '1'
+                        'should' => [
+                            [
+                                'bool' => [
+                                    'must_not' => [
+                                            'term' => [
+                                                'visibility' => '1'
+                                            ],
+                                            'term' => [
+                                                'type_id' => 'grouped'
+                                            ],
+                                            'term' => [
+                                                'is_epc' => true
+                                            ],
+                                        ],
+                                ]
                             ],
-                            'term' => [
-                                'type_id' => 'grouped'
-                            ],
-                            'term' => [
-                                'enhanced_title' => ''
-                            ],
-                            'term' => [
-                                'is_epc' => true
-                            ],
+                            [
+                                'bool' => [
+                                            'must' => [
+                                                'term' => [
+                                                    'is_epc' => true
+                                                ]
+                                            ],
+                                            'must_not' => [
+                                                'term' => [
+                                                    'visibility' => '1'
+                                                ],
+                                                'term' => [
+                                                    'type_id' => 'grouped'
+                                                ],
+                                                'term' => [
+                                                    'enhanced_title' => ''
+                                                ]
+                                            ]
+                                        ]
+                            ]
+
                         ],
                         'filter' => $filterQuery ?? []
                     ]
