@@ -317,6 +317,9 @@ class ElasticSearchController extends Controller
                                 'type_id' => 'grouped'
                             ],
                             'term' => [
+                                'enhanced_title' => ''
+                            ],
+                            'term' => [
                                 'is_epc' => true
                             ],
                         ],
