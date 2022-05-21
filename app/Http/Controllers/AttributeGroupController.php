@@ -46,12 +46,13 @@ class AttributeGroupController extends Controller
             }
             $newAttribute->save();
 
-            foreach($request->input('store_views') as $storeview) {
-                $new = new AttributeGroupStoreView();
-                $new->store_view =  $storeview;
-                $new->save();
-                $newAttribute->storeviews()->save($new);
-            }            
+            if (sizeof($request->input('store_views')) > 0)
+                foreach($request->input('store_views') as $storeview) {
+                    $new = new AttributeGroupStoreView();
+                    $new->store_view =  $storeview;
+                    $new->save();
+                    $newAttribute->storeviews()->save($new);
+                }            
 
             $params = $request->route()->parameters();
             $company = Company::find($params['companyId']);
@@ -90,13 +91,14 @@ class AttributeGroupController extends Controller
                 ]);
     
                 if ($attribute) $attribute->storeviews()->delete();
-    
-                foreach($request->input('store_views') as $storeview) {
-                    $new = new AttributeGroupStoreView();
-                    $new->store_view =  $storeview;
-                    $new->save();
-                    $attribute->storeviews()->save($new);
-                }
+
+                if (sizeof($request->input('store_views')) > 0)
+                    foreach($request->input('store_views') as $storeview) {
+                        $new = new AttributeGroupStoreView();
+                        $new->store_view =  $storeview;
+                        $new->save();
+                        $attribute->storeviews()->save($new);
+                    }
             }
 
             return response()->json([
