@@ -305,18 +305,56 @@ class ElasticSearchController extends Controller
             $client = $this->makeESClient($params['store_view'])['client'];
             $esIndex = $this->makeESClient($params['store_view'])['index'];
 
+            $body = [
+                'query' => [
+                    'bool' => [
+                        'must_not' => [
+                            'term' => [
+                                'visibility' => '1'
+                            ],
+                            'term' => [
+                                'type_id' => 'grouped'
+                            ]
+                        ]
+                    ]
+                ],
+                'from' => ($currentPage - 1) * $currentPage,
+                'size' => $pageSize
+            ];
+
             // $body = [
             //     'query' => [
             //         'bool' => [
-            //             'must_not' => [
-            //                 'term' => [
-            //                     'visibility' => '1'
+            //             'should' => [
+            //                 'bool' => [
+            //                     'must_not' => [
+            //                         'term' => [
+            //                             'visibility' => '1'
+            //                         ]
+            //                     ]
             //                 ],
-            //                 'term' => [
-            //                     'type_id' => 'grouped'
-            //                 ],
-            //                 'term' => [
-            //                     'is_epc' => true
+            //                 'bool' => [
+            //                     'should' => [
+            //                         'bool' => [
+            //                             'must_not' => [
+            //                                 'term' => [
+            //                                     'is_epc' => true
+            //                                 ],
+            //                             ]
+            //                         ],
+            //                         'bool' => [
+            //                             'must' => [
+            //                                 'term' => [
+            //                                     'is_epc' => true
+            //                                 ],
+            //                             ],
+            //                             'must_not' => [
+            //                                 'term' => [
+            //                                     'enhanced_title' => ''
+            //                                 ]
+            //                             ]
+            //                         ]
+            //                     ]
             //                 ],
             //             ]
             //         ]
@@ -324,47 +362,6 @@ class ElasticSearchController extends Controller
             //     'from' => ($currentPage - 1) * $currentPage,
             //     'size' => $pageSize
             // ];
-
-            $body = [
-                'query' => [
-                    'bool' => [
-                        'should' => [
-                            'bool' => [
-                                'must_not' => [
-                                    'term' => [
-                                        'visibility' => '1'
-                                    ]
-                                ]
-                            ],
-                            'bool' => [
-                                'should' => [
-                                    'bool' => [
-                                        'must_not' => [
-                                            'term' => [
-                                                'is_epc' => true
-                                            ],
-                                        ]
-                                    ],
-                                    'bool' => [
-                                        'must' => [
-                                            'term' => [
-                                                'is_epc' => true
-                                            ],
-                                        ],
-                                        'must_not' => [
-                                            'term' => [
-                                                'enhanced_title' => ''
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ],
-                        ]
-                    ]
-                ],
-                'from' => ($currentPage - 1) * $currentPage,
-                'size' => $pageSize
-            ];
 
             $response = $client->search([
                 'index' => "{$esIndex}_product",
