@@ -27,6 +27,7 @@ class AddSomeFieldsToAttributesTable extends Migration
     public function down()
     {
         Schema::table('attributes', function (Blueprint $table) {
+            $table->dropColumn('variant_product_field');
             $table->dropColumn('details');
         });
     }

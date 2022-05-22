@@ -305,25 +305,45 @@ class ElasticSearchController extends Controller
             $client = $this->makeESClient($params['store_view'])['client'];
             $esIndex = $this->makeESClient($params['store_view'])['index'];
 
+            // $body = [
+            //     'query' => [
+            //         'bool' => [
+            //             'must_not' => [
+            //                 'term' => [
+            //                     'visibility' => '1'
+            //                 ],
+            //                 'term' => [
+            //                     'type_id' => 'grouped'
+            //                 ],
+            //                 'term' => [
+            //                     'is_epc' => true
+            //                 ],
+            //             ]
+            //         ]
+            //     ],
+            //     'from' => ($currentPage - 1) * $currentPage,
+            //     'size' => $pageSize
+            // ];
+
             $body = [
                 'query' => [
                     'bool' => [
-                        'must' => $mustQuery ?? [],
-                        'must_not' => [
-                            'term' => [
-                                'visibility' => '1'
+                        'should' => [
+                            'bool' => [
+                                'must_not' => [
+                                    'term' => [
+                                        'visibility' => '1'
+                                    ]
+                                ]
                             ],
-                            'term' => [
-                                'type_id' => 'grouped'
+                            'bool' => [
+                                'must_not' => [
+                                    'term' => [
+                                        'is_epc' => true
+                                    ],
+                                ]
                             ],
-                            'term' => [
-                                'enhanced_title' => ''
-                            ],
-                            'term' => [
-                                'is_epc' => true
-                            ],
-                        ],
-                        'filter' => $filterQuery ?? []
+                        ]
                     ]
                 ],
                 'from' => ($currentPage - 1) * $currentPage,
