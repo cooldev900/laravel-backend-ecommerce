@@ -337,10 +337,26 @@ class ElasticSearchController extends Controller
                                 ]
                             ],
                             'bool' => [
-                                'must_not' => [
-                                    'term' => [
-                                        'is_epc' => true
+                                'should' => [
+                                    'bool' => [
+                                        'must_not' => [
+                                            'term' => [
+                                                'is_epc' => true
+                                            ],
+                                        ]
                                     ],
+                                    'bool' => [
+                                        'must' => [
+                                            'term' => [
+                                                'is_epc' => true
+                                            ],
+                                        ],
+                                        'must_not' => [
+                                            'term' => [
+                                                'enhanced_title' => ''
+                                            ]
+                                        ]
+                                    ]
                                 ]
                             ],
                         ]
