@@ -259,22 +259,38 @@ class ProductController extends Controller
                 if ($file['action'] === 'new') {
                     $extension = explode('/', mime_content_type($file['data']['fileBase64']))[1];
                     $base64Content = explode('base64,', $file['data']['fileBase64']);
-
-                    $payload = [
-                        'entry' => [
-                            'media_type' => 'image',
-                            'position' => $file['data']['position'],
-                            'label' => $file['name'],
-                            'disabled' => false,
-                            'types' => ['image', 'small_image', 'thumbnail', 'swatch_image'],
-                            'content' => [
-                                'base64_encoded_data' => $base64Content[1],
-                                'type' => 'image/' . $extension,
-                                'name' => implode(explode(' ', $file['name'])),
-                            ],
-                        ],
-                    ];
-
+                    $payload = [];
+                    if ($file['data']['position'] === 0) {
+                        $payload = [
+                            'entry' => [
+                                'media_type' => 'image',
+                                'position' => $file['data']['position'],
+                                'label' => $file['name'],
+                                'disabled' => false,
+                                'types' => ['image', 'small_image', 'thumbnail', 'swatch_image'],
+                                'id' => $file['data']['magento_id'],
+                                'media_type' => 'image',
+                                'content' => [
+                                    'base64_encoded_data' => $base64Content[1],
+                                    'type' => 'image/' . $extension,
+                                    'name' => implode(explode(' ', $file['name'])),
+                                ],
+                            ]
+                        ];
+                    } else {
+                        $payload =  [
+                            'entry' => [
+                                'media_type' => 'image',
+                                'position' => $file['data']['position'],
+                                'id' => $file['data']['magento_id'],
+                                'content' => [
+                                    'base64_encoded_data' => $base64Content[1],
+                                    'type' => 'image/' . $extension,
+                                    'name' => implode(explode(' ', $file['name'])),
+                                ],
+                            ]
+                        ];
+                    }
                     $client->request('POST', 'products/' . $params['sku'] . '/media', [
                         'headers' => ['Content-Type' => 'application/json'],
                         'body' => json_encode($payload),
