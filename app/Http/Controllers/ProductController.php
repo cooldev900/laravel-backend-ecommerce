@@ -263,10 +263,10 @@ class ProductController extends Controller
                     $payload = [
                         'entry' => [
                             'media_type' => 'image',
-                            'position' => $count++,
+                            'position' => $file['data']['position'],
                             'label' => $file['name'],
                             'disabled' => false,
-                            'types' => ['thumbnail', 'image', 'small_image'],
+                            'types' => ['image', 'small_image', 'thumbnail', 'swatch_image'],
                             'content' => [
                                 'base64_encoded_data' => $base64Content[1],
                                 'type' => 'image/' . $extension,
@@ -291,8 +291,7 @@ class ProductController extends Controller
                                 'label' => $file['name'],
                                 'disabled' => false,
                                 'types' => ['image', 'small_image', 'thumbnail', 'swatch_image'],
-                                'id' => $file['data']['magento_id'],
-                                'media_type' => 'image'
+                                'id' => $file['data']['magento_id']
                             ]
                         ];
                     } else {
