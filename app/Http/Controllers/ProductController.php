@@ -268,8 +268,7 @@ class ProductController extends Controller
                                 'label' => $file['name'],
                                 'disabled' => false,
                                 'types' => ['image', 'small_image', 'thumbnail', 'swatch_image'],
-                                'id' => $file['data']['magento_id'],
-                                'media_type' => 'image',
+                                // 'id' => $file['data']['magento_id'],
                                 'content' => [
                                     'base64_encoded_data' => $base64Content[1],
                                     'type' => 'image/' . $extension,
@@ -282,7 +281,8 @@ class ProductController extends Controller
                             'entry' => [
                                 'media_type' => 'image',
                                 'position' => $file['data']['position'],
-                                'id' => $file['data']['magento_id'],
+                                'label' => $file['name'],
+                                // 'id' => $file['data']['magento_id'],
                                 'content' => [
                                     'base64_encoded_data' => $base64Content[1],
                                     'type' => 'image/' . $extension,
