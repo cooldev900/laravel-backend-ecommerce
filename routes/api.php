@@ -10,6 +10,8 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AttributeGroupController;
+use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\ProductController;
@@ -173,6 +175,14 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
         Route::delete('/{id}', [AttributeGroupController::class, 'deleteAttribute'])->name('attributes.delete');
     });
 
+    Route::prefix('/resource/{companyId}')->group(function () {
+        Route::get('/', [ResourceController::class, 'allattributes'])->name('attributes.all');
+        Route::get('/{id}', [ResourceController::class, 'getAttribute'])->name('attributes.index');
+        Route::post('/', [ResourceController::class, 'createAttribute'])->name('attributes.create');
+        Route::put('/{id}', [ResourceController::class, 'updateAttribute'])->name('attributes.update');
+        Route::delete('/{id}', [ResourceController::class, 'deleteAttribute'])->name('attributes.delete');
+    });
+
     Route::post('/auth/register', [AuthController::class, 'register'])->name('register');
 
     Route::get('/users/logs', [AuthController::class, 'getLogs'])->name('users.logs.all');
@@ -205,3 +215,5 @@ Route::prefix('vehicle')->group(function () {
     Route::post('vehicle-selector/national-code', [ElasticSearchController::class, 'getNationalCodeData']);
     Route::post('vehicle-selector/step/{key}', [ElasticSearchController::class, 'getSelectorStepData']);
 });
+
+Route::get('/appointments', [AppointmentController::class, 'getSlots'])->name('getSlots');
