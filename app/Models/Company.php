@@ -3,6 +3,7 @@
 namespace App\Models;
 use App\Models\Attribute;
 use App\Models\AttributeGroup;
+use App\Models\Technician;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +18,7 @@ class Company extends Model
      * @var array
      */
     protected $hidden = ['created_at', 'updated_at'];
-    protected $with = ['attribute_groups', 'attributes'];
+    protected $with = ['attribute_groups', 'attributes', 'technicians'];
 
     protected $fillable = ['name', 'url', 'consumer_key', 'consumer_secret', 'token', 'token_secret', 'user_id', 'image_base_url'];
 
@@ -28,5 +29,10 @@ class Company extends Model
 
     public function attribute_groups() {
         return $this->hasMany(AttributeGroup::class);
+    }
+
+    public function technicians()
+    {
+        return $this->hasMany(Technician::class);
     }
 }
