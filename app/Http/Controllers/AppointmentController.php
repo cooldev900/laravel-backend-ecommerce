@@ -187,6 +187,25 @@ class AppointmentController extends Controller
 
                 $technician_id = $request->input('technician_id');
                 if (!isset($technician_id)) {
+                    // $appointment = Appointment::where('slot_id', $slot_id)->where('technician_id', $technician_id)->firstOrFail();
+                    // if ($appointment) {
+                    //     return response()->json([
+                    //         'status' => 'error',
+                    //         'error' => 'Duplicate_Technicain_Error',
+                    //         'message' => 'This technician is duplicate with '.$technician_id,
+                    //     ], 500);
+                    // }
+                    $old_ids = Appointment::where('slot_id', $slot_id)->pluck('technician_id')->toArray();
+                    $technician_id = '';
+                    if (sizeof($old_ids) > 0) {
+                        $old_ids = implode(",", $old_ids);
+                    } else {
+                        $old_ids = '0';
+                    }
+                    
+                    $remained_ids = DB::select("select id from technicians where id not in ({$old_ids})");
+                    $technician_id = $remained_ids[0];
+
                     $appointment = new Appointment();
                     foreach ($inputs as $key => $input) {
                         if ($key === 'total' || $key === 'available' || $key === 'appointment_id' || $key === 'technician_ids') continue;
@@ -204,16 +223,20 @@ class AppointmentController extends Controller
                         }
                         $appointment[$key] = $input;
                     }
-                    $row = Technician::where('company_id', $inputs['client_id'])->firstOrFail();
-                    if ($row) {
-                        $appointment->technician_id = $row->id;
-                    }
+                    
+                    $appointment->technician_id = $technician_id;
+                    
                     $appointment['slot_id'] = $slot_id;
                     $appointment->save();
                 } else {
                     if (sizeof($technician_id)) {
                         $params = $request->route()->parameters();
                         foreach($technician_id as $t_id) {
+                            $appointment = Appointment::where('slot_id', $slot_id)->where('technician_id', $t_id)->first();
+                            if ($appointment) {
+                                continue;
+                            }
+
                             $appointment = new Appointment();
                             foreach ($inputs as $key => $input) {
                                 if ($key === 'total' || $key === 'available' || $key === 'appointment_id' || $key === 'technician_ids' || $key === 'technical_id' ||  $key === 'orderid') continue;
@@ -239,10 +262,13 @@ class AppointmentController extends Controller
                     }
                 }
 
+                
                 return response()->json([
                     'status' => 'success',
                     'data' => $appointment,
                 ], 200);
+                
+                
             } else {
                 return response()->json([
                     'status' => 'error',
