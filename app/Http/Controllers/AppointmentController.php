@@ -107,14 +107,14 @@ class AppointmentController extends Controller
                     $sql.= " and  customer like '%{$inputs['customer']}%'";
                 }
 
-                if (isset($inputs['date']['from'])) {
-                    $date = Carbon::parse($inputs['date']['from'])->toDateTimeString();
+                if (isset($inputs['from'])) {
+                    $date = Carbon::parse($inputs['from'])->toDateTimeString();
                     $sql.= " and start_time >= '{$date}'";
                 }
 
-                if (isset($inputs['date']['to'])) {
-                    $date = Carbon::parse($inputs['date']['to'])->toDateTimeString();
-                    $sql.= " and start_time >= '{$date}'";
+                if (isset($inputs['to'])) {
+                    $date = Carbon::parse($inputs['to'])->toDateTimeString();
+                    $sql.= " and start_time <= '{$date}'";
                 }
 
                 if (isset($inputs['technician']) && sizeof($inputs['technician']) > 0) {
