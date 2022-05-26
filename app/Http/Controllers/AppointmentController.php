@@ -102,27 +102,31 @@ class AppointmentController extends Controller
             if ($this->fillSlots()) {
 
                 $inputs = $request->all();
-                $sql = "select * from appointments where client_id = '{$params['companyId']}'";
+
+                $appointment = Appointment::where('client_id', $params['companyId']);
                 if (isset($inputs['customer'])) {
-                    $sql.= " and  customer like '%{$inputs['customer']}%'";
+                    $appointment->where('customer', 'like', "%{$inputs['customer']}%");
                 }
 
                 if (isset($inputs['from'])) {
                     $date = Carbon::parse($inputs['from'])->toDateTimeString();
-                    $sql.= " and start_time >= '{$date}'";
+                    // $sql.= " and start_time >= '{$date}'";
+                    $appointment->where('start_time', '>=', $date);
                 }
 
                 if (isset($inputs['to'])) {
                     $date = Carbon::parse($inputs['to'])->toDateTimeString();
-                    $sql.= " and start_time <= '{$date}'";
+                    // $sql.= " and start_time <= '{$date}'";
+                    $appointment->where('start_time', '<=', $date);
                 }
 
                 if (isset($inputs['technician']) && sizeof($inputs['technician']) > 0) {
-                    $ids = implode(",", $inputs['technician']);
-                    $sql.= " and technician_id in ({$ids})";
+                    // $ids = implode(",", $inputs['technician']);
+                    // $sql.= " and technician_id in ({$ids})";
+                    $appointment->whereIn('technician_id', $inputs['technician']);
                 }
 
-                $result = DB::select($sql);
+                $result = $appointment->paginate(10);
 
                 return response()->json([
                     'status' => 'success',
@@ -158,124 +162,125 @@ class AppointmentController extends Controller
                 'note' => 'nullable|string',
                 'internal_booking' => 'nullable|boolean',
                 'technician_id' => 'nullable|array',
+                'slot_ids' => 'nullable|array',
             ]);
 
             $client_id = $request->input('clientID');
             $slot_id = $request->input('id');
             if ($slot_id == -1) $slot_id = $request->input('slot_id');
 
-            $start_time = '';
-            $end_time = '';
+            $slot_ids = [];
+            if ($slot_id) {
+                $slot_ids.push($slot_id);
+            } else {
+                $slot_ids = $request->input('slot_ids');
+            }
 
-            $slot = Slot::findOrFail($slot_id);
-            if ($slot) {
-                $start_time = $slot->start_time;
-                $end_time = $slot->end_time;
+            $appointments = [];
 
-                $now = Carbon::now()->toDateTimeString();
+            foreach($slot_ids as $slot_id) {
+                $start_time = '';
+                $end_time = '';
 
-                if ($now > $start_time) {
-                    return response()->json([
-                        'status' => 'error',
-                        'error' => 'past_slot_error',
-                        'message' => 'Can not book the past slot with '.$slot_id,
-                    ], 500);    
-                }
+                $slot = Slot::findOrFail($slot_id);
+                if ($slot) {
+                    $start_time = $slot->start_time;
+                    $end_time = $slot->end_time;
 
-                $inputs = $request->all();
-                $appointment = '';
+                    $now = Carbon::now()->toDateTimeString();
 
-                $technician_id = $request->input('technician_id');
-                if (!isset($technician_id)) {
-                    // $appointment = Appointment::where('slot_id', $slot_id)->where('technician_id', $technician_id)->firstOrFail();
-                    // if ($appointment) {
-                    //     return response()->json([
-                    //         'status' => 'error',
-                    //         'error' => 'Duplicate_Technicain_Error',
-                    //         'message' => 'This technician is duplicate with '.$technician_id,
-                    //     ], 500);
-                    // }
-                    $old_ids = Appointment::where('slot_id', $slot_id)->pluck('technician_id')->toArray();
-                    $technician_id = '';
-                    if (sizeof($old_ids) > 0) {
-                        $old_ids = implode(",", $old_ids);
-                    } else {
-                        $old_ids = '0';
+                    if ($now > $start_time) {
+                        continue;    
                     }
-                    
-                    $remained_ids = DB::select("select id from technicians where id not in ({$old_ids})");
-                    $technician_id = $remained_ids[0];
 
-                    $appointment = new Appointment();
-                    foreach ($inputs as $key => $input) {
-                        if ($key === 'total' || $key === 'available' || $key === 'appointment_id' || $key === 'technician_ids') continue;
-                        if ($key === 'id') {  
-                            $appointment['slot_id'] = $input;                      
-                            continue;
+                    $inputs = $request->all();
+                    $appointment = '';
+
+                    $technician_id = $request->input('technician_id');
+                    if (!isset($technician_id)) {
+                        // $appointment = Appointment::where('slot_id', $slot_id)->where('technician_id', $technician_id)->firstOrFail();
+                        // if ($appointment) {
+                        //     return response()->json([
+                        //         'status' => 'error',
+                        //         'error' => 'Duplicate_Technicain_Error',
+                        //         'message' => 'This technician is duplicate with '.$technician_id,
+                        //     ], 500);
+                        // }
+                        $old_ids = Appointment::where('slot_id', $slot_id)->pluck('technician_id')->toArray();
+                        $technician_id = '';
+                        if (sizeof($old_ids) > 0) {
+                            $old_ids = implode(",", $old_ids);
+                        } else {
+                            $old_ids = '0';
                         }
-                        if ($key === 'start_time') {  
-                            $appointment[$key] = $start_time;                      
-                            continue;
-                        }
-                        if ($key === 'end_time') {  
-                            $appointment[$key] = $end_time;                      
-                            continue;
-                        }
-                        $appointment[$key] = $input;
-                    }
-                    
-                    $appointment->technician_id = $technician_id;
-                    
-                    $appointment['slot_id'] = $slot_id;
-                    $appointment->save();
-                } else {
-                    if (sizeof($technician_id)) {
-                        $params = $request->route()->parameters();
-                        foreach($technician_id as $t_id) {
-                            $appointment = Appointment::where('slot_id', $slot_id)->where('technician_id', $t_id)->first();
-                            if ($appointment) {
+                        
+                        $remained_ids = DB::select("select id from technicians where id not in ({$old_ids})");
+                        $technician_id = $remained_ids[0];
+
+                        $appointment = new Appointment();
+                        foreach ($inputs as $key => $input) {
+                            if ($key === 'total' || $key === 'available' || $key === 'appointment_id' || $key === 'technician_ids' || $key === 'slot_ids') continue;
+                            if ($key === 'id') {  
+                                $appointment['slot_id'] = $input;                      
                                 continue;
                             }
-
-                            $appointment = new Appointment();
-                            foreach ($inputs as $key => $input) {
-                                if ($key === 'total' || $key === 'available' || $key === 'appointment_id' || $key === 'technician_ids' || $key === 'technical_id' ||  $key === 'orderid') continue;
-                                if ($key === 'id') {  
-                                    $appointment['slot_id'] = $input;                      
-                                    continue;
-                                }
-                                if ($key === 'start_time') {  
-                                    $appointment[$key] = $start_time;                      
-                                    continue;
-                                }
-                                if ($key === 'end_time') {  
-                                    $appointment[$key] = $end_time;                      
-                                    continue;
-                                }
-                                $appointment[$key] = $input;
+                            if ($key === 'start_time') {  
+                                $appointment[$key] = $start_time;                      
+                                continue;
                             }
-                            $appointment['slot_id'] = $slot_id;
-                            $appointment->technician_id = $t_id;
-                            $appointment->client_id = $params['companyId'];
-                            $appointment->save();
+                            if ($key === 'end_time') {  
+                                $appointment[$key] = $end_time;                      
+                                continue;
+                            }
+                            $appointment[$key] = $input;
+                        }
+                        
+                        $appointment->technician_id = $technician_id;
+                        
+                        $appointment['slot_id'] = $slot_id;
+                        $appointment->save();
+                        array_push($appointments, $appointment);
+                    } else {
+                        if (sizeof($technician_id)) {
+                            $params = $request->route()->parameters();
+                            foreach($technician_id as $t_id) {
+                                $appointment = Appointment::where('slot_id', $slot_id)->where('technician_id', $t_id)->first();
+                                if ($appointment) {
+                                    continue;
+                                }
+
+                                $appointment = new Appointment();
+                                foreach ($inputs as $key => $input) {
+                                    if ($key === 'total'  || $key === 'slot_ids' || $key === 'available' || $key === 'appointment_id' || $key === 'technician_ids' || $key === 'technical_id' ||  $key === 'orderid') continue;
+                                    if ($key === 'id') {  
+                                        $appointment['slot_id'] = $input;                      
+                                        continue;
+                                    }
+                                    if ($key === 'start_time') {  
+                                        $appointment[$key] = $start_time;                      
+                                        continue;
+                                    }
+                                    if ($key === 'end_time') {  
+                                        $appointment[$key] = $end_time;                      
+                                        continue;
+                                    }
+                                    $appointment[$key] = $input;
+                                }
+                                $appointment['slot_id'] = $slot_id;
+                                $appointment->technician_id = $t_id;
+                                $appointment->client_id = $params['companyId'];
+                                $appointment->save();
+                                array_push($appointments, $appointment);
+                            }
                         }
                     }
-                }
-
-                
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $appointment,
-                ], 200);
-                
-                
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'error' => 'find_slot_fail',
-                    'message' => 'Does not find slot with '.$slot_id,
-                ], 500);    
+                }                           
             }
+            
+            return response()->json([
+                'status' => 'success',
+                'data' => $appointments,
+            ], 200);
 
         } catch (Exception $e) {
             return response()->json([
