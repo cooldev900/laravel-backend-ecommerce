@@ -163,7 +163,40 @@ class AppointmentController extends Controller
                 'internal_booking' => 'nullable|boolean',
                 'technician_id' => 'nullable|array',
                 'slot_ids' => 'nullable|array',
+                'isEdit' => 'nullable|boolean',
             ]);
+
+            $inputs = $request->all();
+            $params = $request->route()->parameters();
+
+            if (isset($inputs['isEdit']) && $inputs['isEdit']) {
+                $appointment = Appointment::findOrFail($inputs['id']);
+                if ($appointment) {
+                    foreach ($inputs as $key => $input) {
+                        if ($key === 'total'  || $key === 'slot_ids' || $key === 'isEdit' || $key === 'available' || $key === 'appointment_id' || $key === 'technician_ids' || $key === 'technical_id' ||  $key === 'orderid') continue;
+                        if ($key === 'id') {  
+                            $appointment['slot_id'] = $input;                      
+                            continue;
+                        }
+                        $appointment[$key] = $input;
+                    }
+                    $appointment['slot_id'] = $inputs['slot_ids'][0];
+                    $appointment->technician_id = $inputs['technician_id'][0];
+                    $appointment->client_id = $params['companyId'];
+                    $appointment->save();
+
+                    return response()->json([
+                        'status' => 'success',
+                        'data' => $appointment,
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => 'Not_Found_Appointment',
+                        'message' => 'Not_Found_Appointment',
+                    ], 500);
+                }
+            }
 
             $client_id = $request->input('clientID');
             $slot_id = $request->input('id');
@@ -193,7 +226,6 @@ class AppointmentController extends Controller
                         continue;    
                     }
 
-                    $inputs = $request->all();
                     $appointment = '';
 
                     $technician_id = $request->input('technician_id');
@@ -242,7 +274,6 @@ class AppointmentController extends Controller
                         array_push($appointments, $appointment);
                     } else {
                         if (sizeof($technician_id)) {
-                            $params = $request->route()->parameters();
                             foreach($technician_id as $t_id) {
                                 $appointment = Appointment::where('slot_id', $slot_id)->where('technician_id', $t_id)->first();
                                 if ($appointment) {
