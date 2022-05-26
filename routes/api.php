@@ -129,6 +129,19 @@ Route::prefix('{store_view}')->group(function () {
         Route::get('/barclaycard/transaction', [BarclayCardController::class, 'getTransaction'])->name('barclaycard.transaction');
         Route::post('/barclaycard/capture', [BarclayCardController::class, 'capturePaymentIntent'])->name('barclaycard.capture');
         Route::post('/barclaycard/refund', [BarclayCardController::class, 'createRefund'])->name('barclaycard.refund');
+
+        Route::prefix('/appointments/{companyId}')->group(function () {
+            Route::get('/', [AppointmentController::class, 'getAllAppointments'])->name('products.getAllAppointments');
+        });
+        
+        Route::prefix('/appointment/{companyId}')->group(function () {
+            Route::get('/', [AppointmentController::class, 'getSlots'])->name('products.getSlots');
+            Route::get('/getAppointment/{id}', [AppointmentController::class, 'getAppointment'])->name('products.getAppointment');
+            Route::post('/', [AppointmentController::class, 'setSlot'])->name('products.setSlots');
+            Route::delete('/', [AppointmentController::class, 'deleteSlot'])->name('products.deleteSlots');
+            Route::get('/fetchSlotData', [AppointmentController::class, 'fetchSlotData'])->name('products.fetchSlotData');
+            Route::get('/fetchTechnicians', [AppointmentController::class, 'fetchTechnicians'])->name('products.fetchTechnicians');
+        });
     });
 });
 
@@ -217,3 +230,6 @@ Route::prefix('vehicle')->group(function () {
 });
 
 Route::get('/appointments', [AppointmentController::class, 'getSlots'])->name('getSlots');
+Route::post('/appointments', [AppointmentController::class, 'setSlot'])->name('setSlot');
+Route::delete('/appointments', [AppointmentController::class, 'deleteSlot'])->name('deleteSlot');
+Route::get('/appointments/all', [AppointmentController::class, 'getAllAppointments'])->name('getAllAppointments');

@@ -19,7 +19,7 @@ class CreateAppointmentTable extends Migration
             $table->string('customer')->nullable();
             $table->dateTime('start_time')->nullable();
             $table->dateTime('end_time')->nullable();
-            $table->unsignedInteger('order_id')->nullable();
+            $table->string('order_id')->nullable();
             $table->boolean('booked_online')->nullable();
             $table->string('duration')->nullable();
             $table->string('note')->nullable();

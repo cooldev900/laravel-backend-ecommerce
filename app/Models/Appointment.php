@@ -19,7 +19,10 @@ class Appointment extends Model
     protected $hidden = ['created_at', 'updated_at'];
     protected $with = ['technician', 'slot'];
 
+    public $timestamps = false;
+
     protected $fillable = ['client_id', 'customer', 'consumer_key', 'start_time', 'end_time', 'order_id', 'booked_online', 'duration', 'note', 'internal_booking'];
+    protected $nullable = ['client_id', 'customer', 'consumer_key', 'start_time', 'end_time', 'order_id', 'booked_online', 'duration', 'note', 'internal_booking'];
 
     public function technician()
     {

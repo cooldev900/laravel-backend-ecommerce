@@ -30,7 +30,7 @@ class CheckPermission
         }
 
         // Check scope
-        if ($scope === 'shipments' || $scope === 'invoices' || $scope === 'transactions' || $scope === 'enquiries' || $scope === 'refunds') {
+        if ($scope === 'shipments' || $scope === 'invoices' || $scope === 'transactions' || $scope === 'enquiries' || $scope === 'appointments' || $scope === 'appointment' || $scope === 'refunds') {
             $has_orders_scope_access = in_array('orders', array_column($permissions->scopes, 'name'));
             $has_scope_access = in_array($scope, array_column($permissions->scopes, 'name'));
 
