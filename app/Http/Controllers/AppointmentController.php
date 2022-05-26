@@ -208,6 +208,7 @@ class AppointmentController extends Controller
                     if ($row) {
                         $appointment->technician_id = $row->id;
                     }
+                    $appointment['slot_id'] = $slot_id;
                     $appointment->save();
                 } else {
                     if (sizeof($technician_id)) {
@@ -230,6 +231,7 @@ class AppointmentController extends Controller
                                 }
                                 $appointment[$key] = $input;
                             }
+                            $appointment['slot_id'] = $slot_id;
                             $appointment->technician_id = $t_id;
                             $appointment->client_id = $params['companyId'];
                             $appointment->save();
