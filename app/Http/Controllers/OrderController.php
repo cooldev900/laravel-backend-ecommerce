@@ -8,6 +8,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Models\StoreView;
+use App\Models\Company;
+use App\Models\User;
 
 class OrderController extends Controller
 {
@@ -285,6 +288,57 @@ class OrderController extends Controller
             return response()->json([
                 'status' => 'error',
                 'error' => 'could_not_refund_invoice',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function newOrder(Request $request)
+    {
+        try {
+            // $user = JWTAuth::user();
+            // $storeview = $user['store_views'][0];
+
+            $store_view = $request->input('storeview');
+            $client_id = $request->input('client_id');
+            $location = $request->input('location');
+
+            $company = Company::findOrFail($client_id);
+            $sender = User::where('company_name', $company->name)->where('email_only', 1)->first(); 
+            $users = User::where('company_name', $company->name)->where('email_only',0)->get();
+            $to = '';
+            foreach($users as $key => $user) {
+                if ($key !== 0) $to .= ",";
+                $to .= $user['name']." <".$user['email'].">";
+            }
+
+            $storeview = StoreView::findOrFail($store_view);
+            
+            $mailClient = new Client();            
+            $mailClient->request(
+                'POST',
+                'https://api.eu.mailgun.net/v3/' . $storeview['email_domain'] . '/messages',
+                [
+                    'auth' => ['api', $storeview['email_password']],
+                    'form_params' => [
+                        'from' => $sender ? $sender->name.' <'.$sender->email.'>' : 'Mailgun Sandbox <' . $storeview['email_sender'] . '>',
+                        'to' => $to,
+                        'subject' => 'Hello Tom Brown',
+                        'template' => 'order',
+                        'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '"}'
+                    ]
+                ]
+            );           
+            
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $storeview,
+            ], 200);
+        } catch (GuzzleException $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_create_order',
                 'message' => $e->getMessage(),
             ], 500);
         }

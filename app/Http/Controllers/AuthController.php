@@ -286,6 +286,7 @@ class AuthController extends Controller
                 'locations' => 'array',
                 'is_admin' => 'numeric',
                 'image_base_url' => 'string',
+                'email_only' => 'boolean',
             ]);
 
             // Check if company was already registered
@@ -302,6 +303,7 @@ class AuthController extends Controller
             $newUser = new User();
             $newUser->email = $request->input('email');
             $newUser->name = $request->input('name');
+            $newUser->email_only = $request->input('email_only');
             $newUser->company_name = $request->input('company_name');
             $newUser->is_admin = $request->input('is_admin');
             $newUser->password = bcrypt($request->input('password'));

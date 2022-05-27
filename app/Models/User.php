@@ -63,6 +63,7 @@ class User extends Authenticatable implements JWTSubject
         'store_view',
         'scope',
         'role',
+        'email_only'
     ];
 
     /**
