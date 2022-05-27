@@ -204,7 +204,7 @@ class AppointmentController extends Controller
 
             $slot_ids = [];
             if ($slot_id) {
-                $slot_ids.push($slot_id);
+                array_push($slot_ids, $slot_id);
             } else {
                 $slot_ids = $request->input('slot_ids');
             }
@@ -245,7 +245,6 @@ class AppointmentController extends Controller
                         } else {
                             $old_ids = '0';
                         }
-                        
                         $remained_ids = DB::select("select id from technicians where id not in ({$old_ids})");
                         $technician_id = $remained_ids[0];
 
@@ -267,9 +266,9 @@ class AppointmentController extends Controller
                             $appointment[$key] = $input;
                         }
                         
-                        $appointment->technician_id = $technician_id;
+                        $appointment->technician_id = $technician_id->id;
                         
-                        $appointment['slot_id'] = $slot_id;
+                        $appointment->slot_id = $slot_id;
                         $appointment->save();
                         array_push($appointments, $appointment);
                     } else {
