@@ -133,6 +133,7 @@ class CompanyController extends Controller
             $company = Company::find($params['id']);
 
             foreach ($inputs as $key => $value) {
+                if (!in_array($key, (new Company())->getFillable())) continue;
                 if (array_search($key, $nonEncryptedFields) !== false) {
                     $company[$key] = $value;
                 } else {

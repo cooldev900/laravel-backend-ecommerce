@@ -13,7 +13,7 @@ class AddWebhook extends Migration
      */
     public function up()
     {
-        Schema::table('companies', function (Blueprint $table) {
+        Schema::table('store_views', function (Blueprint $table) {
             $table->string('webhook_token', 500)->nullable();           
         });
     }
@@ -25,7 +25,7 @@ class AddWebhook extends Migration
      */
     public function down()
     {
-        Schema::table('companies', function (Blueprint $table) {
+        Schema::table('store_views', function (Blueprint $table) {
             $table->dropColumn('webhook_token');
         });
     }

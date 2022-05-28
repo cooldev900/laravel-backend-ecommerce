@@ -305,8 +305,10 @@ class OrderController extends Controller
             $client_id = $request->input('client_id');
             $location = $request->input('location');
 
+            $storeview = StoreView::findOrFail($store_view);
+
             $company = Company::findOrFail($client_id);
-            if (!$company || $token != $company->token) {
+            if (!$company || $token != $storeview->token) {
                 return response()->json([
                     'status' => 'error',
                     'error' => 'Token_Not_Matched',
@@ -319,8 +321,6 @@ class OrderController extends Controller
             $to = '';
             foreach($users as $key => $user) {
                 $to .= $user['name']." <".$user['email'].">";
-            
-                $storeview = StoreView::findOrFail($store_view);
                 
                 $mailClient = new Client();            
                 $mailClient->request(
