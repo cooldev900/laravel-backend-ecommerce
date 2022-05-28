@@ -11,7 +11,7 @@
         "php": "^7.3|^8.0",
         "darkaonline/l5-swagger": "^8.0",
         "doctrine/dbal": "^3.3",
-        "elasticsearch/elasticsearch": "^7.17",
+        "elasticsearch/elasticsearch": "~5.1",
         "fruitcake/laravel-cors": "^2.0",
         "gmostafa/php-graphql-client": "^1.13",
         "guzzlehttp/guzzle": "^7.4",
