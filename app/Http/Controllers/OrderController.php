@@ -299,12 +299,20 @@ class OrderController extends Controller
         try {
             // $user = JWTAuth::user();
             // $storeview = $user['store_views'][0];
+            $token = $request->header('Token');
 
             $store_view = $request->input('storeview');
             $client_id = $request->input('client_id');
             $location = $request->input('location');
 
             $company = Company::findOrFail($client_id);
+            if (!$company || $token != $company->token) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Token_Not_Matched',
+                    'message' => 'Token is not matched',
+                ], 500);
+            }
             $user_ids = UserLocation::where('location_id', $location)->pluck('user_id');
             $sender = User::where('company_name', $company->name)->where('email_only', 0)->first(); 
             $users = User::where('company_name', $company->name)->where('email_only',1)->whereIn('id', $user_ids)->get();

@@ -80,12 +80,13 @@ class CompanyController extends Controller
                 'consumer_secret' => 'nullable|string',
                 'token' => 'nullable|string',
                 'token_secret' => 'nullable|string',
-                'image_base_url' => 'nullable|string'
+                'image_base_url' => 'nullable|string',
+                'webhook_token' => 'nullable|string'
             ]);
             $inputs = $request->all();
 
             $company = new Company();
-            $nonEncryptedFields = ['name', 'id', 'image_base_url', 'url'];
+            $nonEncryptedFields = ['name', 'id', 'image_base_url', 'url', 'webhook_token'];
             foreach ($inputs as $key => $input) {
                 if (array_search($key, $nonEncryptedFields) !== false) {
                     $company[$key] = $input;
@@ -121,13 +122,14 @@ class CompanyController extends Controller
                 'consumer_secret' => 'nullable|string',
                 'token' => 'nullable|string',
                 'token_secret' => 'nullable|string',
-                'image_base_url' => 'nullable|string'
+                'image_base_url' => 'nullable|string',
+                'webhook_token' => 'nullable|string'
             ]);
 
             $params = $request->route()->parameters();
             $inputs = $request->all();
 
-            $nonEncryptedFields = ['name', 'id', 'image_base_url', 'url'];
+            $nonEncryptedFields = ['name', 'id', 'image_base_url', 'url', 'webhook_token'];
             $company = Company::find($params['id']);
 
             foreach ($inputs as $key => $value) {
