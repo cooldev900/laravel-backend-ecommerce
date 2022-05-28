@@ -308,7 +308,7 @@ class OrderController extends Controller
             $storeview = StoreView::findOrFail($store_view);
 
             $company = Company::findOrFail($client_id);
-            if (!$company || $token != $storeview->token) {
+            if ($storeview && $token != $storeview->webhook_token) {
                 return response()->json([
                     'status' => 'error',
                     'error' => 'Token_Not_Matched',
@@ -343,7 +343,7 @@ class OrderController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data' => 'success',
+                'data' => $users,
             ], 200);
         } catch (GuzzleException $e) {
             return response()->json([
