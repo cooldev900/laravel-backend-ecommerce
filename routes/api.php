@@ -215,7 +215,7 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
 Route::get('/locations/{companyId}', [LocationController::class, 'allLocations'])->name('locations.all');
 Route::post('/enquiries', [EnquiryController::class, 'createEnquiry'])->name('enquiries.create');
 Route::post('/image-blob', [Controller::class, 'getImageBlob'])->name('getImageBlob');
-Route::get('/new-order', [OrderController::class, 'newOrder'])->name('webhooks.newOrder');
+Route::get('/mail/internal/new-order', [OrderController::class, 'newOrder'])->name('webhooks.newOrder');
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
