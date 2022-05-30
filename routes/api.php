@@ -131,10 +131,7 @@ Route::prefix('{store_view}')->group(function () {
         Route::post('/barclaycard/refund', [BarclayCardController::class, 'createRefund'])->name('barclaycard.refund');
 
         Route::prefix('/appointments/{companyId}')->group(function () {
-            Route::get('/', [AppointmentController::class, 'getAllAppointments'])->name('products.getAllAppointments');
-        });
-        
-        Route::prefix('/appointment/{companyId}')->group(function () {
+            Route::get('/getAllAppointments', [AppointmentController::class, 'getAllAppointments'])->name('products.getAllAppointments');
             Route::get('/', [AppointmentController::class, 'getSlots'])->name('products.getSlots');
             Route::get('/getAppointment/{id}', [AppointmentController::class, 'getAppointment'])->name('products.getAppointment');
             Route::post('/', [AppointmentController::class, 'setSlot'])->name('products.setSlots');
