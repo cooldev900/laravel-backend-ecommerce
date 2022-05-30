@@ -329,7 +329,7 @@ class OrderController extends Controller
                     [
                         'auth' => ['api', $storeview['email_password']],
                         'form_params' => [
-                            'from' => $sender ? $sender->name.' <'.$sender->email.'>' : 'Mailgun Sandbox <' . $storeview['email_sender'] . '>',
+                            'from' => 'Mailgun Sandbox <' . $storeview['email_sender'] . '>',
                             'to' => $to,
                             'subject' => 'New Order',
                             'template' => 'order',
