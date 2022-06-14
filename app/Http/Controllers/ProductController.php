@@ -150,6 +150,7 @@ class ProductController extends Controller
             $params = $request->route()->parameters();
             $storeId = $request->get('storeId') ?? '';
             $client = $this->makeHttpClient($params['store_view']);
+            // $response = $client->request('GET', $storeId ? 'products/' . $params['sku'].'?storeId='.$storeId : 'products/' . $params['sku']);
             $response = $client->request('GET', $storeId ? 'products/' . $params['sku'].'?storeId='.$storeId : 'products/' . $params['sku']);
 
             return response()->json([
