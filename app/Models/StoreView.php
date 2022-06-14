@@ -35,7 +35,7 @@ class StoreView extends Model
      * @var array
      */
     protected $hidden = ['created_at', 'updated_at', 'company_id', 'api_key_1', 'api_key_2', 'payment_additional_1',
-        'payment_additional_2', 'payment_additional_3', 'es_password'];
+        'payment_additional_2', 'payment_additional_3', 'es_password', 'webhook_token'];
 
     protected $with = ['company'];
 
@@ -43,7 +43,7 @@ class StoreView extends Model
         'code', 'store_id', 'company_id', 'payment_provider', 'api_key_1', 'api_key_2',
         'payment_additional_1', 'payment_additional_2', 'payment_additional_3', 'es_url',
         'es_index', 'es_username', 'es_password', 'vsf_url', 'vsf_preview', 'email_domain',
-        'email_password', 'email_sender', 'website_id', 'webhook_token'
+        'email_password', 'email_sender', 'website_id', 'webhook_token', 'language', 'currency', 'currency_code'
     ];
 
     public function company()

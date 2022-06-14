@@ -98,6 +98,9 @@ class StoreviewController extends Controller
                 'website_id' => 'nullable|string',
                 'whitelist' => 'nullable|string',
                 'webhook_token' => 'nullable|string',
+                'language' => 'nullable|string',
+                'currency' => 'nullable|string',
+                'currency_code' => 'nullable|string',
             ]);
 
             $inputs = $request->all();
@@ -175,6 +178,9 @@ class StoreviewController extends Controller
                 'website_id' => 'nullable|string',
                 'whitelist' => 'nullable|string',               
                 'webhook_token' => 'nullable|string',
+                'language' => 'nullable|string',
+                'currency' => 'nullable|string',
+                'currency_code' => 'nullable|string',
             ]);
 
             $params = $request->route()->parameters();
@@ -206,7 +212,10 @@ class StoreviewController extends Controller
                 'email_sender' => $request->input('email_sender') ?? $originStoreview->email_sender,
                 'website_id' => $request->input('website_id') ?? $originStoreview->website_id,
                 'whitelist' => $request->input('whitelist') ?? $originStoreview->whitelist,
-                'webhook_token' => $request->input('webhook_token') ?? $originStoreview->webhook_token
+                'webhook_token' => $request->input('webhook_token') ?? $originStoreview->webhook_token,
+                'language' => $request->input('language') ?? $originStoreview->language,
+                'currency' => $request->input('currency') ?? $originStoreview->currency,
+                'currency_code' => $request->input('currency_code') ?? $originStoreview->currency_code,
             ]);
 
             return response()->json([
