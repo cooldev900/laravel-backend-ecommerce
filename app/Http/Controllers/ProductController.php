@@ -148,8 +148,9 @@ class ProductController extends Controller
     {
         try {
             $params = $request->route()->parameters();
+            $storeId = $request->get('storeId') ?? '';
             $client = $this->makeHttpClient($params['store_view']);
-            $response = $client->request('GET', 'products/' . $params['sku']);
+            $response = $client->request('GET', 'products/' . $params['sku'].'?storeId='.$storeId);
 
             return response()->json([
                 'status' => 'success',
