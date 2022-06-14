@@ -59,7 +59,7 @@ class Controller extends BaseController
             'token_secret' => decrypt($company->token_secret),
         ]);
         $stack->push($middleware);
-
+    
         if (!$store_view) {
             return new Client([
                 'base_uri' => $company->url . '/rest/V1/',

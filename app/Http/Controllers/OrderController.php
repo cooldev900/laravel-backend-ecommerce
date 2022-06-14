@@ -353,4 +353,92 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    public function newExternalOrder(Request $request)
+    {
+        try {
+            // $user = JWTAuth::user();
+            // $storeview = $user['store_views'][0];
+            $token = $request->header('Token');
+
+            $store_view = $request->input('storeview');
+            $client_id = $request->input('client_id');
+            $location = $request->input('location');
+
+            $storeview = StoreView::findOrFail($store_view);
+
+            $company = Company::findOrFail($client_id);
+            if ($storeview && $token != $storeview->webhook_token) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Token_Not_Matched',
+                    'message' => 'Token is not matched',
+                ], 500);
+            }
+            $user_ids = UserLocation::where('location_id', $location)->pluck('user_id');
+            $sender = User::where('company_name', $company->name)->where('email_only', 0)->first(); 
+            $users = User::where('company_name', $company->name)->where('email_only',1)->whereIn('id', $user_ids)->get();
+            $to = '';
+            foreach($users as $key => $user) {
+                $to .= $user['name']." <".$user['email'].">";
+                
+                $mailClient = new Client();            
+                $mailClient->request(
+                    'POST',
+                    'https://api.eu.mailgun.net/v3/' . $storeview['email_domain'] . '/messages',
+                    [
+                        'auth' => ['api', $storeview['email_password']],
+                        'form_params' => [
+                            'from' => 'Mailgun Sandbox <' . $storeview['email_sender'] . '>',
+                            'to' => $to,
+                            'subject' => 'New Order',
+                            'template' => 'order',
+                            'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '"}'
+                        ]
+                    ]
+                );           
+            }
+
+            
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $users,
+            ], 200);
+        } catch (GuzzleException $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_create_order',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function openCarts(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
+            $search_criteria = json_decode($request->get('searchCriteria'));
+            $query = [
+                'query' => [
+                    'searchCriteria' => $search_criteria ? $search_criteria : '',
+                ],
+            ];
+
+            $response = $client->request('GET', 'carts/search', $query);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $response,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_delete_product',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

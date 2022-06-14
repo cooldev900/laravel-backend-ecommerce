@@ -75,6 +75,7 @@ Route::prefix('{store_view}')->group(function () {
         Route::get('/orders', [OrderController::class, 'allOrders'])->name('orders.all');
         Route::post('/orders', [OrderController::class, 'createOrder'])->name('orders.create');
         Route::get('/orders/items', [OrderController::class, 'getOrderItems'])->name('orders.items.all');
+        Route::get('/orders/open-carts', [OrderController::class, 'openCarts'])->name('orders.openCarts');
         Route::get('/orders/{id}', [OrderController::class, 'getOrder'])->name('orders.index');
         // Route::post('/orders/{id}', [OrderController::class, 'getOrder'])->name('orders.index');
         Route::post('/orders/{orderId}/ship', [ShipmentController::class, 'createShipment'])->name('orders.shipment.create');
@@ -213,6 +214,7 @@ Route::get('/locations/{companyId}', [LocationController::class, 'allLocations']
 Route::post('/enquiries', [EnquiryController::class, 'createEnquiry'])->name('enquiries.create');
 Route::post('/image-blob', [Controller::class, 'getImageBlob'])->name('getImageBlob');
 Route::get('/mail/internal/new-order', [OrderController::class, 'newOrder'])->name('webhooks.newOrder');
+Route::get('/mail/external/new-order', [OrderController::class, 'newExternalOrder'])->name('webhooks.newOrder');
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
