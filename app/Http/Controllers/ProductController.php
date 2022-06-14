@@ -344,7 +344,8 @@ class ProductController extends Controller
     public function getAttributes(Request $request)
     {
         try {
-            $client = $this->makeHttpClient('default');
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
             $search_criteria = json_decode($request->get('searchCriteria'));
             $query = [
                 'query' => [
@@ -369,7 +370,8 @@ class ProductController extends Controller
     public function getAttributeSets(Request $request)
     {
         try {
-            $client = $this->makeHttpClient('default');
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
             $params = $request->route()->parameters();
             $response = $client->request('GET', 'products/attribute-sets/' . $params['attributeSetId'] . '/attributes');
             return response()->json([
@@ -388,7 +390,8 @@ class ProductController extends Controller
     public function createAttributes(Request $request)
     {
         try {
-            $client = $this->makeHttpClient('default');
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
             $attribute = $request->input('attribute');
             $payload = [
                 'attribute' => $attribute,
@@ -415,7 +418,8 @@ class ProductController extends Controller
     public function getAttributeOptions(Request $request)
     {
         try {
-            $client = $this->makeHttpClient('default');
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
             $params = $request->route()->parameters();
 
             $response = $client->request('GET', 'products/attributes/' . $params['attributeCode'] . '/options');
@@ -436,7 +440,8 @@ class ProductController extends Controller
     public function createAttributeOptions(Request $request)
     {
         try {
-            $client = $this->makeHttpClient('default');
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
             $params = $request->route()->parameters();
 
             $option = $request->input('option');
