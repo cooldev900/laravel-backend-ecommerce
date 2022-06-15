@@ -150,13 +150,13 @@ class ProductController extends Controller
             $params = $request->route()->parameters();
             $storeId = $request->input('storeId') ?? '';
             $client = $this->makeHttpClient($params['store_view']);
-            // $response = $client->request('GET', 'products/' . $params['sku']);
+            $response = $client->request('GET', 'products/' . $params['sku']);
             // $response = $client->request('GET', $storeId ? 'products/' . $params['sku'].'?storeId='.$storeId : 'products/' . $params['sku']);
-            $url = $storeId ? 'products/' . $params['sku'].'?storeId='.$storeId : 'products/' . $params['sku'];
+            // $url = $storeId ? 'products/' . $params['sku'].'?storeId='.$storeId : 'products/' . $params['sku'];
             return response()->json([
                 'status' => 'success',
-                // 'data' => json_decode($response->getBody()),
-                'data' => json_decode($url),
+                'data' => json_decode($response->getBody()),
+                // 'data' => json_decode($url),
             ], 200);
         } catch (Exception $e) {
             return response()->json([
