@@ -238,7 +238,7 @@ class AppointmentController extends Controller
                         'status' => 'error',
                         'error' => 'fail_available_slot',
                         'message' => "You can book this appointment anymore",
-                    ], 500);
+                    ], 200);
                 }
 
                 $start_time = '';
