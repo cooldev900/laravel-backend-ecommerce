@@ -152,20 +152,21 @@ class AppointmentController extends Controller
     public function setSlot(Request $request) {
         try {
 
-            $request->validate([
-                'clientID' => 'nullable|string',
-                'start_time' => 'nullable|string',
-                'end_time' => 'nullable|string',
-                'id' => 'nullable|integer',
-                'orderid' => 'nullable|string',
-                'booked_online' => 'nullable|boolean',
-                'note' => 'nullable|string',
-                'internal_booking' => 'nullable|boolean',
-                'technician_id' => 'nullable|array',
-                'slot_ids' => 'nullable|array',
-                'isEdit' => 'nullable|boolean',
-            ]);
-
+            // $request->validate([
+            //     'clientID' => 'nullable|string',
+            //     'start_time' => 'nullable|string',
+            //     'end_time' => 'nullable|string',
+            //     'id' => 'nullable|integer',
+            //     'orderid' => 'nullable|string',
+            //     'booked_online' => 'nullable|boolean',
+            //     'note' => 'nullable|string',
+            //     'internal_booking' => 'nullable|boolean',
+            //     'technician_id' => 'nullable|array',
+            //     'slot_ids' => 'nullable|array',
+            //     'isEdit' => 'nullable|boolean',
+            //     'client_id' => 'nullable|string',
+            // ]);
+            
             $inputs = $request->all();
             $params = $request->route()->parameters();
 
