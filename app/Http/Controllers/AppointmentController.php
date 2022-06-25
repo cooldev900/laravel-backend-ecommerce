@@ -149,6 +149,22 @@ class AppointmentController extends Controller
         }
     }
 
+    private function isAvailable($client_id, $slot_id) {
+        $availableCount = DB::table('technicians')->select('*')->where('company_id', '=', $client_id)->get()->count();
+        // $sql = "SELECT t2.`client_id`, t1.*, t2.total, if( ifnull(total,0) < {$availableCount}, true, false) as available, t2.technician_ids, t2.id as appointment_id FROM slots AS t1  LEFT JOIN (
+        //     SELECT *, COUNT(*) AS total , GROUP_CONCAT(technician_id) AS technician_ids FROM appointments WHERE `client_id` = '{$client_id}' GROUP BY slot_id
+        // ) AS t2 ON t1.`id` = t2.`slot_id` WHERE t1.id == {$slot_id} ";
+        $sql = "SELECT t2.`client_id`, t1.*, t2.total, IF( IFNULL(total,0) < {$availableCount}, TRUE, FALSE) AS available, t2.technician_ids, t2.id AS appointment_id FROM slots AS t1  LEFT JOIN (
+            SELECT *, COUNT(*) AS total , GROUP_CONCAT(technician_id) AS technician_ids FROM appointments WHERE `client_id` = '{$client_id}' GROUP BY slot_id
+        ) AS t2 ON t1.`id` = t2.`slot_id` WHERE t1.id = '{$slot_id}' ";
+
+        $result = DB::select($sql);
+        if (isset($result) && sizeof($result) > 0)
+         return $result[0]->available;
+        else 
+         return 0;
+    }
+
     public function setSlot(Request $request) {
         try {
 
@@ -200,6 +216,9 @@ class AppointmentController extends Controller
             }
 
             $client_id = $request->input('clientID');
+            if (!$client_id) {
+                $client_id = $request->input('client_id');
+            }
             $slot_id = $request->input('id');
             if ($slot_id == -1) $slot_id = $request->input('slot_id');
 
@@ -208,11 +227,20 @@ class AppointmentController extends Controller
                 array_push($slot_ids, $slot_id);
             } else {
                 $slot_ids = $request->input('slot_ids');
-            }
+            }            
 
             $appointments = [];
 
             foreach($slot_ids as $slot_id) {
+                $availabe = $this->isAvailable($client_id, $slot_id);
+                if (!$availabe) {
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => 'fail_available_slot',
+                        'message' => "You can book this appointment anymore",
+                    ], 500);
+                }
+
                 $start_time = '';
                 $end_time = '';
 
