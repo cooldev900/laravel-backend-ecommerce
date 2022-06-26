@@ -435,6 +435,28 @@ class ProductController extends Controller
         }
     }
 
+    public function getWebsites(Request $request)
+    {
+        try {
+            $client = $this->makeHttpClient();
+            
+            $response = $client->request('GET', 'store/websites/', [
+                'headers' => ['Content-Type' => 'application/json'],
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_get_attribute',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function createAttributeOptions(Request $request)
     {
         try {

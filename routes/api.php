@@ -46,6 +46,7 @@ Route::middleware(['jwt_auth'])->group(function () {
 
     /********** Sending Email **********/
     Route::post('/send-email', [Controller::class, 'sendEmail'])->name('email.send');
+    Route::get('/websites', [ProductController::class, 'getWebsites'])->name('websites.all');
 });
 
 Route::prefix('{store_view}')->group(function () {
@@ -60,7 +61,6 @@ Route::prefix('{store_view}')->group(function () {
 
         /********** Products **********/
         Route::get('/products', [ProductController::class, 'allProducts'])->name('products.all');
-        Route::get('/websites', [ProductController::class, 'getWebsites'])->name('websites.all');
         Route::get('/products/graphql', [ProductController::class, 'gqlProducts'])->name('products.gql.all');
         Route::get('/products/elasticsearch', [ElasticSearchController::class, 'allProducts'])->name('products.elasticsearch.all');
         Route::post('/products', [ProductController::class, 'createProduct'])->name('products.create');
