@@ -60,6 +60,7 @@ Route::prefix('{store_view}')->group(function () {
 
         /********** Products **********/
         Route::get('/products', [ProductController::class, 'allProducts'])->name('products.all');
+        Route::get('/websites', [ProductController::class, 'getWebsites'])->name('websites.all');
         Route::get('/products/graphql', [ProductController::class, 'gqlProducts'])->name('products.gql.all');
         Route::get('/products/elasticsearch', [ElasticSearchController::class, 'allProducts'])->name('products.elasticsearch.all');
         Route::post('/products', [ProductController::class, 'createProduct'])->name('products.create');
@@ -213,8 +214,8 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
 Route::get('/locations/{companyId}', [LocationController::class, 'allLocations'])->name('locations.all');
 Route::post('/enquiries', [EnquiryController::class, 'createEnquiry'])->name('enquiries.create');
 Route::post('/image-blob', [Controller::class, 'getImageBlob'])->name('getImageBlob');
-Route::get('/mail/internal/new-order', [OrderController::class, 'newOrder'])->name('webhooks.newOrder');
-Route::get('/mail/external/new-order', [OrderController::class, 'newExternalOrder'])->name('webhooks.newOrder');
+Route::post('/mail/internal/new-order', [OrderController::class, 'newOrder'])->name('webhooks.newOrder');
+Route::post('/mail/external/new-order', [OrderController::class, 'newExternalOrder'])->name('webhooks.newOrder');
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
