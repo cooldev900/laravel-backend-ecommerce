@@ -237,7 +237,7 @@ class AppointmentController extends Controller
                     return response()->json([
                         'status' => 'error',
                         'error' => 'fail_available_slot',
-                        'message' => "You can book this appointment anymore",
+                        'message' => "You can not book this appointment anymore",
                     ], 200);
                 }
 
@@ -305,7 +305,7 @@ class AppointmentController extends Controller
                             return response()->json([
                                 'status' => 'error',
                                 'error' => 'fail_available_technicians',
-                                'message' => "You can book this appointment anymore because there is no technician",
+                                'message' => "You can not book this appointment anymore because there is no available technician",
                             ], 200);
                         }
                     } else {
