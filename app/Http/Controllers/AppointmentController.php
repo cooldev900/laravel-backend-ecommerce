@@ -275,31 +275,39 @@ class AppointmentController extends Controller
                             $old_ids = '0';
                         }
                         $remained_ids = DB::select("select id from technicians where id not in ({$old_ids})");
-                        $technician_id = $remained_ids[0];
-
-                        $appointment = new Appointment();
-                        foreach ($inputs as $key => $input) {
-                            if ($key === 'total' || $key === 'available' || $key === 'appointment_id' || $key === 'technician_ids' || $key === 'slot_ids') continue;
-                            if ($key === 'id') {  
-                                $appointment['slot_id'] = $input;                      
-                                continue;
+                        if (sizeof($remained_ids)) {
+                            $technician_id = $remained_ids[0];
+    
+                            $appointment = new Appointment();
+                            foreach ($inputs as $key => $input) {
+                                if ($key === 'total' || $key === 'available' || $key === 'appointment_id' || $key === 'technician_ids' || $key === 'slot_ids') continue;
+                                if ($key === 'id') {  
+                                    $appointment['slot_id'] = $input;                      
+                                    continue;
+                                }
+                                if ($key === 'start_time') {  
+                                    $appointment[$key] = $start_time;                      
+                                    continue;
+                                }
+                                if ($key === 'end_time') {  
+                                    $appointment[$key] = $end_time;                      
+                                    continue;
+                                }
+                                $appointment[$key] = $input;
                             }
-                            if ($key === 'start_time') {  
-                                $appointment[$key] = $start_time;                      
-                                continue;
-                            }
-                            if ($key === 'end_time') {  
-                                $appointment[$key] = $end_time;                      
-                                continue;
-                            }
-                            $appointment[$key] = $input;
+                            
+                            $appointment->technician_id = $technician_id->id;
+                            
+                            $appointment->slot_id = $slot_id;
+                            $appointment->save();
+                            array_push($appointments, $appointment);
+                        } else {
+                            return response()->json([
+                                'status' => 'error',
+                                'error' => 'fail_available_technicians',
+                                'message' => "You can book this appointment anymore because there is no technician",
+                            ], 200);
                         }
-                        
-                        $appointment->technician_id = $technician_id->id;
-                        
-                        $appointment->slot_id = $slot_id;
-                        $appointment->save();
-                        array_push($appointments, $appointment);
                     } else {
                         if (sizeof($technician_id)) {
                             foreach($technician_id as $t_id) {
