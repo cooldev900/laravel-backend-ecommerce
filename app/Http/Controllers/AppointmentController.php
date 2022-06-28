@@ -33,14 +33,11 @@ class AppointmentController extends Controller
             if ($this->fillSlots()) {
 
                 $availableCount = DB::table('technicians')->select('*')->where('company_id', '=', $client_id)->get()->count();
-                $sql = "SELECT t2.`client_id`, t1.*, t2.total, if( ifnull(total,0) < {$availableCount}, true, false) as available, t2.technician_ids, t2.id as appointment_id FROM slots AS t1  LEFT JOIN (
-                    SELECT *, COUNT(*) AS total , GROUP_CONCAT(technician_id) AS technician_ids FROM appointments WHERE `client_id` = '{$client_id}' GROUP BY slot_id
-                   ) AS t2 ON t1.`id` = t2.`slot_id` WHERE t1.`start_time` >= '{$start_date}' AND t1.`start_time` < '{$end_date}' ";
-                // $sql = "SELECT t2.`client_id`, t1.*, t2.total, if(ifnull(technicians_numbers, 0) > {$availableCount}, false, if(ifnull(total,0) < {$availableCount}, true, false)) as available, t2.technician_ids, t2.id as appointment_id FROM slots AS t1  LEFT JOIN (
-                //  SELECT *, COUNT(*) AS total , GROUP_CONCAT(technician_id) AS technician_ids FROM appointments WHERE `client_id` = '{$client_id}' GROUP BY slot_id
-                // ) AS t2 ON t1.`id` = t2.`slot_id` LEFT JOIN (
-                //  SELECT slot_id , COUNT(*) AS technicians_numbers FROM appointments GROUP BY slot_id
-                // ) AS t3 ON t1.`id` = t3.`slot_id` WHERE t1.`start_time` >= '{$start_date}' AND t1.`start_time` < '{$end_date}' ";
+                $sql = "SELECT t2.`client_id`, t1.*, t2.total, if(ifnull(technicians_numbers, 0) > {$availableCount}, false, if(ifnull(total,0) < {$availableCount}, true, false)) as available, t2.technician_ids, t2.id as appointment_id FROM slots AS t1  LEFT JOIN (
+                 SELECT *, COUNT(*) AS total , GROUP_CONCAT(technician_id) AS technician_ids FROM appointments WHERE `client_id` = '{$client_id}' GROUP BY slot_id
+                ) AS t2 ON t1.`id` = t2.`slot_id` LEFT JOIN (
+                 SELECT slot_id , COUNT(*) AS technicians_numbers FROM appointments GROUP BY slot_id
+                ) AS t3 ON t1.`id` = t3.`slot_id` WHERE t1.`start_time` >= '{$start_date}' AND t1.`start_time` < '{$end_date}' ";
 
                 $result = DB::select($sql);
 
@@ -156,14 +153,11 @@ class AppointmentController extends Controller
 
     private function isAvailable($client_id, $slot_id) {
         $availableCount = DB::table('technicians')->select('*')->where('company_id', '=', $client_id)->get()->count();
-        $sql = "SELECT t2.`client_id`, t1.*, t2.total, if( ifnull(total,0) < {$availableCount}, true, false) as available, t2.technician_ids, t2.id as appointment_id FROM slots AS t1  LEFT JOIN (
+        $sql = "SELECT t2.`client_id`, t1.*, t2.total, if(ifnull(technicians_numbers, 0) > {$availableCount}, false, if(ifnull(total,0) < {$availableCount}, true, false)) as available, t2.technician_ids, t2.id AS appointment_id FROM slots AS t1  LEFT JOIN (
             SELECT *, COUNT(*) AS total , GROUP_CONCAT(technician_id) AS technician_ids FROM appointments WHERE `client_id` = '{$client_id}' GROUP BY slot_id
-        ) AS t2 ON t1.`id` = t2.`slot_id` WHERE t1.id == {$slot_id} ";
-        // $sql = "SELECT t2.`client_id`, t1.*, t2.total, if(ifnull(technicians_numbers, 0) > {$availableCount}, false, if(ifnull(total,0) < {$availableCount}, true, false)) as available, t2.technician_ids, t2.id AS appointment_id FROM slots AS t1  LEFT JOIN (
-        //     SELECT *, COUNT(*) AS total , GROUP_CONCAT(technician_id) AS technician_ids FROM appointments WHERE `client_id` = '{$client_id}' GROUP BY slot_id
-        // ) AS t2 ON t1.`id` = t2.`slot_id` LEFT JOIN (
-        //          SELECT slot_id , COUNT(*) AS technicians_numbers FROM appointments GROUP BY slot_id
-        //         ) AS t3 ON t1.`id` = t3.`slot_id` WHERE t1.id = '{$slot_id}' ";
+        ) AS t2 ON t1.`id` = t2.`slot_id` LEFT JOIN (
+                 SELECT slot_id , COUNT(*) AS technicians_numbers FROM appointments GROUP BY slot_id
+                ) AS t3 ON t1.`id` = t3.`slot_id` WHERE t1.id = '{$slot_id}' ";
 
         $result = DB::select($sql);
         if (isset($result) && sizeof($result) > 0)
