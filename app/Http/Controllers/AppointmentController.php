@@ -271,7 +271,7 @@ class AppointmentController extends Controller
                         } else {
                             $old_ids = '0';
                         }
-                        $remained_ids = DB::select("select id from technicians where id not in ({$old_ids})");
+                        $remained_ids = DB::select("select id from technicians where id not in ({$old_ids}) and where company_id='{$client_id}'");
                         if (sizeof($remained_ids)) {
                             $technician_id = $remained_ids[0];
     
