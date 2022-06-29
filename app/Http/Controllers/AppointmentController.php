@@ -194,6 +194,12 @@ class AppointmentController extends Controller
                         }
                         $appointment[$key] = $input;
                     }
+                    $slot_id = $inputs['slot_ids'][0];
+                    $slot = Slot::findOrFail($slot_id);
+                    if ($slot) {
+                        $appointment->start_time = $slot->start_time;
+                        $appointment->end_time = $slot->end_time;
+                    }
                     $appointment['slot_id'] = $inputs['slot_ids'][0];
                     $appointment->technician_id = $inputs['technician_id'][0];
                     $appointment->client_id = $params['companyId'];
