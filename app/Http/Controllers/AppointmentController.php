@@ -162,6 +162,20 @@ class AppointmentController extends Controller
          return 0;
     }
 
+    public function isAvaibleSlot(Request $request) {
+        $request->validate([
+            'slot_id' => 'string',
+            'client_id' => 'string',
+        ]);
+        $client_id = $request->input('client_id');
+        $slot_id = $request->input('slot_id');
+        $availabe = $this->isAvailable($client_id, $slot_id);
+        return response()->json([
+            'status' => 'success',
+            'data' => $availabe,
+        ], 200);
+    }
+
     public function setSlot(Request $request) {
         try {
 

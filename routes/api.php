@@ -234,3 +234,4 @@ Route::get('/appointments', [AppointmentController::class, 'getSlots'])->name('g
 Route::post('/appointments', [AppointmentController::class, 'setSlot'])->name('setSlot');
 Route::delete('/appointments', [AppointmentController::class, 'deleteSlot'])->name('deleteSlot');
 Route::get('/appointments/all', [AppointmentController::class, 'getAllAppointments'])->name('getAllAppointments');
+Route::get('/available-slot', [AppointmentController::class, 'isAvaibleSlot'])->name('isAvaibleSlot');
