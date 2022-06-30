@@ -198,6 +198,16 @@ class AppointmentController extends Controller
             $params = $request->route()->parameters();
 
             if (isset($inputs['isEdit']) && $inputs['isEdit']) {
+                $slot_id = $inputs['slot_ids'][0];
+                $client_id = $params['companyId'];
+                $availabe = $this->isAvailable($client_id, $slot_id);
+                if (!$availabe) {
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => 'fail_available_slot',
+                        'message' => "You can not book this appointment anymore",
+                    ], 200);
+                }
                 $appointment = Appointment::findOrFail($inputs['id']);
                 if ($appointment) {
                     foreach ($inputs as $key => $input) {
@@ -208,15 +218,14 @@ class AppointmentController extends Controller
                         }
                         $appointment[$key] = $input;
                     }
-                    $slot_id = $inputs['slot_ids'][0];
                     $slot = Slot::findOrFail($slot_id);
                     if ($slot) {
                         $appointment->start_time = $slot->start_time;
                         $appointment->end_time = $slot->end_time;
                     }
-                    $appointment['slot_id'] = $inputs['slot_ids'][0];
+                    $appointment['slot_id'] = $slot_id;
                     $appointment->technician_id = $inputs['technician_id'];
-                    $appointment->client_id = $params['companyId'];
+                    $appointment->client_id = $client_id;
                     $appointment->save();
 
                     return response()->json([
