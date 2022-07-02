@@ -76,6 +76,7 @@ class ProviderController extends Controller
     
             $sql .= "`manual_capture` tinyint(1) DEFAULT NULL,\n
                     `refund_in_platform` tinyint(1) DEFAULT NULL,\n
+                    `status` tinyint(1) DEFAULT NULL,\n
                     `store_views_id` INT(10) UNSIGNED DEFAULT NULL\n,
                       PRIMARY KEY (`id`)\n
                      ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
