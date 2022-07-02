@@ -18,6 +18,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\StoreviewController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\CybersourceController;
+use App\Http\Controllers\ProviderController;
 //use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\RefundController;
 use App\Http\Controllers\UserController;
@@ -102,9 +104,9 @@ Route::prefix('{store_view}')->group(function () {
         /********** Customers **********/
         Route::get('/customers', [CustomerController::class, 'allCustomers'])->name('customer.all');
         Route::get('/customers/{customerId}', [CustomerController::class, 'getCustomer'])->name('customer.index');
-        Route::put('/customers/{customerId}', [CustomerController::class, 'updateCustomer'])->name('customer.index');
-        Route::get('/customers/{customerId}/billingAddress', [CustomerController::class, 'getCustomerBillingAddress'])->name('customer.index');
-        Route::get('/customers/{customerId}/shippingAddress', [CustomerController::class, 'getCustomerShippingAddress'])->name('customer.index');
+        Route::put('/customers/{customerId}', [CustomerController::class, 'updateCustomer'])->name('customer.update');
+        Route::get('/customers/{customerId}/billingAddress', [CustomerController::class, 'getCustomerBillingAddress'])->name('customer.billingAddress');
+        Route::get('/customers/{customerId}/shippingAddress', [CustomerController::class, 'getCustomerShippingAddress'])->name('customer.shipping');
         Route::delete('/customers/{customerId}', [CustomerController::class, 'deleteCustomer'])->name('customer.delete');
 
         /********** Shipments **********/
@@ -121,7 +123,12 @@ Route::prefix('{store_view}')->group(function () {
         /********** Stripe **********/
         Route::post('/stripe/transaction', [StripeController::class, 'getTransaction'])->name('stripe.transaction.index');
         Route::post('/stripe/capture', [StripeController::class, 'capturePaymentIntent'])->name('stripe.refund.create');
-        Route::post('/stripe/refund', [StripeController::class, 'createRefund'])->name('stripe.refund.create');
+        Route::post('/stripe/refund', [StripeController::class, 'createRefund'])->name('stripe.refund.refund');
+
+        /********** CyberSource **********/
+        Route::get('/cybersource/transaction/{id}', [CybersourceController::class, 'getTransaction'])->name('cyersource.transaction.index');
+        Route::post('/cybersource/capture', [CybersourceController::class, 'capture'])->name('cyersource.refund.create');
+        Route::post('/cybersource/void', [CybersourceController::class, 'void'])->name('cyersource.refund.void');
 
         /********** Paypal **********/
         Route::post('/paypal/transaction', [PaypalController::class, 'capturePaymentIntent'])->name('paypal.transaction.index');
@@ -145,7 +152,7 @@ Route::prefix('{store_view}')->group(function () {
 });
 
 Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
-    Route::get('/products/getAllAttributes', [ProductController::class, 'getAttributeSets'])->name('products.attributes.set.all');
+    Route::get('/products/getAllAttributes', [ProductController::class, 'getAttributeSets'])->name('products.attributes.get.all');
 
     Route::prefix('storeviews')->group(function () {
         Route::get('/', [StoreviewController::class, 'allStoreviews'])->name('storeviews.all');
@@ -180,19 +187,19 @@ Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
     });
 
     Route::prefix('/attributeGroup/{companyId}')->group(function () {
-        Route::get('/', [AttributeGroupController::class, 'allattributes'])->name('attributes.all');
-        Route::get('/{id}', [AttributeGroupController::class, 'getAttribute'])->name('attributes.index');
-        Route::post('/', [AttributeGroupController::class, 'createAttribute'])->name('attributes.create');
-        Route::put('/{id}', [AttributeGroupController::class, 'updateAttribute'])->name('attributes.update');
-        Route::delete('/{id}', [AttributeGroupController::class, 'deleteAttribute'])->name('attributes.delete');
+        Route::get('/', [AttributeGroupController::class, 'allattributes'])->name('attributes.all1');
+        Route::get('/{id}', [AttributeGroupController::class, 'getAttribute'])->name('attributes.index1');
+        Route::post('/', [AttributeGroupController::class, 'createAttribute'])->name('attributes.create1');
+        Route::put('/{id}', [AttributeGroupController::class, 'updateAttribute'])->name('attributes.update1');
+        Route::delete('/{id}', [AttributeGroupController::class, 'deleteAttribute'])->name('attributes.delete1');
     });
 
     Route::prefix('/resource/{companyId}')->group(function () {
-        Route::get('/', [ResourceController::class, 'allattributes'])->name('attributes.all');
-        Route::get('/{id}', [ResourceController::class, 'getAttribute'])->name('attributes.index');
-        Route::post('/', [ResourceController::class, 'createAttribute'])->name('attributes.create');
-        Route::put('/{id}', [ResourceController::class, 'updateAttribute'])->name('attributes.update');
-        Route::delete('/{id}', [ResourceController::class, 'deleteAttribute'])->name('attributes.delete');
+        Route::get('/', [ResourceController::class, 'allattributes'])->name('attributes.all2');
+        Route::get('/{id}', [ResourceController::class, 'getAttribute'])->name('attributes.index2');
+        Route::post('/', [ResourceController::class, 'createAttribute'])->name('attributes.create2');
+        Route::put('/{id}', [ResourceController::class, 'updateAttribute'])->name('attributes.update2');
+        Route::delete('/{id}', [ResourceController::class, 'deleteAttribute'])->name('attributes.delete2');
     });
 
     Route::post('/auth/register', [AuthController::class, 'register'])->name('register');
@@ -215,7 +222,7 @@ Route::get('/locations/{companyId}', [LocationController::class, 'allLocations']
 Route::post('/enquiries', [EnquiryController::class, 'createEnquiry'])->name('enquiries.create');
 Route::post('/image-blob', [Controller::class, 'getImageBlob'])->name('getImageBlob');
 Route::post('/mail/internal/new-order', [OrderController::class, 'newOrder'])->name('webhooks.newOrder');
-Route::post('/mail/external/new-order', [OrderController::class, 'newExternalOrder'])->name('webhooks.newOrder');
+Route::post('/mail/external/new-order', [OrderController::class, 'newExternalOrder'])->name('webhooks.newOrder1');
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
@@ -235,3 +242,15 @@ Route::post('/appointments', [AppointmentController::class, 'setSlot'])->name('s
 Route::delete('/appointments', [AppointmentController::class, 'deleteSlot'])->name('deleteSlot');
 Route::get('/appointments/all', [AppointmentController::class, 'getAllAppointments'])->name('getAllAppointments');
 Route::get('/available-slot', [AppointmentController::class, 'isAvaibleSlot'])->name('isAvaibleSlot');
+
+Route::get('/cybersource/transaction/{id}', [CybersourceController::class, 'getTransaction'])->name('cyersource.transaction.index1');
+Route::post('/cybersource/capture', [CybersourceController::class, 'capture'])->name('cyersource.refund.create1');
+Route::post('/cybersource/void', [CybersourceController::class, 'void'])->name('cyersource.refund.void1');
+
+Route::prefix('providers')->group(function () {
+    Route::post('/', [ProviderController::class, 'store'])->name('providers.create');
+    Route::delete('/{id}', [ProviderController::class, 'destroy'])->name('providers.delete');
+    Route::post('/{id}/addFields', [ProviderController::class, 'addFields'])->name('providers.addFields');
+    Route::put('/{id}/editField', [ProviderController::class, 'editField'])->name('providers.editField');
+    Route::delete('/{id}/deleteField', [ProviderController::class, 'deleteField'])->name('providers.deleteField');
+});
