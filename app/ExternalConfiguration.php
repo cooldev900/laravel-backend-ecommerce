@@ -37,7 +37,7 @@ class ExternalConfiguration
         $this->clientSecret = "";
 
         // New Logging
-        $this->enableLogging = true;
+        $this->enableLogging = false;
         $this->debugLogFile = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "Log" . DIRECTORY_SEPARATOR . "debugTest.log";
         $this->errorLogFile = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "Log" . DIRECTORY_SEPARATOR . "errorTest.log";
         $this->logDateFormat = "Y-m-d\TH:i:s";
