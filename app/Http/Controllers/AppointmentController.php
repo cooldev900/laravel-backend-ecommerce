@@ -196,7 +196,7 @@ class AppointmentController extends Controller
             
             $inputs = $request->all();
             $params = $request->route()->parameters();
-
+            
             if (isset($inputs['isEdit']) && $inputs['isEdit']) {
                 $slot_id = $inputs['slot_ids'][0];
                 $client_id = $params['companyId'];
@@ -245,6 +245,8 @@ class AppointmentController extends Controller
             if (!$client_id) {
                 $client_id = $request->input('client_id');
             }
+            if (!$client_id)
+                $client_id = $params['companyId'];
             $slot_id = $request->input('id');
             if ($slot_id == -1) $slot_id = $request->input('slot_id');
 
@@ -256,15 +258,11 @@ class AppointmentController extends Controller
             }            
 
             $appointments = [];
-
+            
             foreach($slot_ids as $slot_id) {
                 $availabe = $this->isAvailable($client_id, $slot_id);
                 if (!$availabe) {
-                    return response()->json([
-                        'status' => 'error',
-                        'error' => 'fail_available_slot',
-                        'message' => "You can not book this appointment anymore",
-                    ], 200);
+                    continue;
                 }
 
                 $start_time = '';
@@ -328,11 +326,7 @@ class AppointmentController extends Controller
                             $appointment->save();
                             array_push($appointments, $appointment);
                         } else {
-                            return response()->json([
-                                'status' => 'error',
-                                'error' => 'fail_available_technicians',
-                                'message' => "You can not book this appointment anymore because there is no available technician",
-                            ], 200);
+                            continue;
                         }
                     } else {
                         if (sizeof($technician_id)) {
