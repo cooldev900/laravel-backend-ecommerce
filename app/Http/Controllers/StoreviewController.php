@@ -106,6 +106,8 @@ class StoreviewController extends Controller
             $inputs = $request->all();
             $newStoreView = new StoreView();
             foreach ($inputs as $key => $input) {
+                if ($key === 'paypal' || $key === 'stripe' || $key === 'cybersource' || $key === 'checkoutcom')
+                    continue;
                 if (($key === 'api_key_1'
                     || $key === 'api_key_2' || $key === 'payment_additional_1'
                     || $key === 'payment_additional_2' || $key === 'payment_additional_3'
@@ -116,6 +118,11 @@ class StoreviewController extends Controller
                 }
             }
             $newStoreView->save();
+
+            $newStoreView->paypal()->create($this->encryptPaypalKeys($inputs['paypal']));
+            $newStoreView->stripe()->create($this->encryptStripeKeys($inputs['stripe']));
+            $newStoreView->cybersource()->create($this->encryptCybersourceKeys($inputs['cybersource']));
+            $newStoreView->checkoutcom()->create($this->encryptCheckoutcomKeys($inputs['checkoutcom']));
 
             return response()->json([
                 'status' => 'success',
@@ -130,6 +137,46 @@ class StoreviewController extends Controller
         }
     }
 
+    private function encryptPaypalKeys($values) {
+        if (!sizeof($values)) return $values;
+        foreach($values as $key => $value) {    
+            if ($key === 'client_id') $values[$key] = encrypt($value);
+            if ($key === 'client_secret') $values[$key] = encrypt($value);
+            if ($key === 'public_key') $values[$key] = encrypt($value);
+        }
+        return $values;
+    }
+    
+    private function encryptStripeKeys($values) {
+        if (!sizeof($values)) return $values;
+        foreach($values as $key => $value) {    
+            if ($key === 'public_api_key') $values[$key] = encrypt($value);
+            if ($key === 'secret_api_key') $values[$key] = encrypt($value);
+            if ($key === 'webhook_secret') $values[$key] = encrypt($value);
+        }
+        return $values;
+    }
+    
+    private function encryptCybersourceKeys($values) {
+        if (!sizeof($values)) return $values;
+        foreach($values as $key => $value) {    
+            if ($key === 'merchant_id') $values[$key] = encrypt($value);
+            if ($key === 'key') $values[$key] = encrypt($value);
+            if ($key === 'shared_secret_key') $values[$key] = encrypt($value);
+        }
+        return $values;
+    }
+    
+    private function encryptCheckoutcomKeys($values) {
+        if (!sizeof($values)) return $values;
+        foreach($values as $key => $value) {    
+            if ($key === 'public_api_key') $values[$key] = encrypt($value);
+            if ($key === 'secret_api_key') $values[$key] = encrypt($value);
+            if ($key === 'webhook_secret') $values[$key] = encrypt($value);
+        }
+        return $values;
+    }
+
     public function deleteStoreview(Request $request)
     {
         try {
@@ -138,6 +185,10 @@ class StoreviewController extends Controller
             $userPermissions->delete();
 
             $storeview = StoreView::find($params['id']);
+            $newStoreView->paypal()->delete();
+            $newStoreView->stripe()->delete();
+            $newStoreView->cybersource()->delete();
+            $newStoreView->checkoutcom()->delete();
             $storeview->delete();
 
             return response()->json([
@@ -182,7 +233,7 @@ class StoreviewController extends Controller
                 'currency' => 'nullable|string',
                 'currency_code' => 'nullable|string',
             ]);
-
+            
             $params = $request->route()->parameters();
             $originStoreview = StoreView::find($params['id']);
             $storeview = $originStoreview->update([
@@ -218,9 +269,14 @@ class StoreviewController extends Controller
                 'currency_code' => $request->input('currency_code') ?? $originStoreview->currency_code,
             ]);
 
+            $originStoreview->paypal()->update($this->encryptPaypalKeys($request->input('paypal')));
+            $originStoreview->stripe()->update($this->encryptStripeKeys($request->input('stripe')));
+            $originStoreview->cybersource()->update($this->encryptCybersourceKeys($request->input('cybersource')));
+            $originStoreview->checkoutcom()->update($this->encryptCheckoutcomKeys($request->input('checkoutcom')));
+
             return response()->json([
                 'status' => 'success',
-                'data' => $storeview,
+                'data' => $originStoreview,
             ], 200);
         } catch (Exception $e) {
             return response()->json([

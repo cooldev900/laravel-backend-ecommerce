@@ -6,6 +6,12 @@ use App\Models\Company;
 use App\Models\AttributeGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Provider;
+use App\Models\ProviderFeilds;
+use App\Models\Paypal;
+use App\Models\Stripe;
+use App\Models\Cybersource;
+use App\Models\CheckoutCom;
 
 /**
  * @OA\Schema(
@@ -37,7 +43,7 @@ class StoreView extends Model
     protected $hidden = ['created_at', 'updated_at', 'company_id', 'api_key_1', 'api_key_2', 'payment_additional_1',
         'payment_additional_2', 'payment_additional_3', 'es_password', 'webhook_token'];
 
-    protected $with = ['company'];
+    protected $with = ['company', 'paypal', 'stripe', 'cybersource', 'checkoutcom'];
 
     protected $fillable = [
         'code', 'store_id', 'company_id', 'payment_provider', 'api_key_1', 'api_key_2',
@@ -49,5 +55,21 @@ class StoreView extends Model
     public function company()
     {
         return $this->hasOne(Company::class, 'id', 'company_id');
+    }
+
+    public function paypal() {
+        return $this->hasOne(Paypal::class);
+    }
+
+    public function stripe() {
+        return $this->hasOne(Stripe::class);
+    }
+
+    public function cybersource() {
+        return $this->hasOne(Cybersource::class);
+    }
+
+    public function checkoutcom() {
+        return $this->hasOne(CheckoutCom::class);
     }
 }

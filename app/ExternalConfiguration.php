@@ -3,7 +3,7 @@
 * Purpose : passing Authentication config object to the configuration
 */
 namespace CyberSource;
-require_once __DIR__. DIRECTORY_SEPARATOR .'../vendor/autoload.php';
+// require_once __DIR__. DIRECTORY_SEPARATOR .'../vendor/autoload.php';
 
 class ExternalConfiguration
 {

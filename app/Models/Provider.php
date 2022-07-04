@@ -21,4 +21,8 @@ class Provider extends Model
     {
         return $this->hasMany(ProviderFields::class);
     }
+
+    public function getTableNameAttribute() {
+        return "provider_{$this->name}";
+    }
 }

@@ -224,6 +224,7 @@ class AppointmentController extends Controller
                         $appointment->end_time = $slot->end_time;
                     }
                     $appointment['slot_id'] = $slot_id;
+                    $technician_id = $inputs['technician_id'];
                     $appointment->technician_id = $inputs['technician_id'];
                     $appointment->client_id = $client_id;
                     $appointment->save();
