@@ -15,7 +15,11 @@ class AttributeGroup extends Model
 
     protected $fillable = [
         'name',
-        'attribute_id'
+        'attribute_id',
+        'product_tool_1',
+        'product_tool_2',
+        'product_tool_3',
+        'product_tool_4',
     ];
 
     public $timestamps = false;

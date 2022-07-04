@@ -36,6 +36,10 @@ class AttributeGroupController extends Controller
                 'name' => 'nullable|string',
                 'attribute_id' => 'nullable|string',
                 'store_views' => 'nullable|array',
+                'product_tool_1' => 'nullable|boolean',
+                'product_tool_2' => 'nullable|boolean',
+                'product_tool_3' => 'nullable|boolean',
+                'product_tool_4' => 'nullable|boolean',
             ]);
 
             $inputs = $request->all();
@@ -80,6 +84,10 @@ class AttributeGroupController extends Controller
                 'name' => 'nullable|string',
                 'attribute_id' => 'nullable|string',
                 'store_views' => 'nullable|array',
+                'product_tool_1' => 'nullable|boolean',
+                'product_tool_2' => 'nullable|boolean',
+                'product_tool_3' => 'nullable|boolean',
+                'product_tool_4' => 'nullable|boolean',
             ]);
 
             $params = $request->route()->parameters();
@@ -87,7 +95,11 @@ class AttributeGroupController extends Controller
             if ($attribute) {
                 $attribute->update([
                     'name' => $request->input('name'),
-                    'attribute_id' => $request->input('attribute_id')
+                    'attribute_id' => $request->input('attribute_id'),
+                    'product_tool_1' => $request->input('product_tool_1'),
+                    'product_tool_2' => $request->input('product_tool_2'),
+                    'product_tool_3' => $request->input('product_tool_3'),
+                    'product_tool_4' => $request->input('product_tool_4'),
                 ]);
     
                 if ($attribute) $attribute->storeviews()->delete();
