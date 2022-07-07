@@ -269,9 +269,11 @@
                                                                 <p style="font-size: 14px; line-height: 140%;">&nbsp;
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 140%;"><span
-                                                                        style="font-size: 18px; line-height: 25.2px; color: #666666;">Your passcode is {{$user['passcode']}}</span></p>
+                                                                        style="font-size: 18px; line-height: 25.2px; color: #666666;">Your one time passcode is {{$user['passcode']}}</span></p>
                                                                 <p style="font-size: 14px; line-height: 140%;">&nbsp;
                                                                 </p>
+                                                                <p style="font-size: 14px; line-height: 140%;"><span
+                                                                        style="font-size: 18px; line-height: 25.2px; color: #666666;">Please enter this passcode to login. This will be valid for 10 minutes. </span></p>
                                                             </div>
 
                                                         </td>
@@ -287,7 +289,7 @@
                                                             align="left">
 
                                                             <div align="center">
-                                                                <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:'Lato',sans-serif;"><tr><td style="font-family:'Lato',sans-serif;" align="left"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:51px; v-text-anchor:middle; width:205px;" arcsize="2%" stroke="f" fillcolor="#18163a"><w:anchorlock/><center style="color:#FFFFFF;font-family:'Lato',sans-serif;"><![endif]-->
+                                                                [if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:'Lato',sans-serif;"><tr><td style="font-family:'Lato',sans-serif;" align="left"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:51px; v-text-anchor:middle; width:205px;" arcsize="2%" stroke="f" fillcolor="#18163a"><w:anchorlock/><center style="color:#FFFFFF;font-family:'Lato',sans-serif;"><![endif]
                                                                 <a href="{{'https://omninext.app/auth/passcode/'.$user['id']}}"
                                                                     style="box-sizing: border-box;display: inline-block;font-family:'Lato',sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #3378cd; border-radius: 1px;-webkit-border-radius: 1px; -moz-border-radius: 1px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
                                                                     <span
@@ -295,7 +297,7 @@
                                                                             style="font-size: 18px; line-height: 21.6px;">Reset
                                                                             Password</span></span>
                                                                 </a>
-                                                                <!--[if mso]></center></v:roundrect></td></tr></table><![endif]-->
+                                                                
                                                             </div>
 
                                                         </td>
