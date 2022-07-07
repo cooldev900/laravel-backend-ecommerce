@@ -201,7 +201,7 @@ class AuthController extends Controller
         $user = JWTAuth::user();
         event(new LoginHistory($user));
 
-        if (!$user['is_admin'] && !$user['first_login']) {
+        if (!$user['is_admin'] && !$user['first_login'] && $user['mfa']) {
             $randomNumber = random_int(100000, 999999);
 
             $oldRow = UserPassCode::where('user_id', $user->id);
@@ -232,7 +232,7 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'user' => $this->getPermission($user),
-            'token' => $user['is_admin'] || $user['first_login'] ? $token : '',
+            'token' => $user['is_admin'] || $user['first_login'] ||  !$user['mfa'] ? $token : '',
         ], 200);
     }
 
@@ -247,6 +247,16 @@ class AuthController extends Controller
         try {
             // attempt to verify the credentials and create a token for the user
             $user_passcode = UserPassCode::where('user_id', $request->input('id'))->first();
+            
+            $difference = Carbon::now()->diffInSeconds($user_passcode->updated_at);
+            if ($difference > 600) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'passcode_expired',
+                    'message' => 'Passcode expired',
+                ], 400);
+            }
+
             if ($user_passcode) {
                 if ($user_passcode->passcode === $request->input('passcode')) {
                     $user = User::find($request->input('id'));
@@ -376,6 +386,7 @@ class AuthController extends Controller
                 'is_admin' => 'numeric',
                 'image_base_url' => 'string',
                 'email_only' => 'boolean',
+                'mfa' => 'boolean',
             ]);
 
             // Check if company was already registered
@@ -396,6 +407,7 @@ class AuthController extends Controller
             $newUser->company_name = $request->input('company_name');
             $newUser->is_admin = $request->input('is_admin');
             $newUser->password = bcrypt($request->input('password'));
+            $newUser->mfa = $request->input('mfa');
             $newUser->save();
 
             //Register a new company
