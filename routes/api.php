@@ -20,7 +20,7 @@ use App\Http\Controllers\StoreviewController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\CybersourceController;
 use App\Http\Controllers\ProviderController;
-//use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\MarketingController;
 use App\Http\Controllers\RefundController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +53,8 @@ Route::middleware(['jwt_auth'])->group(function () {
 
 Route::prefix('{store_view}')->group(function () {
     Route::middleware(['jwt_auth', 'permission'])->group(function () {
+        Route::get('/marketing/getAllCoupons', [MarketingController::class, 'getAllCoupons'])->name('marketing.coupons.all');
+        Route::get('/marketing/getSalesRule/{rule_id}', [MarketingController::class, 'getSalesRule'])->name('marketing.coupons.getSalesRule');
 
         /********** Products-attributes **********/
         Route::get('/products/attributes', [ProductController::class, 'getAttributes'])->name('products.attributes.all');
