@@ -215,18 +215,18 @@ class AuthController extends Controller
             $user_passcode->token = encrypt($request->input('password'));;
             $user_passcode->save();
 
-            // Mail::to($request->email)->send(new SendPassCode($randomNumber, $user->id, $user->name));
+            Mail::to($request->email)->send(new SendPassCode($randomNumber, $user->id, $user->name));
 
-            // if (Mail::failures() != 0) {
+            if (Mail::failures() != 0) {
                 
-            // } else {
-            //     $user_passcode->delete();
-            //     return response()->json([
-            //         'status' => 'error',
-            //         'error' => 'Fail_sent_passcode_email',
-            //         'message' => 'Failed! there is some issue with email provider to send passcode',
-            //     ], 500);
-            // }
+            } else {
+                $user_passcode->delete();
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Fail_sent_passcode_email',
+                    'message' => 'Failed! there is some issue with email provider to send passcode',
+                ], 500);
+            }
         }
 
         return response()->json([
