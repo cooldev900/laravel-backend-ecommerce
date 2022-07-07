@@ -88,6 +88,9 @@ Route::prefix('{store_view}')->group(function () {
         Route::post('/orders/notify-orders-are-ready-for-pickup', [OrderController::class, 'getNotify'])->name('orders.notify');
         Route::post('/orders/{orderId}/refund', [OrderController::class, 'refundOrder'])->name('orders.refund');
 
+        Route::post('/orders/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('orders.items.calcel');
+        Route::get('/orders/{id}/status', [OrderController::class, 'getOrderItemStatus'])->name('orders.items.itemStatus');
+
         /********** Enquiries **********/
         Route::prefix('/enquiries')->group(function () {
             Route::get('/', [EnquiryController::class, 'allEnquiries'])->name('enquiries.all');
@@ -226,6 +229,7 @@ Route::post('/mail/external/new-order', [OrderController::class, 'newExternalOrd
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
+    Route::post('passcodeLogin', [AuthController::class, 'passcodeLogin'])->name('passcodeLogin');
     // Send reset password mail
     Route::post('forgot-password', [AuthController::class, 'sendPasswordResetLink']);
     // handle reset password form process

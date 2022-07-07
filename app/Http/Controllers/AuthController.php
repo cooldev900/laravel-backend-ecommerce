@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Mail\ResetPassword;
+use App\Mail\SendPassCode;
 use App\Models\Company;
 use App\Models\User;
 use App\Models\UserLocation;
 use App\Models\UserPermission;
+use App\Models\UserPassCode;
 use App\Providers\LoginHistory;
 use Carbon\Carbon;
 use DB;
@@ -29,7 +31,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('jwt_auth', ['except' => ['login', 'refresh', 'logout', 'sendPasswordResetLink', 'callResetPassword']]);
+        $this->middleware('jwt_auth', ['except' => ['login', 'refresh', 'logout', 'sendPasswordResetLink', 'callResetPassword', 'passcodeLogin']]);
     }
 
     /**
@@ -199,11 +201,98 @@ class AuthController extends Controller
         $user = JWTAuth::user();
         event(new LoginHistory($user));
 
+        if (!$user['is_admin'] && !$user['first_login']) {
+            $randomNumber = random_int(100000, 999999);
+
+            $oldRow = UserPassCode::where('user_id', $user->id);
+            if ($oldRow) {
+                $oldRow->delete();
+            }
+
+            $user_passcode = new UserPassCode();
+            $user_passcode->user_id = $user->id;
+            $user_passcode->passcode = $randomNumber;
+            $user_passcode->token = encrypt($request->input('password'));;
+            $user_passcode->save();
+
+            // Mail::to($request->email)->send(new SendPassCode($randomNumber, $user->id, $user->name));
+
+            // if (Mail::failures() != 0) {
+                
+            // } else {
+            //     $user_passcode->delete();
+            //     return response()->json([
+            //         'status' => 'error',
+            //         'error' => 'Fail_sent_passcode_email',
+            //         'message' => 'Failed! there is some issue with email provider to send passcode',
+            //     ], 500);
+            // }
+        }
+
         return response()->json([
             'status' => 'success',
             'user' => $this->getPermission($user),
-            'token' => $token,
+            'token' => $user['is_admin'] || $user['first_login'] ? $token : '',
         ], 200);
+    }
+
+    public function passcodeLogin(Request $request)
+    {
+        // grab credentials from the request
+        $request->validate([
+            'id' => 'required|numeric',
+            'passcode' => 'required|string',
+        ]);
+
+        try {
+            // attempt to verify the credentials and create a token for the user
+            $user_passcode = UserPassCode::where('user_id', $request->input('id'))->first();
+            if ($user_passcode) {
+                if ($user_passcode->passcode === $request->input('passcode')) {
+                    $user = User::find($request->input('id'));
+                    $token = $user_passcode->token;
+                    $credentials = ['email' => $user->email, 'company_name' => $user->company_name, 'password' => decrypt($token)];
+                    $token = JWTAuth::attempt($credentials);
+                    $user = JWTAuth::user();
+                    event(new LoginHistory($user));
+                    $user_passcode->delete();
+                    return response()->json([
+                        'status' => 'success',
+                        'user' => $this->getPermission($user),
+                        'token' => $token,
+                    ], 200);
+                } else if ($user_passcode->fail_num > 2) {
+                    $user_passcode->delete();
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => 'could_not_found_passcode',
+                        'message' => 'Sorry, wrong pass code and maximum try. Please log in again.',
+                    ], 400);
+                } else {
+                    $user_passcode->fail_num = $user_passcode->fail_num + 1;
+                    $user_passcode->save();
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => 'wrong_passcode',
+                        'message' => 'Sorry, wrong pass code. Please try again.',
+                    ], 422);
+                }
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'could_not_found_passcode',
+                    'message' => 'Sorry, could not find passcode. Please log in again.',
+                ], 422);    
+            }
+
+        } catch (Exception $e) {
+            // something went wrong whilst attempting to encode the token
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_found_passcode',
+                'message' => 'Sorry, wrong pass code. Please try again.',
+            ], 422);
+        }
     }
 
     /**

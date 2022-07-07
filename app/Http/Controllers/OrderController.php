@@ -157,6 +157,64 @@ class OrderController extends Controller
     }
 
     /**
+     * Cancel Magento an Order data.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+
+    public function cancelOrder(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
+            $response = $client->request('POST', 'orders/' . $params['id'].'/cancel');
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_get_order_item',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Cancel Magento an Order data status.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+
+    public function getOrderItemStatus(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
+            $response = $client->request('GET', 'orders/' . $params['id'].'/statuses');
+            
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_get_order_item',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Get Magento an Order data.
      *
      * @return JsonResponse
