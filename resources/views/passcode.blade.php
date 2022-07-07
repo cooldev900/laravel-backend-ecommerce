@@ -279,7 +279,7 @@
                                                 </tbody>
                                             </table>
 
-                                            <table style="font-family:'Lato',sans-serif;" role="presentation"
+                                            <!-- <table style="font-family:'Lato',sans-serif;" role="presentation"
                                                 cellpadding="0" cellspacing="0" width="100%" border="0">
                                                 <tbody>
                                                     <tr>
@@ -301,9 +301,9 @@
                                                         </td>
                                                     </tr>
                                                 </tbody>
-                                            </table>
+                                            </table> -->
 
-                                            <table style="font-family:'Lato',sans-serif;" role="presentation"
+                                            <!-- <table style="font-family:'Lato',sans-serif;" role="presentation"
                                                 cellpadding="0" cellspacing="0" width="100%" border="0">
                                                 <tbody>
                                                     <tr>
@@ -324,7 +324,7 @@
                                                         </td>
                                                     </tr>
                                                 </tbody>
-                                            </table>
+                                            </table> -->
 
                                             <!--[if (!mso)&(!IE)]><!-->
                                         </div>
