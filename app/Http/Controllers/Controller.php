@@ -21,6 +21,13 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Elasticsearch\ClientBuilder;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Info(
+ *    title="Your super  ApplicationAPI",
+ *    version="1.0.0",
+ * )
+ */
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
