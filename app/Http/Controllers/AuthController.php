@@ -144,7 +144,7 @@ class AuthController extends Controller
      * summary="Sign in",
      * description="Login by email, password, company name",
      * operationId="authLogin",
-     * tags={"UnAuthorize"},
+     * tags={"User"},
      * @OA\RequestBody(
      *    required=true,
      *    description="Pass user credentials",
@@ -458,11 +458,30 @@ class AuthController extends Controller
             ], 500);
         }
     }
+    
 
     /**
-     * Get the authenticated User.
+     * @OA\GET(
+     *     path="/me",
+     *     tags={"User"},
+     *     summary="RETURN CURRENT LOGGED IN USER",
+     *     operationId="me",
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="success", type="string", example="success"),
+     *        @OA\Property(property="user", type="object", ref="#/components/schemas/User"),
+     *     )
+     *  ),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Return current logged in user.
+     *
+     * @return \Illuminate\Http\Response
      */
 
     public function me()
@@ -471,9 +490,23 @@ class AuthController extends Controller
     }
 
     /**
-     * Log the user out ( Invalidate the token )
+     * @OA\POST(
+     *     path="/logout",
+     *     tags={"User"},
+     *     summary="LOGS OUT CURRENT LOGGED IN USER SESSION",
+     *     operationId="logout",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success"
+     *     ),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Logs out current logged in user session.
+     *
+     * @return \Illuminate\Http\Response
      */
 
     public function logout()
@@ -485,7 +518,7 @@ class AuthController extends Controller
             'message' => 'Successfully logged out',
         ]);
     }
-
+    
     /**
      * Get User log info
      */
