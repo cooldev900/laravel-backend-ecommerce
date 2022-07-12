@@ -236,6 +236,43 @@ class AuthController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Post(
+     * path="/auth/passcodeLogin",
+     * summary="Passcode Login",
+     * description="Login by passcode from email",
+     * operationId="passcodeLogin",
+     * tags={"User"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="User pass code",
+     *    @OA\JsonContent(
+     *       required={"id","passcode"},
+     *       @OA\Property(property="id", type="string", example="31"),
+     *       @OA\Property(property="passcode", type="string", example="123456"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="success", type="string", example="success"),
+     *        @OA\Property(property="user", type="object", ref="#/components/schemas/User"),
+     *        @OA\Property(property="token", ref="#/components/schemas/BaseModel/properties/token"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=422,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="credentials_error"),
+     *       @OA\Property(property="message", type="string", example="Sorry, wrong email address ,password or company name. Please try again")
+     *        )
+     *     )
+     * )
+     */
+
     public function passcodeLogin(Request $request)
     {
         // grab credentials from the request

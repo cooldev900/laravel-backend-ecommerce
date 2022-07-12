@@ -73,6 +73,68 @@ class StoreviewController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     * path="/storeviews",
+     * summary="Create storeview",
+     * description="Create storeview",
+     * operationId="storeviews",
+     * tags={"Storeviews"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Create storeview",
+     *    @OA\JsonContent(
+     *       required={"code","company_id", "paypal", "stripe", "cybersource", "checkoutcom"},
+     *       @OA\Property(property="code", type="string", example="31"),
+     *       @OA\Property(property="store_id", type="numeric", example="1"),
+     *       @OA\Property(property="company_id", type="numeric", example="1"),
+     *       @OA\Property(property="payment_provider", type="string", example="paypal"),
+     *       @OA\Property(property="api_key_1", type="string", example="123456"),
+     *       @OA\Property(property="api_key_2", type="string", example="123456"),
+     *       @OA\Property(property="api_key_3", type="string", example="123456"),
+     *       @OA\Property(property="payment_additional_1", type="string", example="123456"),
+     *       @OA\Property(property="payment_additional_2", type="string", example="123456"),
+     *       @OA\Property(property="payment_additional_3", type="string", example="123456"),
+     *       @OA\Property(property="es_url", type="string", example="https://es_url"),
+     *       @OA\Property(property="es_index", type="string", example="glyn_index"),
+     *       @OA\Property(property="es_username", type="string", example="Omni"),
+     *       @OA\Property(property="es_password", type="string", example="123456"),
+     *       @OA\Property(property="vsf_url", type="string", example=""),
+     *       @OA\Property(property="vsf_preview", type="string", example=""),
+     *       @OA\Property(property="email_domain", type="string", example=""),
+     *       @OA\Property(property="email_password", type="string", example=""),
+     *       @OA\Property(property="email_sender", type="string", example=""),
+     *       @OA\Property(property="website_id", type="string", example=""),
+     *       @OA\Property(property="whitelist", type="string", example=""),
+     *       @OA\Property(property="webhook_token", type="string", example=""),
+     *       @OA\Property(property="language", type="string", example=""),
+     *       @OA\Property(property="currency", type="string", example=""),
+     *       @OA\Property(property="paypal", type="object",  ref="#/components/schemas/Paypal"),
+     *       @OA\Property(property="stripe", type="object",  ref="#/components/schemas/Stripe"),
+     *       @OA\Property(property="cybersource", type="object",  ref="#/components/schemas/Cybersource"),
+     *       @OA\Property(property="checkoutcom", type="object",  ref="#/components/schemas/CheckoutCom"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object", ref="#/components/schemas/StoreView"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=422,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="fail_create_storeview"),
+     *       @OA\Property(property="message", type="string", example="")
+     *        )
+     *     )
+     * )
+     */
+
     public function createStoreview(Request $request)
     {
         try {
@@ -177,6 +239,33 @@ class StoreviewController extends Controller
         return $values;
     }
 
+    /**
+     * @OA\Delete(
+     * path="/storeviews/{id}",
+     * summary="Delete a storeview",
+     * description="Delete a storeview",
+     * operationId="deleteStoreview",
+     * tags={"Storeviews"},
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object", ref="#/components/schemas/StoreView"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="fail_create_storeview"),
+     *       @OA\Property(property="message", type="string", example="")
+     *        )
+     *     )
+     * )
+     */
+
     public function deleteStoreview(Request $request)
     {
         try {
@@ -203,6 +292,68 @@ class StoreviewController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * @OA\Put(
+     * path="/storeviews/{id}",
+     * summary="Update a storeview",
+     * description="Update a storeview",
+     * operationId="udpdateStoreviews",
+     * tags={"Storeviews"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Create storeview",
+     *    @OA\JsonContent(
+     *       required={"code","company_id", "paypal", "stripe", "cybersource", "checkoutcom"},
+     *       @OA\Property(property="code", type="string", example="31"),
+     *       @OA\Property(property="store_id", type="numeric", example="1"),
+     *       @OA\Property(property="company_id", type="numeric", example="1"),
+     *       @OA\Property(property="payment_provider", type="string", example="paypal"),
+     *       @OA\Property(property="api_key_1", type="string", example="123456"),
+     *       @OA\Property(property="api_key_2", type="string", example="123456"),
+     *       @OA\Property(property="api_key_3", type="string", example="123456"),
+     *       @OA\Property(property="payment_additional_1", type="string", example="123456"),
+     *       @OA\Property(property="payment_additional_2", type="string", example="123456"),
+     *       @OA\Property(property="payment_additional_3", type="string", example="123456"),
+     *       @OA\Property(property="es_url", type="string", example="https://es_url"),
+     *       @OA\Property(property="es_index", type="string", example="glyn_index"),
+     *       @OA\Property(property="es_username", type="string", example="Omni"),
+     *       @OA\Property(property="es_password", type="string", example="123456"),
+     *       @OA\Property(property="vsf_url", type="string", example=""),
+     *       @OA\Property(property="vsf_preview", type="string", example=""),
+     *       @OA\Property(property="email_domain", type="string", example=""),
+     *       @OA\Property(property="email_password", type="string", example=""),
+     *       @OA\Property(property="email_sender", type="string", example=""),
+     *       @OA\Property(property="website_id", type="string", example=""),
+     *       @OA\Property(property="whitelist", type="string", example=""),
+     *       @OA\Property(property="webhook_token", type="string", example=""),
+     *       @OA\Property(property="language", type="string", example=""),
+     *       @OA\Property(property="currency", type="string", example=""),
+     *       @OA\Property(property="paypal", type="object",  ref="#/components/schemas/Paypal"),
+     *       @OA\Property(property="stripe", type="object",  ref="#/components/schemas/Stripe"),
+     *       @OA\Property(property="cybersource", type="object",  ref="#/components/schemas/Cybersource"),
+     *       @OA\Property(property="checkoutcom", type="object",  ref="#/components/schemas/CheckoutCom"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object", ref="#/components/schemas/StoreView"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=422,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="fail_create_storeview"),
+     *       @OA\Property(property="message", type="string", example="")
+     *        )
+     *     )
+     * )
+     */
 
     public function updateStoreview(Request $request)
     {
