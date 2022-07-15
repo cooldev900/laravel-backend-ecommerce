@@ -420,10 +420,14 @@ class StoreviewController extends Controller
                 'currency_code' => $request->input('currency_code') ?? $originStoreview->currency_code,
             ]);
 
-            $originStoreview->paypal()->update($this->encryptPaypalKeys($request->input('paypal')));
-            $originStoreview->stripe()->update($this->encryptStripeKeys($request->input('stripe')));
-            $originStoreview->cybersource()->update($this->encryptCybersourceKeys($request->input('cybersource')));
-            $originStoreview->checkoutcom()->update($this->encryptCheckoutcomKeys($request->input('checkoutcom')));
+            if (!is_null($originStoreview['paypal'])) $originStoreview->paypal()->update($this->encryptPaypalKeys($request->input('paypal')));
+            else $originStoreview->paypal()->create($this->encryptPaypalKeys($request->input('paypal')));
+            if (!is_null($originStoreview['stripe'])) $originStoreview->stripe()->update($this->encryptStripeKeys($request->input('stripe')));
+            else $originStoreview->stripe()->create($this->encryptStripeKeys($request->input('stripe')));
+            if (!is_null($originStoreview['cybersource'])) $originStoreview->cybersource()->update($this->encryptCybersourceKeys($request->input('cybersource')));
+            else $originStoreview->cybersource()->create($this->encryptCybersourceKeys($request->input('cybersource')));
+            if (!is_null($originStoreview['checkoutcom'])) $originStoreview->checkoutcom()->update($this->encryptCheckoutcomKeys($request->input('checkoutcom')));
+            else $originStoreview->checkoutcom()->create($this->encryptCheckoutcomKeys($request->input('checkoutcom')));
 
             return response()->json([
                 'status' => 'success',
