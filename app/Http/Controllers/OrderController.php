@@ -16,10 +16,41 @@ use App\Models\UserLocation;
 class OrderController extends Controller
 {
     /**
-     * Get Magento Orders data.
-     *
-     * @return JsonResponse
+     * @OA\Get(
+     * path="/{store_view}/orders",
+     * summary="Get all orders",
+     * description="Get all orders",
+     * operationId="getAllOrders",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Pass search criteria",
+     *    @OA\JsonContent(
+     *       required={"searchCriteria"},
+     *       @OA\Property(property="searchCriteria", type="object", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="could_not_get_orders"),
+     *       @OA\Property(property="message", type="string", example="Sorry, wrong criteria. Please try again")
+     *        )
+     *     )
+     * )
      */
+
     public function allOrders(Request $request)
     {
         try {
@@ -49,9 +80,35 @@ class OrderController extends Controller
     }
 
     /**
-     * Get Magento an Order data.
-     *
-     * @return JsonResponse
+     * @OA\Get(
+     * path="/{store_view}/orders/{id}",
+     * summary="Get an order",
+     * description="Get an order",
+     * operationId="getOrder",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Get an order",
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=422,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="credentials_error"),
+     *       @OA\Property(property="message", type="string", example="Sorry, wrong email address ,password or company name. Please try again")
+     *        )
+     *     )
+     * )
      */
 
     public function getOrder(Request $request)
@@ -75,6 +132,43 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * @OA\Post(
+     * path="/{store_view}/orders",
+     * summary="create an order",
+     * description="create an order",
+     * operationId="createOrder",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Create an order",
+     *    @OA\JsonContent(
+     *       required={"entity", "vsf_url"},
+     *       @OA\Property(property="entity", type="string", example=""),
+     *       @OA\Property(property="vsf_url", type="string", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
+     */
 
     public function createOrder(Request $request)
     {
@@ -126,13 +220,36 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
     /**
-     * Get Magento an Order data.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Get(
+     * path="/{store_view}/orders/items/{id}",
+     * summary="get an order item",
+     * description="get an order item",
+     * operationId="getOrderItem",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Get an order item",
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function getOrderItem(Request $request)
@@ -155,13 +272,36 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
     /**
-     * Cancel Magento an Order data.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Post(
+     * path="/{store_view}/orders/{id}/cancel",
+     * summary="cancel an order",
+     * description="cancel an order",
+     * operationId="cancelOrder",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="cancel an order",
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function cancelOrder(Request $request)
@@ -186,11 +326,35 @@ class OrderController extends Controller
     }
 
     /**
-     * Cancel Magento an Order data status.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Get(
+     * path="/{store_view}/orders/{id}/status",
+     * summary="get status of an order",
+     * description="get status of an order",
+     * operationId="getOrderStatus",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="cancel an order",
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function getOrderItemStatus(Request $request)
@@ -215,9 +379,39 @@ class OrderController extends Controller
     }
 
     /**
-     * Get Magento an Order data.
-     *
-     * @return JsonResponse
+     * @OA\Get(
+     * path="/{store_view}/orders/items",
+     * summary="get order items",
+     * description="get order items",
+     * operationId="getOrderItems",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={},
+     *       @OA\Property(property="searchCriteria", type="object"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function getOrderItems(Request $request)
@@ -249,11 +443,39 @@ class OrderController extends Controller
     }
 
     /**
-     * Get Magento an Order data.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Post(
+     * path="/{store_view}/orders/notify-orders-are-ready-for-pickup",
+     * summary="get notification",
+     * description="get notification",
+     * operationId="getNotify",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={"orderIds"},
+     *       @OA\Property(property="orderIds", type="object"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function getNotify(Request $request)
@@ -285,11 +507,39 @@ class OrderController extends Controller
     }
 
     /**
-     * Update Magento comment.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Post(
+     * path="/{store_view}/orders/{orderId}/comments",
+     * summary="get notification",
+     * description="get notification",
+     * operationId="setOrderComments",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={},
+     *       @OA\Property(property="statusHistory", type="object"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function createOrderComment(Request $request)
@@ -320,11 +570,39 @@ class OrderController extends Controller
     }
 
     /**
-     * Refund Order.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Post(
+     * path="/{store_view}/orders/{orderId}/refund",
+     * summary="refund order",
+     * description="refund order",
+     * operationId="refundOrder",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={},
+     *       @OA\Property(property="statusHistory", type="object"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function refundOrder(Request $request)
@@ -351,6 +629,44 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * @OA\Post(
+     * path="/{store_view}/mail/internal/new-order",
+     * summary="send email for a new order",
+     * description="send email for a new order",
+     * operationId="newOrderEmail",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={},
+     *       @OA\Property(property="storeview", type="string", example=""),
+     *       @OA\Property(property="client_id", type="string", example=""),
+     *       @OA\Property(property="location", type="string", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
+     */
 
     public function newOrder(Request $request)
     {
@@ -412,6 +728,44 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     * path="/{store_view}/mail/external/new-order",
+     * summary="send external email for a new order",
+     * description="send external email for a new order",
+     * operationId="newOrderExternalEmail",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={},
+     *       @OA\Property(property="storeview", type="string", example=""),
+     *       @OA\Property(property="client_id", type="string", example=""),
+     *       @OA\Property(property="location", type="string", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
+     */
+
     public function newExternalOrder(Request $request)
     {
         try {
@@ -471,6 +825,42 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * @OA\Get(
+     * path="/{store_view}/orders/open-carts",
+     * summary="Get all open carts",
+     * description="Get all open carts",
+     * operationId="openCarts",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Pass search criteria",
+     *    @OA\JsonContent(
+     *       required={"searchCriteria"},
+     *       @OA\Property(property="searchCriteria", type="object", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="could_not_get_orders"),
+     *       @OA\Property(property="message", type="string", example="Sorry, wrong criteria. Please try again")
+     *        )
+     *     )
+     * )
+     */
 
     public function openCarts(Request $request)
     {
