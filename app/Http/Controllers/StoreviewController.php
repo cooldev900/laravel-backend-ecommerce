@@ -75,11 +75,12 @@ class StoreviewController extends Controller
 
     /**
      * @OA\Post(
-     * path="/storeviews",
+     * path="/api/storeviews",
      * summary="Create storeview",
      * description="Create storeview",
      * operationId="storeviews",
      * tags={"Storeviews"},
+     * security={{"bearer_token": {}}},
      * @OA\RequestBody(
      *    required=true,
      *    description="Create storeview",
@@ -241,10 +242,19 @@ class StoreviewController extends Controller
 
     /**
      * @OA\Delete(
-     * path="/storeviews/{id}",
+     * path="/api/storeviews/{id}",
      * summary="Delete a storeview",
      * description="Delete a storeview",
      * operationId="deleteStoreview",
+     * security={{"bearer_token": {}}},
+     *      @OA\Parameter(
+     *          name="email",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      * tags={"Storeviews"},
      *   @OA\Response(
      *     response=200,
@@ -295,11 +305,20 @@ class StoreviewController extends Controller
 
     /**
      * @OA\Put(
-     * path="/storeviews/{id}",
+     * path="/api/storeviews/{id}",
      * summary="Update a storeview",
      * description="Update a storeview",
      * operationId="udpdateStoreviews",
      * tags={"Storeviews"},
+     * security={{"bearer_token": {}}},
+     *      @OA\Parameter(
+     *          name="email",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      * @OA\RequestBody(
      *    required=true,
      *    description="Create storeview",
