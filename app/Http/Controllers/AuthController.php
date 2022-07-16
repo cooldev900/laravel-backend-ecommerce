@@ -140,7 +140,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     * path="/auth/login",
+     * path="/api/auth/login",
      * summary="Sign in",
      * description="Login by email, password, company name",
      * operationId="authLogin",
@@ -238,7 +238,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     * path="/auth/passcodeLogin",
+     * path="/api/auth/passcodeLogin",
      * summary="Passcode Login",
      * description="Login by passcode from email",
      * operationId="passcodeLogin",
@@ -344,12 +344,11 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     * path="/auth/register",
+     * path="/api/auth/register",
      * summary="Register a new user",
      * description="Register a new user. User should have admin permission",
      * operationId="authRegister",
      * tags={"User"},
-     * security={ {"Bearer": {} }},
      * @OA\RequestBody(
      *    required=true,
      *    description="Pass user credentials",
@@ -498,8 +497,8 @@ class AuthController extends Controller
     
 
     /**
-     * @OA\GET(
-     *     path="/me",
+     * @OA\Get(
+     *     path="/api/me",
      *     tags={"User"},
      *     summary="RETURN CURRENT LOGGED IN USER",
      *     operationId="me",
@@ -511,9 +510,7 @@ class AuthController extends Controller
      *        @OA\Property(property="user", type="object", ref="#/components/schemas/User"),
      *     )
      *  ),
-     *     security={
-     *         {"bearer": {}}
-     *     }
+     *     security={{"bearer_token":{}}}
      * )
      *
      * Return current logged in user.
@@ -528,7 +525,7 @@ class AuthController extends Controller
 
     /**
      * @OA\POST(
-     *     path="/logout",
+     *     path="/api/auth/logout",
      *     tags={"User"},
      *     summary="LOGS OUT CURRENT LOGGED IN USER SESSION",
      *     operationId="logout",
@@ -537,7 +534,7 @@ class AuthController extends Controller
      *         description="Success"
      *     ),
      *     security={
-     *         {"bearer": {}}
+     *         {"bearer_token": {}}
      *     }
      * )
      *

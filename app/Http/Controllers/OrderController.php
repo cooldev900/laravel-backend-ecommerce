@@ -730,6 +730,130 @@ class OrderController extends Controller
 
     /**
      * @OA\Post(
+     * path="/api/mail/internal/new-enquiry",
+     * summary="send email for a new order",
+     * description="send email for a new order",
+     * operationId="newEnquiryEmail",
+     * tags={"Mail"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={"storeview", "client_id", "location"},
+     *       @OA\Property(property="storeview", type="string", example=""),
+     *       @OA\Property(property="client_id", type="string", example=""),
+     *       @OA\Property(property="first_name", type="string", example=""),
+     *       @OA\Property(property="last_name", type="string", example=""),
+     *       @OA\Property(property="email", type="string", pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", format="email", example="user1@mail.com"),
+     *       @OA\Property(property="message", type="string", example=""),
+     *       @OA\Property(property="phone", type="string", example=""),
+     *       @OA\Property(property="vin", type="string", example=""),
+     *       @OA\Property(property="status", type="string", example=""),
+     *       @OA\Property(property="item_required", type="string", example=""),
+     *       @OA\Property(property="store_id", type="string", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
+     */
+
+    public function newEnquiry(Request $request)
+    {
+        try {
+            $request->validate([
+                'storeview' => 'required|string',
+                'client_id' => 'required|string',
+                'location' => 'required|string',
+                'first_name' => 'required|string',
+                'last_name' => 'required|string',
+                'email' => 'required|string',
+                'message' => 'required|string',
+                'phone' => 'required|string',
+                'vin' => 'required|string',
+                'status' => 'required|string',
+                'item_required' => 'required|string',
+                'store_id' => 'required|string',
+            ]);
+            // $user = JWTAuth::user();
+            // $storeview = $user['store_views'][0];
+            $token = $request->header('Token');
+
+            $store_view = $request->input('storeview');
+            $client_id = $request->input('client_id');
+            $location = $request->input('location');
+
+            $storeview = StoreView::findOrFail($store_view);
+
+            $company = Company::findOrFail($client_id);
+            if ($storeview && $token != $storeview->webhook_token) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Token_Not_Matched',
+                    'message' => 'Token is not matched',
+                ], 500);
+            }
+            $user_ids = UserLocation::where('location_id', $location)->pluck('user_id');
+            $sender = User::where('company_name', $company->name)->where('email_only', 0)->first(); 
+            $users = User::where('company_name', $company->name)->where('email_only',1)->whereIn('id', $user_ids)->get();
+            $to = '';
+            $params = $request->all();
+            $mailgun_variables = "{'myorderurl': '{$storeview->vsf_url}'";
+            foreach($params as $key => $value) {
+                $mailgun_variables .= ", '{$key}': '{$value}'";
+            }
+            $mailgun_variables .= "}";
+            foreach($users as $key => $user) {
+                $to .= $user['name']." <".$user['email'].">";
+                
+                $mailClient = new Client();            
+                $mailClient->request(
+                    'POST',
+                    'https://api.eu.mailgun.net/v3/' . $storeview['email_domain'] . '/messages',
+                    [
+                        'auth' => ['api', $storeview['email_password']],
+                        'form_params' => [
+                            'from' => 'Mailgun Sandbox <' . $storeview['email_sender'] . '>',
+                            'to' => $to,
+                            'subject' => 'New Order',
+                            'template' => 'order',
+                            'h:X-Mailgun-Variables' => $mailgun_variables
+                        ]
+                    ]
+                );           
+            }            
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $users,
+            ], 200);
+        } catch (GuzzleException $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_create_order',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Post(
      * path="/{store_view}/mail/external/new-order",
      * summary="send external email for a new order",
      * description="send external email for a new order",

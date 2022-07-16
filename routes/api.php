@@ -19,6 +19,7 @@ use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\StoreviewController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\CybersourceController;
+use App\Http\Controllers\CheckoutComController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\MarketingController;
 use App\Http\Controllers\RefundController;
@@ -130,10 +131,15 @@ Route::prefix('{store_view}')->group(function () {
         Route::post('/stripe/capture', [StripeController::class, 'capturePaymentIntent'])->name('stripe.refund.create');
         Route::post('/stripe/refund', [StripeController::class, 'createRefund'])->name('stripe.refund.refund');
 
-        /********** CyberSource **********/
         Route::get('/cybersource/transaction/{id}', [CybersourceController::class, 'getTransaction'])->name('cyersource.transaction.index');
         Route::post('/cybersource/capture', [CybersourceController::class, 'capture'])->name('cyersource.refund.create');
         Route::post('/cybersource/void', [CybersourceController::class, 'void'])->name('cyersource.refund.void');
+
+        /********** CheckoutCom **********/
+        Route::post('/checkoutcom/capture', [CheckoutComController::class, 'capturePayment'])->name('checkoutcom.transaction.index');
+        Route::post('/checkoutcom/refund', [CheckoutComController::class, 'refundPayment'])->name('checkoutcom.refund.create');
+        Route::post('/checkoutcom/void', [CheckoutComController::class, 'voidPayment'])->name('checkoutcom.voidPayment.void');
+        Route::get('/checkoutcom/getPaymentDetails', [CheckoutComController::class, 'getPaymentDetails'])->name('checkoutcom.getPaymentDetails.void');
 
         /********** Paypal **********/
         Route::post('/paypal/transaction', [PaypalController::class, 'capturePaymentIntent'])->name('paypal.transaction.index');
@@ -228,6 +234,7 @@ Route::post('/enquiries', [EnquiryController::class, 'createEnquiry'])->name('en
 Route::post('/image-blob', [Controller::class, 'getImageBlob'])->name('getImageBlob');
 Route::post('/mail/internal/new-order', [OrderController::class, 'newOrder'])->name('webhooks.newOrder');
 Route::post('/mail/external/new-order', [OrderController::class, 'newExternalOrder'])->name('webhooks.newOrder1');
+Route::post('/mail/internal/new-enquiry', [OrderController::class, 'newEnquiry'])->name('webhooks.newEnquiry');
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
