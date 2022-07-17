@@ -699,9 +699,9 @@ class OrderController extends Controller
                 $mailClient = new Client();            
                 $mailClient->request(
                     'POST',
-                    'https://api.eu.mailgun.net/v3/' . $storeview['email_domain'] . '/messages',
+                    'https://api.eu.mailgun.net/v3/omninext.app/messages',
                     [
-                        'auth' => ['api', $storeview['email_password']],
+                        'auth' => ['api', '5fc66908cef2c976f1be9e1dc2921c92-18e06deb-0a7d17b2'],
                         'form_params' => [
                             'from' => 'Mailgun Sandbox <noreply@omninext.app >',
                             'to' => $to,
