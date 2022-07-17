@@ -699,7 +699,7 @@ class OrderController extends Controller
                 $mailClient = new Client();            
                 $mailClient->request(
                     'POST',
-                    'https://api.eu.mailgun.net/v3/noreply@omninext.app/messages',
+                    'https://api.eu.mailgun.net/v3/' . $storeview['email_domain'] . '/messages',
                     [
                         'auth' => ['api', $storeview['email_password']],
                         'form_params' => [
