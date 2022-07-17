@@ -703,7 +703,7 @@ class OrderController extends Controller
                     [
                         'auth' => ['api', $storeview['email_password']],
                         'form_params' => [
-                            'from' => 'Mailgun Sandbox < noreply@omninext.app >',
+                            'from' => 'Mailgun Sandbox <noreply@omninext.app >',
                             'to' => $to,
                             'subject' => 'New Order',
                             'template' => 'order',
