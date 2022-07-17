@@ -679,6 +679,10 @@ class OrderController extends Controller
             $client_id = $request->input('client_id');
             $location = $request->input('location');
 
+            $order_id = $request->input('order_id');
+            $date_placed = $request->input('date_placed');
+            $value = $request->input('value');
+
             $storeview = StoreView::findOrFail($store_view);
 
             $company = Company::findOrFail($client_id);
@@ -707,7 +711,7 @@ class OrderController extends Controller
                             'to' => $to,
                             'subject' => 'New Order',
                             'template' => 'order',
-                            'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '"}'
+                            'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '", "orderID":"'.$order_id.'", "date_placed":"'.$date_placed.'", "value":"'.$value.'"}'
                         ]
                     ]
                 );           
