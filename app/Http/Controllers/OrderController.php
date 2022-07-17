@@ -707,9 +707,9 @@ class OrderController extends Controller
                     [
                         'auth' => ['api', '5fc66908cef2c976f1be9e1dc2921c92-18e06deb-0a7d17b2'],
                         'form_params' => [
-                            'from' => 'Mailgun Sandbox <noreply@omninext.app >',
+                            'from' => 'Omni Support <noreply@omninext.app >',
                             'to' => $to,
-                            'subject' => 'New Order',
+                            'subject' => 'New Online Order Placed',
                             'template' => 'order',
                             'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '", "orderID":"'.$order_id.'", "date_placed":"'.$date_placed.'", "value":"'.$value.'"}'
                         ]
