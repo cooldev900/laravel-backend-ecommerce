@@ -710,7 +710,7 @@ class OrderController extends Controller
                             'from' => 'Omni Support <noreply@omninext.app >',
                             'to' => $to,
                             'subject' => 'New Online Order Placed',
-                            'template' => 'order',
+                            'template' => 'internalneworder',
                             'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '", "orderID":"'.$order_id.'", "date_placed":"'.$date_placed.'", "value":"'.$value.'", "name":"'.$user['name'].'"}'
                         ]
                     ]
