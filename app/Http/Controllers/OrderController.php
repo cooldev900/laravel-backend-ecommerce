@@ -711,7 +711,7 @@ class OrderController extends Controller
                             'to' => $to,
                             'subject' => 'New Online Order Placed',
                             'template' => 'order',
-                            'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '", "orderID":"'.$order_id.'", "date_placed":"'.$date_placed.'", "value":"'.$value.'"}'
+                            'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '", "orderID":"'.$order_id.'", "date_placed":"'.$date_placed.'", "value":"'.$value.'", "name":"'.$user['name'].'"}'
                         ]
                     ]
                 );           
