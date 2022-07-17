@@ -17,7 +17,7 @@ class OrderController extends Controller
 {
     /**
      * @OA\Get(
-     * path="/{store_view}/orders",
+     * path="/api/{store_view}/orders",
      * summary="Get all orders",
      * description="Get all orders",
      * operationId="getAllOrders",
@@ -81,7 +81,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Get(
-     * path="/{store_view}/orders/{id}",
+     * path="/api/{store_view}/orders/{id}",
      * summary="Get an order",
      * description="Get an order",
      * operationId="getOrder",
@@ -135,7 +135,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Post(
-     * path="/{store_view}/orders",
+     * path="/api/{store_view}/orders",
      * summary="create an order",
      * description="create an order",
      * operationId="createOrder",
@@ -222,7 +222,7 @@ class OrderController extends Controller
     }
     /**
      * @OA\Get(
-     * path="/{store_view}/orders/items/{id}",
+     * path="/api/{store_view}/orders/items/{id}",
      * summary="get an order item",
      * description="get an order item",
      * operationId="getOrderItem",
@@ -274,7 +274,7 @@ class OrderController extends Controller
     }
     /**
      * @OA\Post(
-     * path="/{store_view}/orders/{id}/cancel",
+     * path="/api/{store_view}/orders/{id}/cancel",
      * summary="cancel an order",
      * description="cancel an order",
      * operationId="cancelOrder",
@@ -327,7 +327,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Get(
-     * path="/{store_view}/orders/{id}/status",
+     * path="/api/{store_view}/orders/{id}/status",
      * summary="get status of an order",
      * description="get status of an order",
      * operationId="getOrderStatus",
@@ -380,7 +380,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Get(
-     * path="/{store_view}/orders/items",
+     * path="/api/{store_view}/orders/items",
      * summary="get order items",
      * description="get order items",
      * operationId="getOrderItems",
@@ -444,7 +444,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Post(
-     * path="/{store_view}/orders/notify-orders-are-ready-for-pickup",
+     * path="/api/{store_view}/orders/notify-orders-are-ready-for-pickup",
      * summary="get notification",
      * description="get notification",
      * operationId="getNotify",
@@ -508,7 +508,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Post(
-     * path="/{store_view}/orders/{orderId}/comments",
+     * path="/api/{store_view}/orders/{orderId}/comments",
      * summary="get notification",
      * description="get notification",
      * operationId="setOrderComments",
@@ -571,7 +571,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Post(
-     * path="/{store_view}/orders/{orderId}/refund",
+     * path="/api/{store_view}/orders/{orderId}/refund",
      * summary="refund order",
      * description="refund order",
      * operationId="refundOrder",
@@ -632,7 +632,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Post(
-     * path="/{store_view}/mail/internal/new-order",
+     * path="/api/{store_view}/mail/internal/new-order",
      * summary="send email for a new order",
      * description="send email for a new order",
      * operationId="newOrderEmail",
@@ -703,7 +703,7 @@ class OrderController extends Controller
                     [
                         'auth' => ['api', $storeview['email_password']],
                         'form_params' => [
-                            'from' => 'Mailgun Sandbox <' . $storeview['email_sender'] . '>',
+                            'from' => 'Mailgun Sandbox < noreply@omninext.app >',
                             'to' => $to,
                             'subject' => 'New Order',
                             'template' => 'order',
@@ -793,14 +793,14 @@ class OrderController extends Controller
             ]);
             // $user = JWTAuth::user();
             // $storeview = $user['store_views'][0];
-            $token = $request->header('Token');
-
+            // $token = $request->header('Token');
+            
             $store_view = $request->input('storeview');
             $client_id = $request->input('client_id');
             $location = $request->input('location');
-
+            
             $storeview = StoreView::findOrFail($store_view);
-
+    
             $company = Company::findOrFail($client_id);
             if ($storeview && $token != $storeview->webhook_token) {
                 return response()->json([
@@ -819,6 +819,10 @@ class OrderController extends Controller
                 $mailgun_variables .= ", '{$key}': '{$value}'";
             }
             $mailgun_variables .= "}";
+            return response()->json([
+                'status' => 'success',
+                'data' => $mailgun_variables,
+            ], 200);
             foreach($users as $key => $user) {
                 $to .= $user['name']." <".$user['email'].">";
                 
@@ -829,7 +833,7 @@ class OrderController extends Controller
                     [
                         'auth' => ['api', $storeview['email_password']],
                         'form_params' => [
-                            'from' => 'Mailgun Sandbox <' . $storeview['email_sender'] . '>',
+                            'from' => 'Mailgun Sandbox < noreply@omninext.app >',
                             'to' => $to,
                             'subject' => 'New Order',
                             'template' => 'order',
@@ -854,7 +858,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Post(
-     * path="/{store_view}/mail/external/new-order",
+     * path="/api/{store_view}/mail/external/new-order",
      * summary="send external email for a new order",
      * description="send external email for a new order",
      * operationId="newOrderExternalEmail",
@@ -952,7 +956,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Get(
-     * path="/{store_view}/orders/open-carts",
+     * path="/api/{store_view}/orders/open-carts",
      * summary="Get all open carts",
      * description="Get all open carts",
      * operationId="openCarts",
