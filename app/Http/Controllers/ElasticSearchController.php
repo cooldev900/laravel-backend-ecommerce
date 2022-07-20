@@ -50,7 +50,7 @@ class ElasticSearchController extends Controller
                 'Bodystyle' => 'Bodystyle',
                 'Model_Version' => 'Model',
                 'Year' => 'Model_Year',
-                'mlo_code' => 'MLOCode'
+                'mlo_code' => 'Model_Code'
             ];
 
             foreach (array_keys($params) as $key) {
