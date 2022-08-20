@@ -126,7 +126,7 @@ class AppointmentController extends Controller
                     $appointment->whereIn('technician_id', $inputs['technician']);
                 }
 
-                $result = $appointment->paginate(10);
+                $result = $appointment->orderBy('start_time', 'desc')->paginate(10);
 
                 return response()->json([
                     'status' => 'success',
