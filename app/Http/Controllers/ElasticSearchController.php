@@ -17,11 +17,11 @@ class ElasticSearchController extends Controller
         try {
             $hosts = [
                 [
-                    'host' => 'i-o-optimized-deployment-560294.es.eastus2.azure.elastic-cloud.com',
+                    'host' => env('ELASTIC_VEHICLE_HOST'),
                     'port' => '9243',
                     'scheme' => 'https',
-                    'user' => 'elastic',
-                    'pass' => 'zt73aUuD2MS6FlQN0QgeJvaa'
+                    'user' => env('ELASTIC_VEHICLE_USER'),
+                    'pass' => env('ELASTIC_VEHICLE_PASS'),
                 ]
             ];
 
@@ -47,14 +47,10 @@ class ElasticSearchController extends Controller
 
             $esFieldNames = [
                 'Model' => 'MLOName',
-                'Year' => 'Years',
-                'Bodystyle' => 'MLTName1',
-                'Fuel' => 'Fuel',
-                'Transmission' => 'Transmission',
-                'Trim' => 'Trim',
-                'Engine' => 'TYPName',
-                'Model_Code' => 'MLTCode',
-                'National_Code' => 'National_Code'
+                'Bodystyle' => 'Bodystyle',
+                'Model_Version' => 'Model',
+                'Year' => 'Model_Year',
+                'mlo_code' => 'Model_Code'
             ];
 
             foreach (array_keys($params) as $key) {
@@ -63,12 +59,12 @@ class ElasticSearchController extends Controller
                         $query,
                         [
                             'term' => [
-                                'MAKVehType' => $params['Brand']['type']
+                                'MLTVehType' => $params['Brand']['type']
                             ]
                         ],
                         [
                             'term' => [
-                                'TYPMakCd' => $params['Brand']['code']
+                                'MLTMakCd' => $params['Brand']['code']
                             ]
                         ]
                     );
@@ -114,7 +110,7 @@ class ElasticSearchController extends Controller
             }
 
             $response = $this->elasticsearch->search([
-                'index' => 'vehicle-selector-v2',
+                'index' => env('ELASTIC_VEHICLE_INDEX'),
                 'body' => [
                     'query' => [
                         'bool' => [
@@ -230,7 +226,7 @@ class ElasticSearchController extends Controller
             }
 
             $response = $this->elasticsearch->search([
-                'index' => 'vehicle-selector-v2',
+                'index' => env('ELASTIC_VEHICLE_INDEX'),
                 'body' => [
                     'query' => [
                         'bool' => [

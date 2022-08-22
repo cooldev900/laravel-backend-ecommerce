@@ -73,6 +73,7 @@ class EnquiryController extends Controller
             $inputs = $request->all();
             $enquiry = new Enquiry();
             foreach ($inputs as $key => $input) {
+                if ($key === 'token') continue;
                 $enquiry[$key] = $input;
             };
             $enquiry->save();

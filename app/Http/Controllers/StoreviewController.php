@@ -75,11 +75,12 @@ class StoreviewController extends Controller
 
     /**
      * @OA\Post(
-     * path="/storeviews",
+     * path="/api/storeviews",
      * summary="Create storeview",
      * description="Create storeview",
      * operationId="storeviews",
      * tags={"Storeviews"},
+     * security={{"bearer_token": {}}},
      * @OA\RequestBody(
      *    required=true,
      *    description="Create storeview",
@@ -241,10 +242,19 @@ class StoreviewController extends Controller
 
     /**
      * @OA\Delete(
-     * path="/storeviews/{id}",
+     * path="/api/storeviews/{id}",
      * summary="Delete a storeview",
      * description="Delete a storeview",
      * operationId="deleteStoreview",
+     * security={{"bearer_token": {}}},
+     *      @OA\Parameter(
+     *          name="email",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      * tags={"Storeviews"},
      *   @OA\Response(
      *     response=200,
@@ -295,11 +305,20 @@ class StoreviewController extends Controller
 
     /**
      * @OA\Put(
-     * path="/storeviews/{id}",
+     * path="/api/storeviews/{id}",
      * summary="Update a storeview",
      * description="Update a storeview",
      * operationId="udpdateStoreviews",
      * tags={"Storeviews"},
+     * security={{"bearer_token": {}}},
+     *      @OA\Parameter(
+     *          name="email",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      * @OA\RequestBody(
      *    required=true,
      *    description="Create storeview",
@@ -420,10 +439,14 @@ class StoreviewController extends Controller
                 'currency_code' => $request->input('currency_code') ?? $originStoreview->currency_code,
             ]);
 
-            $originStoreview->paypal()->update($this->encryptPaypalKeys($request->input('paypal')));
-            $originStoreview->stripe()->update($this->encryptStripeKeys($request->input('stripe')));
-            $originStoreview->cybersource()->update($this->encryptCybersourceKeys($request->input('cybersource')));
-            $originStoreview->checkoutcom()->update($this->encryptCheckoutcomKeys($request->input('checkoutcom')));
+            if (!is_null($originStoreview['paypal'])) $originStoreview->paypal()->update($this->encryptPaypalKeys($request->input('paypal')));
+            else $originStoreview->paypal()->create($this->encryptPaypalKeys($request->input('paypal')));
+            if (!is_null($originStoreview['stripe'])) $originStoreview->stripe()->update($this->encryptStripeKeys($request->input('stripe')));
+            else $originStoreview->stripe()->create($this->encryptStripeKeys($request->input('stripe')));
+            if (!is_null($originStoreview['cybersource'])) $originStoreview->cybersource()->update($this->encryptCybersourceKeys($request->input('cybersource')));
+            else $originStoreview->cybersource()->create($this->encryptCybersourceKeys($request->input('cybersource')));
+            if (!is_null($originStoreview['checkoutcom'])) $originStoreview->checkoutcom()->update($this->encryptCheckoutcomKeys($request->input('checkoutcom')));
+            else $originStoreview->checkoutcom()->create($this->encryptCheckoutcomKeys($request->input('checkoutcom')));
 
             return response()->json([
                 'status' => 'success',

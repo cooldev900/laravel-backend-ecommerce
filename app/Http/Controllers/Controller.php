@@ -21,11 +21,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Elasticsearch\ClientBuilder;
 use Illuminate\Http\Request;
 
-/**
- * @OA\Info(
- *    title="Your super  ApplicationAPI",
- *    version="1.0.0",
- * )
+/** @OA\Info(title="Omni Rest API", version="0.1")
  */
 
 class Controller extends BaseController

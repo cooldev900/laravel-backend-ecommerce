@@ -16,10 +16,41 @@ use App\Models\UserLocation;
 class OrderController extends Controller
 {
     /**
-     * Get Magento Orders data.
-     *
-     * @return JsonResponse
+     * @OA\Get(
+     * path="/api/{store_view}/orders",
+     * summary="Get all orders",
+     * description="Get all orders",
+     * operationId="getAllOrders",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Pass search criteria",
+     *    @OA\JsonContent(
+     *       required={"searchCriteria"},
+     *       @OA\Property(property="searchCriteria", type="object", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="could_not_get_orders"),
+     *       @OA\Property(property="message", type="string", example="Sorry, wrong criteria. Please try again")
+     *        )
+     *     )
+     * )
      */
+
     public function allOrders(Request $request)
     {
         try {
@@ -49,9 +80,35 @@ class OrderController extends Controller
     }
 
     /**
-     * Get Magento an Order data.
-     *
-     * @return JsonResponse
+     * @OA\Get(
+     * path="/api/{store_view}/orders/{id}",
+     * summary="Get an order",
+     * description="Get an order",
+     * operationId="getOrder",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Get an order",
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=422,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="credentials_error"),
+     *       @OA\Property(property="message", type="string", example="Sorry, wrong email address ,password or company name. Please try again")
+     *        )
+     *     )
+     * )
      */
 
     public function getOrder(Request $request)
@@ -75,6 +132,43 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * @OA\Post(
+     * path="/api/{store_view}/orders",
+     * summary="create an order",
+     * description="create an order",
+     * operationId="createOrder",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Create an order",
+     *    @OA\JsonContent(
+     *       required={"entity", "vsf_url"},
+     *       @OA\Property(property="entity", type="string", example=""),
+     *       @OA\Property(property="vsf_url", type="string", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
+     */
 
     public function createOrder(Request $request)
     {
@@ -126,13 +220,36 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
     /**
-     * Get Magento an Order data.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Get(
+     * path="/api/{store_view}/orders/items/{id}",
+     * summary="get an order item",
+     * description="get an order item",
+     * operationId="getOrderItem",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Get an order item",
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function getOrderItem(Request $request)
@@ -155,13 +272,36 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
     /**
-     * Cancel Magento an Order data.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Post(
+     * path="/api/{store_view}/orders/{id}/cancel",
+     * summary="cancel an order",
+     * description="cancel an order",
+     * operationId="cancelOrder",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="cancel an order",
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function cancelOrder(Request $request)
@@ -186,11 +326,35 @@ class OrderController extends Controller
     }
 
     /**
-     * Cancel Magento an Order data status.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Get(
+     * path="/api/{store_view}/orders/{id}/status",
+     * summary="get status of an order",
+     * description="get status of an order",
+     * operationId="getOrderStatus",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="cancel an order",
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function getOrderItemStatus(Request $request)
@@ -215,9 +379,39 @@ class OrderController extends Controller
     }
 
     /**
-     * Get Magento an Order data.
-     *
-     * @return JsonResponse
+     * @OA\Get(
+     * path="/api/{store_view}/orders/items",
+     * summary="get order items",
+     * description="get order items",
+     * operationId="getOrderItems",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={},
+     *       @OA\Property(property="searchCriteria", type="object"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function getOrderItems(Request $request)
@@ -249,11 +443,39 @@ class OrderController extends Controller
     }
 
     /**
-     * Get Magento an Order data.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Post(
+     * path="/api/{store_view}/orders/notify-orders-are-ready-for-pickup",
+     * summary="get notification",
+     * description="get notification",
+     * operationId="getNotify",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={"orderIds"},
+     *       @OA\Property(property="orderIds", type="object"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function getNotify(Request $request)
@@ -285,11 +507,39 @@ class OrderController extends Controller
     }
 
     /**
-     * Update Magento comment.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Post(
+     * path="/api/{store_view}/orders/{orderId}/comments",
+     * summary="get notification",
+     * description="get notification",
+     * operationId="setOrderComments",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={},
+     *       @OA\Property(property="statusHistory", type="object"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function createOrderComment(Request $request)
@@ -320,11 +570,39 @@ class OrderController extends Controller
     }
 
     /**
-     * Refund Order.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Post(
+     * path="/api/{store_view}/orders/{orderId}/refund",
+     * summary="refund order",
+     * description="refund order",
+     * operationId="refundOrder",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={},
+     *       @OA\Property(property="statusHistory", type="object"),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
      */
 
     public function refundOrder(Request $request)
@@ -352,6 +630,44 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     * path="/api/{store_view}/mail/internal/new-order",
+     * summary="send email for a new order",
+     * description="send email for a new order",
+     * operationId="newOrderEmail",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={},
+     *       @OA\Property(property="storeview", type="string", example=""),
+     *       @OA\Property(property="client_id", type="string", example=""),
+     *       @OA\Property(property="location", type="string", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
+     */
+
     public function newOrder(Request $request)
     {
         try {
@@ -362,6 +678,11 @@ class OrderController extends Controller
             $store_view = $request->input('storeview');
             $client_id = $request->input('client_id');
             $location = $request->input('location');
+
+            $order_id = $request->input('order_id');
+            $date_placed = $request->input('date_placed');
+            $value = $request->input('value');
+            $store = $request->input('store');
 
             $storeview = StoreView::findOrFail($store_view);
 
@@ -383,15 +704,15 @@ class OrderController extends Controller
                 $mailClient = new Client();            
                 $mailClient->request(
                     'POST',
-                    'https://api.eu.mailgun.net/v3/' . $storeview['email_domain'] . '/messages',
+                    'https://api.eu.mailgun.net/v3/omninext.app/messages',
                     [
-                        'auth' => ['api', $storeview['email_password']],
+                        'auth' => ['api', '5fc66908cef2c976f1be9e1dc2921c92-18e06deb-0a7d17b2'],
                         'form_params' => [
-                            'from' => 'Mailgun Sandbox <' . $storeview['email_sender'] . '>',
+                            'from' => 'Omni Support <noreply@omninext.app >',
                             'to' => $to,
-                            'subject' => 'New Order',
-                            'template' => 'order',
-                            'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '"}'
+                            'subject' => 'New Online Order Placed',
+                            'template' => 'internalneworder',
+                            'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '", "orderID":"'.$order_id.'", "date_placed":"'.$date_placed.'", "value":"'.$value.'", "name":"'.$user['name'].'", "store": "'.$store.'"}'
                         ]
                     ]
                 );           
@@ -411,6 +732,172 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * @OA\Post(
+     * path="/api/mail/internal/new-enquiry",
+     * summary="send email for a new order",
+     * description="send email for a new order",
+     * operationId="newEnquiryEmail",
+     * tags={"Mail"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={"storeview", "client_id", "location"},
+     *       @OA\Property(property="storeview", type="string", example=""),
+     *       @OA\Property(property="client_id", type="string", example=""),
+     *       @OA\Property(property="first_name", type="string", example=""),
+     *       @OA\Property(property="last_name", type="string", example=""),
+     *       @OA\Property(property="email", type="string", pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", format="email", example="user1@mail.com"),
+     *       @OA\Property(property="message", type="string", example=""),
+     *       @OA\Property(property="phone", type="string", example=""),
+     *       @OA\Property(property="vin", type="string", example=""),
+     *       @OA\Property(property="status", type="string", example=""),
+     *       @OA\Property(property="item_required", type="string", example=""),
+     *       @OA\Property(property="store_id", type="string", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
+     */
+
+    public function newEnquiry(Request $request)
+    {
+        try {
+            $request->validate([
+                'storeview' => 'required|string',
+                'client_id' => 'required|string',
+                'location' => 'required|string',
+                'first_name' => 'required|string',
+                'last_name' => 'required|string',
+                'email' => 'required|string',
+                'message' => 'required|string',
+                'phone' => 'required|string',
+                'vin' => 'required|string',
+                'status' => 'required|string',
+                'item_required' => 'required|string',
+                'store_id' => 'required|string',
+            ]);
+            // $user = JWTAuth::user();
+            // $storeview = $user['store_views'][0];
+            // $token = $request->header('Token');
+            
+            $store_view = $request->input('storeview');
+            $client_id = $request->input('client_id');
+            $location = $request->input('location');
+            
+            $storeview = StoreView::findOrFail($store_view);
+    
+            $company = Company::findOrFail($client_id);
+            if ($storeview && $token != $storeview->webhook_token) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Token_Not_Matched',
+                    'message' => 'Token is not matched',
+                ], 500);
+            }
+            $user_ids = UserLocation::where('location_id', $location)->pluck('user_id');
+            $sender = User::where('company_name', $company->name)->where('email_only', 0)->first(); 
+            $users = User::where('company_name', $company->name)->where('email_only',1)->whereIn('id', $user_ids)->get();
+            $to = '';
+            $params = $request->all();
+            $mailgun_variables = "{'myorderurl': '{$storeview->vsf_url}'";
+            foreach($params as $key => $value) {
+                $mailgun_variables .= ", '{$key}': '{$value}'";
+            }
+            $mailgun_variables .= "}";
+            return response()->json([
+                'status' => 'success',
+                'data' => $mailgun_variables,
+            ], 200);
+            foreach($users as $key => $user) {
+                $to .= $user['name']." <".$user['email'].">";
+                
+                $mailClient = new Client();            
+                $mailClient->request(
+                    'POST',
+                    'https://api.eu.mailgun.net/v3/' . $storeview['email_domain'] . '/messages',
+                    [
+                        'auth' => ['api', $storeview['email_password']],
+                        'form_params' => [
+                            'from' => 'Mailgun Sandbox < noreply@omninext.app >',
+                            'to' => $to,
+                            'subject' => 'New Order',
+                            'template' => 'order',
+                            'h:X-Mailgun-Variables' => $mailgun_variables
+                        ]
+                    ]
+                );           
+            }            
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $users,
+            ], 200);
+        } catch (GuzzleException $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_create_order',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Post(
+     * path="/api/{store_view}/mail/external/new-order",
+     * summary="send external email for a new order",
+     * description="send external email for a new order",
+     * operationId="newOrderExternalEmail",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="get order items",
+     *    @OA\JsonContent(
+     *       required={},
+     *       @OA\Property(property="storeview", type="string", example=""),
+     *       @OA\Property(property="client_id", type="string", example=""),
+     *       @OA\Property(property="location", type="string", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="invalid_user_data",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="invalid_user_data"),
+     *       @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *        )
+     *     )
+     * )
+     */
 
     public function newExternalOrder(Request $request)
     {
@@ -471,6 +958,42 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * @OA\Get(
+     * path="/api/{store_view}/orders/open-carts",
+     * summary="Get all open carts",
+     * description="Get all open carts",
+     * operationId="openCarts",
+     * tags={"Order"},
+     * security={ {"Bearer": {} }},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Pass search criteria",
+     *    @OA\JsonContent(
+     *       required={"searchCriteria"},
+     *       @OA\Property(property="searchCriteria", type="object", example=""),
+     *    ),
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *        @OA\Property(property="status", type="string", example="success"),
+     *        @OA\Property(property="data", type="object"),
+     *     )
+     *  ),
+     * @OA\Response(
+     *    response=500,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="string", example="error"),
+     *       @OA\Property(property="error", type="string", example="could_not_get_orders"),
+     *       @OA\Property(property="message", type="string", example="Sorry, wrong criteria. Please try again")
+     *        )
+     *     )
+     * )
+     */
 
     public function openCarts(Request $request)
     {
