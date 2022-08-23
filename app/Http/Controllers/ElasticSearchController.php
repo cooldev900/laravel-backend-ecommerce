@@ -291,6 +291,7 @@ class ElasticSearchController extends Controller
             $pageSize = $request->get('pageSize') ?? 25;
             $currentPage = $request->get('currentPage') ?? 1;
             $mustQuery = json_decode($request->get('filter'));
+            $should = json_decode($request->get('should'));
             $filterQuery = json_decode($request->get('product_type')) ?
                 [
                     'terms' => [
@@ -313,6 +314,7 @@ class ElasticSearchController extends Controller
                                 'type_id' => 'grouped'
                             ]
                         ],
+                        'should' => $should ?? [],
                         'filter' => $filterQuery ?? []
                     ]
                 ],
@@ -341,6 +343,7 @@ class ElasticSearchController extends Controller
                 'data' => [
                     'total_count' => $totalCount,
                     'items' => $result ?? [],
+                    'query' => $body,
                 ],
             ], 200);
         } catch (Exception $e) {
