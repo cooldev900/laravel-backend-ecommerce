@@ -328,6 +328,18 @@ class Controller extends BaseController
                     'name' => $storeview['company']['name'],
                 ];
             }
+            if (isset($storeview['checkoutcom'])) {
+                unset($storeview['checkoutcom']);
+            }
+            if (isset($storeview['cybersource'])) {
+                unset($storeview['cybersource']);
+            }
+            if (isset($storeview['paypal'])) {
+                unset($storeview['paypal']);
+            }
+            if (isset($storeview['stripe'])) {
+                unset($storeview['stripe']);
+            }
             array_push($result_store_views, $storeview);
         }
         $_user['store_views'] = $result_store_views;
