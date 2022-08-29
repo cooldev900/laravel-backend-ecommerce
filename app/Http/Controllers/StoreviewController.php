@@ -203,9 +203,9 @@ class StoreviewController extends Controller
     private function encryptPaypalKeys($values) {
         if (!sizeof($values)) return $values;
         foreach($values as $key => $value) {    
-            if ($key === 'client_id') $values[$key] = encrypt($value);
-            if ($key === 'client_secret') $values[$key] = encrypt($value);
-            if ($key === 'public_key') $values[$key] = encrypt($value);
+            if ($key === 'client_id') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'client_secret') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'public_key') $values[$key] = encrypt(bin2hex($value));
         }
         return $values;
     }
@@ -213,9 +213,9 @@ class StoreviewController extends Controller
     private function encryptStripeKeys($values) {
         if (!sizeof($values)) return $values;
         foreach($values as $key => $value) {    
-            if ($key === 'public_api_key') $values[$key] = encrypt($value);
-            if ($key === 'secret_api_key') $values[$key] = encrypt($value);
-            if ($key === 'webhook_secret') $values[$key] = encrypt($value);
+            if ($key === 'public_api_key') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'secret_api_key') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'webhook_secret') $values[$key] = encrypt(bin2hex($value));
         }
         return $values;
     }
@@ -223,9 +223,9 @@ class StoreviewController extends Controller
     private function encryptCybersourceKeys($values) {
         if (!sizeof($values)) return $values;
         foreach($values as $key => $value) {    
-            if ($key === 'merchant_id') $values[$key] = encrypt($value);
-            if ($key === 'key') $values[$key] = encrypt($value);
-            if ($key === 'shared_secret_key') $values[$key] = encrypt($value);
+            if ($key === 'merchant_id') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'key') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'shared_secret_key') $values[$key] = encrypt(bin2hex($value));
         }
         return $values;
     }
@@ -233,9 +233,9 @@ class StoreviewController extends Controller
     private function encryptCheckoutcomKeys($values) {
         if (!sizeof($values)) return $values;
         foreach($values as $key => $value) {    
-            if ($key === 'public_api_key') $values[$key] = encrypt($value);
-            if ($key === 'secret_api_key') $values[$key] = encrypt($value);
-            if ($key === 'webhook_secret') $values[$key] = encrypt($value);
+            if ($key === 'public_api_key') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'secret_api_key') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'webhook_secret') $values[$key] = encrypt(bin2hex($value));
         }
         return $values;
     }
