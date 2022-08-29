@@ -23,7 +23,7 @@ class CybersourceController extends Controller
         $storeview = StoreView::where('company_id', $company->id)->where('code', $store_view)->firstOrFail();
         
         if (isset($storeview['cybersource']) && isset($storeview['cybersource']['secret_api_key'])) {
-            $commonElement = new ExternalConfiguration(hext2bin(decrypt($storeview['cybersource']['merchant_id'])), hext2bin(decrypt($storeview['cybersource']['key'])), hext2bin(decrypt($storeview['cybersource']['shared_secret_key'])));
+            $commonElement = new ExternalConfiguration(hex2bin(decrypt($storeview['cybersource']['merchant_id'])), hex2bin(decrypt($storeview['cybersource']['key'])), hex2bin(decrypt($storeview['cybersource']['shared_secret_key'])));
             $config = $commonElement->ConnectionHost();
             $merchantConfig = $commonElement->merchantConfigObject();
     
@@ -41,10 +41,6 @@ class CybersourceController extends Controller
             $params = $request->route()->parameters();
             $id = $params['id'];
             $api_client = $this->getClient($params['store_view']);
-            return response()->json([
-                'status' => 'success',
-                'data' => $api_client,
-            ], 200);
             $api_instance = new TransactionDetailsApi($api_client);
             $apiResponse = $api_instance->getTransaction($id);
 
