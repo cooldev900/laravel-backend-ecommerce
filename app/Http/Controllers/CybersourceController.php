@@ -21,9 +21,9 @@ class CybersourceController extends Controller
         $company = Company::where('name', $user->company_name)->firstOrFail();
 
         $storeview = StoreView::where('company_id', $company->id)->where('code', $store_view)->firstOrFail();
-        return hextobin(decrypt($storeview['cybersource']['shared_secret_key']));
+        
         if (isset($storeview['cybersource']) && isset($storeview['cybersource']['secret_api_key'])) {
-            $commonElement = new ExternalConfiguration(hextobin(decrypt($storeview['cybersource']['merchant_id'])), hextobin(decrypt($storeview['cybersource']['key'])), hextobin(decrypt($storeview['cybersource']['shared_secret_key'])));
+            $commonElement = new ExternalConfiguration(hext2bin(decrypt($storeview['cybersource']['merchant_id'])), hext2bin(decrypt($storeview['cybersource']['key'])), hext2bin(decrypt($storeview['cybersource']['shared_secret_key'])));
             $config = $commonElement->ConnectionHost();
             $merchantConfig = $commonElement->merchantConfigObject();
     

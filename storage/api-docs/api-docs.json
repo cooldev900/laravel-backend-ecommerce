@@ -1,0 +1,2294 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Omni Rest API",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Sign in",
+                "description": "Login by email, password, company name",
+                "operationId": "authLogin",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "company_name"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+                                        "example": "user1@mail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "PassWord12345"
+                                    },
+                                    "company_name": {
+                                        "type": "string",
+                                        "example": "Omni"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "$ref": "#/components/schemas/BaseModel/properties/token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "credentials_error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong email address ,password or company name. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/passcodeLogin": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Passcode Login",
+                "description": "Login by passcode from email",
+                "operationId": "passcodeLogin",
+                "requestBody": {
+                    "description": "User pass code",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id",
+                                    "passcode"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "string",
+                                        "example": "31"
+                                    },
+                                    "passcode": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "$ref": "#/components/schemas/BaseModel/properties/token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "credentials_error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong email address ,password or company name. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Register a new user",
+                "description": "Register a new user. User should have admin permission",
+                "operationId": "authRegister",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "name",
+                                    "password",
+                                    "company_name",
+                                    "company_url",
+                                    "company_consumer_key",
+                                    "company_consumer_secret",
+                                    "company_token",
+                                    "company_token_secret",
+                                    "scopes",
+                                    "store_views",
+                                    "roles"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+                                        "example": "user1@mail.com"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Johe Doe"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "PassWord12345"
+                                    },
+                                    "company_name": {
+                                        "type": "string",
+                                        "example": "Omni"
+                                    },
+                                    "company_url": {
+                                        "type": "string",
+                                        "example": "https://omni.magento"
+                                    },
+                                    "company_consumer_key": {
+                                        "$ref": "#/components/schemas/BaseModel/properties/token"
+                                    },
+                                    "company_consumer_secret": {
+                                        "$ref": "#/components/schemas/BaseModel/properties/token"
+                                    },
+                                    "company_token": {
+                                        "$ref": "#/components/schemas/BaseModel/properties/token"
+                                    },
+                                    "company_token_secret": {
+                                        "$ref": "#/components/schemas/BaseModel/properties/token"
+                                    },
+                                    "scopes": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/Scope"
+                                        }
+                                    },
+                                    "store_views": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/StoreView"
+                                        }
+                                    },
+                                    "roles": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/Role"
+                                        }
+                                    },
+                                    "is_admin": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "new_user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/me": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "RETURN CURRENT LOGGED IN USER",
+                "operationId": "me",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "LOGS OUT CURRENT LOGGED IN USER SESSION",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/orders": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get all orders",
+                "description": "Get all orders",
+                "operationId": "getAllOrders",
+                "requestBody": {
+                    "description": "Pass search criteria",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "searchCriteria"
+                                ],
+                                "properties": {
+                                    "searchCriteria": {
+                                        "type": "object",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "could_not_get_orders"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong criteria. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "create an order",
+                "description": "create an order",
+                "operationId": "createOrder",
+                "requestBody": {
+                    "description": "Create an order",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "entity",
+                                    "vsf_url"
+                                ],
+                                "properties": {
+                                    "entity": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "vsf_url": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/orders/{id}": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get an order",
+                "description": "Get an order",
+                "operationId": "getOrder",
+                "requestBody": {
+                    "description": "Get an order",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "credentials_error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong email address ,password or company name. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/orders/items/{id}": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "get an order item",
+                "description": "get an order item",
+                "operationId": "getOrderItem",
+                "requestBody": {
+                    "description": "Get an order item",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/orders/{id}/cancel": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "cancel an order",
+                "description": "cancel an order",
+                "operationId": "cancelOrder",
+                "requestBody": {
+                    "description": "cancel an order",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/orders/{id}/status": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "get status of an order",
+                "description": "get status of an order",
+                "operationId": "getOrderStatus",
+                "requestBody": {
+                    "description": "cancel an order",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/orders/items": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "get order items",
+                "description": "get order items",
+                "operationId": "getOrderItems",
+                "requestBody": {
+                    "description": "get order items",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "searchCriteria": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/orders/notify-orders-are-ready-for-pickup": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "get notification",
+                "description": "get notification",
+                "operationId": "getNotify",
+                "requestBody": {
+                    "description": "get order items",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "orderIds"
+                                ],
+                                "properties": {
+                                    "orderIds": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/orders/{orderId}/comments": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "get notification",
+                "description": "get notification",
+                "operationId": "setOrderComments",
+                "requestBody": {
+                    "description": "get order items",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "statusHistory": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/orders/{orderId}/refund": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "refund order",
+                "description": "refund order",
+                "operationId": "refundOrder",
+                "requestBody": {
+                    "description": "get order items",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "statusHistory": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/mail/internal/new-order": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "send email for a new order",
+                "description": "send email for a new order",
+                "operationId": "newOrderEmail",
+                "requestBody": {
+                    "description": "get order items",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "storeview": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "client_id": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/mail/internal/new-enquiry": {
+            "post": {
+                "tags": [
+                    "Mail"
+                ],
+                "summary": "send email for a new order",
+                "description": "send email for a new order",
+                "operationId": "newEnquiryEmail",
+                "requestBody": {
+                    "description": "get order items",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "storeview",
+                                    "client_id",
+                                    "location"
+                                ],
+                                "properties": {
+                                    "storeview": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "client_id": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+                                        "example": "user1@mail.com"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "vin": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "item_required": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "store_id": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/mail/external/new-order": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "send external email for a new order",
+                "description": "send external email for a new order",
+                "operationId": "newOrderExternalEmail",
+                "requestBody": {
+                    "description": "get order items",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "storeview": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "client_id": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/{store_view}/orders/open-carts": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get all open carts",
+                "description": "Get all open carts",
+                "operationId": "openCarts",
+                "requestBody": {
+                    "description": "Pass search criteria",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "searchCriteria"
+                                ],
+                                "properties": {
+                                    "searchCriteria": {
+                                        "type": "object",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "could_not_get_orders"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong criteria. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/storeviews": {
+            "post": {
+                "tags": [
+                    "Storeviews"
+                ],
+                "summary": "Create storeview",
+                "description": "Create storeview",
+                "operationId": "storeviews",
+                "requestBody": {
+                    "description": "Create storeview",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code",
+                                    "company_id",
+                                    "paypal",
+                                    "stripe",
+                                    "cybersource",
+                                    "checkoutcom"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "31"
+                                    },
+                                    "store_id": {
+                                        "type": "numeric",
+                                        "example": "1"
+                                    },
+                                    "company_id": {
+                                        "type": "numeric",
+                                        "example": "1"
+                                    },
+                                    "payment_provider": {
+                                        "type": "string",
+                                        "example": "paypal"
+                                    },
+                                    "api_key_1": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "api_key_2": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "api_key_3": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "payment_additional_1": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "payment_additional_2": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "payment_additional_3": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "es_url": {
+                                        "type": "string",
+                                        "example": "https://es_url"
+                                    },
+                                    "es_index": {
+                                        "type": "string",
+                                        "example": "glyn_index"
+                                    },
+                                    "es_username": {
+                                        "type": "string",
+                                        "example": "Omni"
+                                    },
+                                    "es_password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "vsf_url": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "vsf_preview": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "email_domain": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "email_password": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "email_sender": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "website_id": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "whitelist": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "webhook_token": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "language": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "paypal": {
+                                        "$ref": "#/components/schemas/Paypal"
+                                    },
+                                    "stripe": {
+                                        "$ref": "#/components/schemas/Stripe"
+                                    },
+                                    "cybersource": {
+                                        "$ref": "#/components/schemas/Cybersource"
+                                    },
+                                    "checkoutcom": {
+                                        "$ref": "#/components/schemas/CheckoutCom"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/StoreView"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "fail_create_storeview"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/storeviews/{id}": {
+            "put": {
+                "tags": [
+                    "Storeviews"
+                ],
+                "summary": "Update a storeview",
+                "description": "Update a storeview",
+                "operationId": "udpdateStoreviews",
+                "requestBody": {
+                    "description": "Create storeview",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code",
+                                    "company_id",
+                                    "paypal",
+                                    "stripe",
+                                    "cybersource",
+                                    "checkoutcom"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "31"
+                                    },
+                                    "store_id": {
+                                        "type": "numeric",
+                                        "example": "1"
+                                    },
+                                    "company_id": {
+                                        "type": "numeric",
+                                        "example": "1"
+                                    },
+                                    "payment_provider": {
+                                        "type": "string",
+                                        "example": "paypal"
+                                    },
+                                    "api_key_1": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "api_key_2": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "api_key_3": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "payment_additional_1": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "payment_additional_2": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "payment_additional_3": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "es_url": {
+                                        "type": "string",
+                                        "example": "https://es_url"
+                                    },
+                                    "es_index": {
+                                        "type": "string",
+                                        "example": "glyn_index"
+                                    },
+                                    "es_username": {
+                                        "type": "string",
+                                        "example": "Omni"
+                                    },
+                                    "es_password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "vsf_url": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "vsf_preview": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "email_domain": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "email_password": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "email_sender": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "website_id": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "whitelist": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "webhook_token": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "language": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "paypal": {
+                                        "$ref": "#/components/schemas/Paypal"
+                                    },
+                                    "stripe": {
+                                        "$ref": "#/components/schemas/Stripe"
+                                    },
+                                    "cybersource": {
+                                        "$ref": "#/components/schemas/Cybersource"
+                                    },
+                                    "checkoutcom": {
+                                        "$ref": "#/components/schemas/CheckoutCom"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/StoreView"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "fail_create_storeview"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Storeviews"
+                ],
+                "summary": "Delete a storeview",
+                "description": "Delete a storeview",
+                "operationId": "deleteStoreview",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/StoreView"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "fail_create_storeview"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BaseModel": {
+                "properties": {
+                    "created_at": {
+                        "description": "Initial creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "deleted_at": {
+                        "description": "Soft delete timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "token": {
+                        "description": "crypted token string",
+                        "type": "string",
+                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9vbW5pbG9jYWwuY29tXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjM3NjUzODQ3LCJleHAiOjE2Mzc2NTc0NDcsIm5iZiI6MTYzNzY1Mzg0NywianRpIjoiN3M0elFjUllRckw1SFB6ZSIsInN1YiI6MSwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.eVcdAYM1k0vRtFxRkNKC-bTOny-P27wm_Z_2lzrJ5CE"
+                    }
+                },
+                "type": "object"
+            },
+            "CheckoutCom": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "public_api_key": {
+                        "description": "Merchant Id",
+                        "type": "string",
+                        "example": "sdf_sdf4_sfd2"
+                    },
+                    "secret_api_key": {
+                        "description": "CheckoutCom Key",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "webhook_secret": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "public_api_key_sandbox": {
+                        "description": "Merchant Id",
+                        "type": "string",
+                        "example": "sdf_sdf4_sfd2"
+                    },
+                    "secret_api_key_sandbox": {
+                        "description": "CheckoutCom Key",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "webhook_secret_sandbox": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "status": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "manual_capture": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "refund_in_platform": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "created_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/created_at"
+                    },
+                    "updated_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/updated_at"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "CheckoutCom"
+                }
+            },
+            "Cybersource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "merchant_id": {
+                        "description": "Merchant Id",
+                        "type": "string",
+                        "example": "sdf_sdf4_sfd2"
+                    },
+                    "key": {
+                        "description": "Cybersource Key",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "shared_secret_key": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "merchant_id_sandbox": {
+                        "description": "Merchant Id",
+                        "type": "string",
+                        "example": "sdf_sdf4_sfd2"
+                    },
+                    "key_sandbox": {
+                        "description": "Cybersource Key",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "shared_secret_key_sandbox": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "status": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "manual_capture": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "refund_in_platform": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "created_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/created_at"
+                    },
+                    "updated_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/updated_at"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Cybersource"
+                }
+            },
+            "Paypal": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "client_id": {
+                        "description": "Merchant Id",
+                        "type": "string",
+                        "example": "sdf_sdf4_sfd2"
+                    },
+                    "client_secret": {
+                        "description": "Stripe Key",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "public_key": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "client_id_sandbox": {
+                        "description": "Merchant Id",
+                        "type": "string",
+                        "example": "sdf_sdf4_sfd2"
+                    },
+                    "client_secret_sandbox": {
+                        "description": "Stripe Key",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "public_key_sandbox": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "status": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "manual_capture": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "refund_in_platform": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "created_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/created_at"
+                    },
+                    "updated_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/updated_at"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Stripe"
+                }
+            },
+            "Role": {
+                "properties": {
+                    "id": {
+                        "description": "Unique Role ID",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "read"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Role"
+                }
+            },
+            "Scope": {
+                "properties": {
+                    "id": {
+                        "description": "Unique Scope ID",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "products"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Scope"
+                }
+            },
+            "StoreView": {
+                "properties": {
+                    "id": {
+                        "description": "Unique StoreView ID",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "omni"
+                    },
+                    "magento_id": {
+                        "type": "integer",
+                        "example": "1"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "StoreView"
+                }
+            },
+            "Stripe": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "public_api_key": {
+                        "description": "Merchant Id",
+                        "type": "string",
+                        "example": "sdf_sdf4_sfd2"
+                    },
+                    "secret_api_key": {
+                        "description": "Stripe Key",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "webhook_secret": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "public_api_key_sandbox": {
+                        "description": "Merchant Id",
+                        "type": "string",
+                        "example": "sdf_sdf4_sfd2"
+                    },
+                    "secret_api_key_sandbox": {
+                        "description": "Stripe Key",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "webhook_secret_sandbox": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "status": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "manual_capture": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "refund_in_platform": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "created_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/created_at"
+                    },
+                    "updated_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/updated_at"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Stripe"
+                }
+            },
+            "User": {
+                "required": [
+                    "password"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "name": {
+                        "description": "User name",
+                        "type": "string",
+                        "readOnly": "true",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "description": "User unique email address",
+                        "type": "string",
+                        "format": "email",
+                        "readOnly": "true",
+                        "example": "user@gmail.com"
+                    },
+                    "company_name": {
+                        "type": "string",
+                        "example": "Web Hunter"
+                    },
+                    "is_admin": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "scopes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Scope"
+                        }
+                    },
+                    "store_views": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StoreView"
+                        }
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
+                    "created_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/created_at"
+                    },
+                    "updated_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/updated_at"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "User"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearer_token": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    }
+}
