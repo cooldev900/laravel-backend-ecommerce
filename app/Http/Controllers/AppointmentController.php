@@ -108,8 +108,8 @@ class AppointmentController extends Controller
                     $appointment->where('customer', 'like', "%{$inputs['customer']}%");
                 }
 
-                if (isset($inputs['orderid'])) {
-                    $appointment->where('order_id', $inputs['orderid']);
+                if (isset($inputs['orderId'])) {
+                    $appointment->where('order_id', $inputs['orderId']);
                 }
 
                 if (isset($inputs['from'])) {
