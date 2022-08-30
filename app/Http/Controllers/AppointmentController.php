@@ -108,6 +108,10 @@ class AppointmentController extends Controller
                     $appointment->where('customer', 'like', "%{$inputs['customer']}%");
                 }
 
+                if (isset($inputs['orderid'])) {
+                    $appointment->where('order_id', $inputs['orderid']);
+                }
+
                 if (isset($inputs['from'])) {
                     $date = Carbon::parse($inputs['from'])->toDateTimeString();
                     // $sql.= " and start_time >= '{$date}'";
