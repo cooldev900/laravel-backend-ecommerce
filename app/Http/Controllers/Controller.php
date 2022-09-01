@@ -337,16 +337,24 @@ class Controller extends BaseController
                 ];
             }
             if (isset($storeview['checkoutcom'])) {
+                $status = $storeview['checkoutcom']['status'];
                 unset($storeview['checkoutcom']);
+                $storeview['checkoutcom'] = $status;
             }
             if (isset($storeview['cybersource'])) {
+                $status = $storeview['cybersource']['status'];
                 unset($storeview['cybersource']);
+                $storeview['cybersource'] = $status;
             }
             if (isset($storeview['paypal'])) {
+                $status = $storeview['paypal']['status'];
                 unset($storeview['paypal']);
+                $storeview['paypal'] = $status;
             }
             if (isset($storeview['stripe'])) {
+                $status = $storeview['stripe']['status'];
                 unset($storeview['stripe']);
+                $storeview['stripe'] = $status;
             }
             array_push($result_store_views, $storeview);
         }
