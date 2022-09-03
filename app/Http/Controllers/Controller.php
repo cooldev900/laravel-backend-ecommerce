@@ -337,24 +337,24 @@ class Controller extends BaseController
                 ];
             }
             if (isset($storeview['checkoutcom'])) {
-                $status = $storeview['checkoutcom']['status'];
-                unset($storeview['checkoutcom']);
-                $storeview['checkoutcom'] = $status;
+                unset($storeview['checkoutcom']['public_api_key']);
+                unset($storeview['checkoutcom']['secret_api_key']);
+                unset($storeview['checkoutcom']['webhook_secret']);
             }
             if (isset($storeview['cybersource'])) {
-                $status = $storeview['cybersource']['status'];
-                unset($storeview['cybersource']);
-                $storeview['cybersource'] = $status;
+                unset($storeview['cybersource']['merchant_id']);
+                unset($storeview['cybersource']['key']);
+                unset($storeview['cybersource']['shared_secret_key']);
             }
             if (isset($storeview['paypal'])) {
-                $status = $storeview['paypal']['status'];
-                unset($storeview['paypal']);
-                $storeview['paypal'] = $status;
+                unset($storeview['paypal']['client_id']);
+                unset($storeview['paypal']['client_secret']);
+                unset($storeview['paypal']['public_key']);
             }
             if (isset($storeview['stripe'])) {
-                $status = $storeview['stripe']['status'];
-                unset($storeview['stripe']);
-                $storeview['stripe'] = $status;
+                unset($storeview['stripe']['public_api_key']);
+                unset($storeview['stripe']['secret_api_key']);
+                unset($storeview['stripe']['webhook_secret']);
             }
             array_push($result_store_views, $storeview);
         }
