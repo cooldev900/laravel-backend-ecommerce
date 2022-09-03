@@ -437,6 +437,9 @@ class StoreviewController extends Controller
                 'language' => $request->input('language') ?? $originStoreview->language,
                 'currency' => $request->input('currency') ?? $originStoreview->currency,
                 'currency_code' => $request->input('currency_code') ?? $originStoreview->currency_code,
+                'shipment_with_label' => $request->input('shipment_with_label') ?? $originStoreview->shipment_with_label,
+                'shipment_without_label' => $request->input('shipment_without_label') ?? $originStoreview->shipment_without_label,
+                'shipment_without_tracking' => $request->input('shipment_without_tracking') ?? $originStoreview->shipment_without_tracking,
             ]);
 
             if (!is_null($originStoreview['paypal'])) $originStoreview->paypal()->update($this->encryptPaypalKeys($request->input('paypal')));
