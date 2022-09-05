@@ -96,7 +96,11 @@
                 }
             }
         },
+<<<<<<< HEAD
+        "/auth/passcodeLogin": {
+=======
         "/api/auth/passcodeLogin": {
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
             "post": {
                 "tags": [
                     "User"
@@ -179,7 +183,11 @@
                 }
             }
         },
+<<<<<<< HEAD
+        "/auth/register": {
+=======
         "/api/auth/register": {
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
             "post": {
                 "tags": [
                     "User"
@@ -315,6 +323,12 @@
                             }
                         }
                     }
+<<<<<<< HEAD
+                },
+                "security": [
+                    {
+                        "Bearer": []
+=======
                 }
             }
         },
@@ -349,11 +363,16 @@
                 "security": [
                     {
                         "bearer_token": []
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
                     }
                 ]
             }
         },
+<<<<<<< HEAD
+        "/logout": {
+=======
         "/api/auth/logout": {
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
             "post": {
                 "tags": [
                     "User"
@@ -1187,6 +1206,8 @@
                 ]
             }
         },
+<<<<<<< HEAD
+=======
         "/api/mail/internal/new-enquiry": {
             "post": {
                 "tags": [
@@ -1311,6 +1332,7 @@
                 ]
             }
         },
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
         "/{store_view}/mail/external/new-order": {
             "post": {
                 "tags": [
@@ -2282,12 +2304,34 @@
                 }
             }
         },
+<<<<<<< HEAD
+        "responses": {
+            "200": {
+                "description": "Success",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "user": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+=======
         "securitySchemes": {
             "bearer_token": {
                 "type": "apiKey",
                 "description": "Enter token in format (Bearer <token>)",
                 "name": "Authorization",
                 "in": "header"
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
             }
         }
     }

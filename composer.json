@@ -9,7 +9,8 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
-        "darkaonline/l5-swagger": "^8.0",
+        "cybersource/rest-client-php": "^0.0.33",
+        "darkaonline/l5-swagger": "^8.3",
         "doctrine/dbal": "^3.3",
         "elasticsearch/elasticsearch": "~5.1",
         "fruitcake/laravel-cors": "^2.0",
