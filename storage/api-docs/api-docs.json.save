@@ -1,0 +1,490 @@
+	{
+    "openapi": "3.0.0",
+    "info": {
+<<<<<<< HEAD
+        "title": "Omni Portal API Document",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api"
+        }
+    ],
+=======
+        "title": "Your super  ApplicationAPI",
+        "version": "1.0.0"
+    },
+>>>>>>> 1186b280fbd5be6a4db52eed8d9461721d71a227
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": [
+<<<<<<< HEAD
+                    "UnAuthorize"
+=======
+                    "User"
+>>>>>>> 1186b280fbd5be6a4db52eed8d9461721d71a227
+                ],
+                "summary": "Sign in",
+                "description": "Login by email, password, company name",
+                "operationId": "authLogin",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "company_name"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+                                        "example": "user1@mail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "PassWord12345"
+                                    },
+                                    "company_name": {
+                                        "type": "string",
+                                        "example": "Omni"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "$ref": "#/components/schemas/BaseModel/properties/token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "credentials_error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong email address ,password or company name. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Register a new user",
+                "description": "Register a new user. User should have admin permission",
+                "operationId": "authRegister",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "name",
+                                    "password",
+                                    "company_name",
+                                    "company_url",
+                                    "company_consumer_key",
+                                    "company_consumer_secret",
+                                    "company_token",
+                                    "company_token_secret",
+                                    "scopes",
+                                    "store_views",
+                                    "roles"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+                                        "example": "user1@mail.com"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Johe Doe"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "PassWord12345"
+                                    },
+                                    "company_name": {
+                                        "type": "string",
+                                        "example": "Omni"
+                                    },
+                                    "company_url": {
+                                        "type": "string",
+                                        "example": "https://omni.magento"
+                                    },
+                                    "company_consumer_key": {
+                                        "$ref": "#/components/schemas/BaseModel/properties/token"
+                                    },
+                                    "company_consumer_secret": {
+                                        "$ref": "#/components/schemas/BaseModel/properties/token"
+                                    },
+                                    "company_token": {
+                                        "$ref": "#/components/schemas/BaseModel/properties/token"
+                                    },
+                                    "company_token_secret": {
+                                        "$ref": "#/components/schemas/BaseModel/properties/token"
+                                    },
+                                    "scopes": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/Scope"
+                                        }
+                                    },
+                                    "store_views": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/StoreView"
+                                        }
+                                    },
+                                    "roles": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/Role"
+                                        }
+                                    },
+                                    "is_admin": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "new_user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+<<<<<<< HEAD
+=======
+        },
+        "/me": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "RETURN CURRENT LOGGED IN USER",
+                "operationId": "me",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "LOGS OUT CURRENT LOGGED IN USER SESSION",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+>>>>>>> 1186b280fbd5be6a4db52eed8d9461721d71a227
+        }
+    },
+    "components": {
+        "schemas": {
+            "BaseModel": {
+                "properties": {
+                    "created_at": {
+                        "description": "Initial creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "deleted_at": {
+                        "description": "Soft delete timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "token": {
+                        "description": "crypted token string",
+                        "type": "string",
+                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9vbW5pbG9jYWwuY29tXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjM3NjUzODQ3LCJleHAiOjE2Mzc2NTc0NDcsIm5iZiI6MTYzNzY1Mzg0NywianRpIjoiN3M0elFjUllRckw1SFB6ZSIsInN1YiI6MSwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.eVcdAYM1k0vRtFxRkNKC-bTOny-P27wm_Z_2lzrJ5CE"
+                    }
+                },
+                "type": "object"
+            },
+            "Role": {
+                "properties": {
+                    "id": {
+                        "description": "Unique Role ID",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "read"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Role"
+                }
+            },
+            "Scope": {
+                "properties": {
+                    "id": {
+                        "description": "Unique Scope ID",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "products"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Scope"
+                }
+            },
+            "StoreView": {
+                "properties": {
+                    "id": {
+                        "description": "Unique StoreView ID",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "omni"
+                    },
+                    "magento_id": {
+                        "type": "integer",
+                        "example": "1"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "StoreView"
+                }
+            },
+            "User": {
+                "required": [
+                    "password"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true",
+                        "example": "1"
+                    },
+                    "name": {
+                        "description": "User name",
+                        "type": "string",
+                        "readOnly": "true",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "description": "User unique email address",
+                        "type": "string",
+                        "format": "email",
+                        "readOnly": "true",
+                        "example": "user@gmail.com"
+                    },
+                    "company_name": {
+                        "type": "string",
+                        "example": "Web Hunter"
+                    },
+                    "is_admin": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "scopes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Scope"
+                        }
+                    },
+                    "store_views": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StoreView"
+                        }
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
+                    "created_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/created_at"
+                    },
+                    "updated_at": {
+                        "$ref": "#/components/schemas/BaseModel/properties/updated_at"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "User"
+                }
+            }
+<<<<<<< HEAD
+        },
+        "securitySchemes": {
+            "Bearer": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header",
+                "scheme": "Bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "UnAuthorize",
+            "description": "No user login required"
+        },
+        {
+            "name": "User",
+            "description": "User management with authentication"
+        }
+    ],
+    "security": [
+        []
+    ]
+=======
+        }
+    }
+>>>>>>> 1186b280fbd5be6a4db52eed8d9461721d71a227
+}
