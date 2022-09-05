@@ -192,7 +192,7 @@ class OrderController extends Controller
                             'from' => 'Mailgun Sandbox <' . $storeview['email_sender'] . '>',
                             'to' => $order['customer_firstname'] . ' ' . $order['customer_lastname'] . ' <' . $order['customer_email'] . '>',
                             'subject' => 'Hello Tom Brown',
-                            'template' => 'order',
+                            'template' => 'myorder',
                             'h:X-Mailgun-Variables' => '{"myorderurl": "' . $vsfUrl . '"}'
                         ]
                     ]
