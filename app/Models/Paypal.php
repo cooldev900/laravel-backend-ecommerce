@@ -33,8 +33,8 @@ class Paypal extends Model
     use HasFactory;
 
     protected $hidden = ['created_at', 'updated_at'];
-    protected $fillable= ['client_id', 'client_secret', 'public_key', 'client_id_sandbox', 'client_secret_sandbox', 'public_key_sandbox', 'status', 'manual_capture', 'refund_in_platform'];
-    protected $nullable= ['client_id', 'client_secret', 'public_key', 'client_id_sandbox', 'client_secret_sandbox', 'public_key_sandbox', 'status', 'manual_capture', 'refund_in_platform','created_at', 'updated_at'];
+    protected $fillable= ['client_id', 'client_secret', 'public_key', 'client_id_sandbox', 'client_secret_sandbox', 'public_key_sandbox', 'status', 'manual_capture', 'refund_in_platform', 'no_capture'];
+    protected $nullable= ['client_id', 'client_secret', 'public_key', 'client_id_sandbox', 'client_secret_sandbox', 'public_key_sandbox', 'status', 'manual_capture', 'refund_in_platform','created_at', 'updated_at', 'no_capture'];
 
     public function storeview() {
         return $this->belongsTo(StoreView::class);

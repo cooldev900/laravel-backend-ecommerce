@@ -125,11 +125,14 @@ class Controller extends BaseController
             $company = Company::where('name', $user->company_name)->firstOrFail();
 
             $storeview = StoreView::where('company_id', $company->id)->where('code', $store_view)->firstOrFail();
-            $secret_key = decrypt($storeview->api_key_2);
-
-            return new \Stripe\StripeClient($secret_key);
+            if (isset($storeview['stripe']) && isset($storeview['stripe']['secret_api_key'])) {
+                $secret_key = hex2bin(decrypt($storeview['stripe']['secret_api_key']));
+                return new \Stripe\StripeClient($secret_key);
+            } else {
+                new Exception('could_not_create_stripe_client');
+            }
         } catch (Exception $e) {
-            new Exception('could_not_create_stripe_client');
+            
         }
     }
 
@@ -179,35 +182,40 @@ class Controller extends BaseController
             $company = Company::where('name', $user->company_name)->firstOrFail();
             $storeview = StoreView::where('company_id', $company->id)->where('code', $store_view)->firstOrFail();
 
-            $client_id = decrypt($storeview->api_key_1);
-            $secret_key = decrypt($storeview->api_key_2);
-            $uri = 'https://api.sandbox.paypal.com/v1/oauth2/token';
+            if (isset($storeview['paypal']) && isset($storeview['paypal']['client_secret'])) {
+                $client_id = hex2bin(decrypt($storeview['paypal']['client_id']));
+                $secret_key = hex2bin(decrypt($storeview['paypal']['client_secret']));
+                $uri = 'https://api.sandbox.paypal.com/v1/oauth2/token';
+    
+                $authClient = new Client();
+                $response = $authClient->request('POST', $uri, [
+                        'headers' =>
+                            [
+                                'Accept' => 'application/json',
+                                'Accept-Language' => 'en_US',
+                                'Content-Type' => 'application/x-www-form-urlencoded',
+                            ],
+                        'body' => 'grant_type=client_credentials',
+    
+                        'auth' => [$client_id, $secret_key, 'basic'],
+                    ]
+                );
+    
+                $data = json_decode($response->getBody(), true);
+    
+                $access_token = $data['access_token'];
+    
+                return new Client([
+                    'base_uri' => 'https://api-m.sandbox.paypal.com/v2/',
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Authorization' => "Bearer $access_token",
+                    ],
+                ]);
+            } else {
+                new Exception('could_not_create_stripe_client');
+            }
 
-            $authClient = new Client();
-            $response = $authClient->request('POST', $uri, [
-                    'headers' =>
-                        [
-                            'Accept' => 'application/json',
-                            'Accept-Language' => 'en_US',
-                            'Content-Type' => 'application/x-www-form-urlencoded',
-                        ],
-                    'body' => 'grant_type=client_credentials',
-
-                    'auth' => [$client_id, $secret_key, 'basic'],
-                ]
-            );
-
-            $data = json_decode($response->getBody(), true);
-
-            $access_token = $data['access_token'];
-
-            return new Client([
-                'base_uri' => 'https://api-m.sandbox.paypal.com/v2/',
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => "Bearer $access_token",
-                ],
-            ]);
         } catch (Exception $e) {
             new Exception('could_not_create_paypal_client');
         }
@@ -329,16 +337,24 @@ class Controller extends BaseController
                 ];
             }
             if (isset($storeview['checkoutcom'])) {
-                unset($storeview['checkoutcom']);
+                unset($storeview['checkoutcom']['public_api_key']);
+                unset($storeview['checkoutcom']['secret_api_key']);
+                unset($storeview['checkoutcom']['webhook_secret']);
             }
             if (isset($storeview['cybersource'])) {
-                unset($storeview['cybersource']);
+                unset($storeview['cybersource']['merchant_id']);
+                unset($storeview['cybersource']['key']);
+                unset($storeview['cybersource']['shared_secret_key']);
             }
             if (isset($storeview['paypal'])) {
-                unset($storeview['paypal']);
+                unset($storeview['paypal']['client_id']);
+                unset($storeview['paypal']['client_secret']);
+                unset($storeview['paypal']['public_key']);
             }
             if (isset($storeview['stripe'])) {
-                unset($storeview['stripe']);
+                unset($storeview['stripe']['public_api_key']);
+                unset($storeview['stripe']['secret_api_key']);
+                unset($storeview['stripe']['webhook_secret']);
             }
             array_push($result_store_views, $storeview);
         }

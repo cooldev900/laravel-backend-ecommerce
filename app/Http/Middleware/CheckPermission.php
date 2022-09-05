@@ -42,7 +42,7 @@ class CheckPermission
         } else {
             $has_scope_access = in_array($scope, array_column($permissions->scopes, 'name'));
         }
-        if ($scope === 'paypal' || $scope === 'stripe' || $scope === 'barclaycard') {
+        if ($scope === 'paypal' || $scope === 'stripe' || $scope === 'barclaycard' || $scope === 'cybersource') {
             $has_scope_access = true;
         } else if ($scope === 'configurable-products') {
             $has_scope_access = in_array('products', array_column($permissions->scopes, 'name'));

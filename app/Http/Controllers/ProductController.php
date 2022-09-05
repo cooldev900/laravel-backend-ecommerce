@@ -282,6 +282,7 @@ class ProductController extends Controller
                                 'media_type' => 'image',
                                 'position' => $file['data']['position'],
                                 'label' => $file['name'],
+                                'disabled' => false,
                                 // 'id' => $file['data']['magento_id'],
                                 'content' => [
                                     'base64_encoded_data' => $base64Content[1],

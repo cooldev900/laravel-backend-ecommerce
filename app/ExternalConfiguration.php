@@ -10,12 +10,12 @@ class ExternalConfiguration
     private $merchantConfig;
 
     //initialize variable on constructor
-    function __construct()
+    function __construct($merchantID, $apiKeyID, $secretKey)
     {
         $this->authType = "http_signature";//http_signature/jwt
-        $this->merchantID = "cbq_alfardan_qar";
-        $this->apiKeyID = "6923d223-3278-4e81-a4c1-7ad1d630d3d3";
-        $this->secretKey = "0Dq8HrDVTB6mum5Z9/P5u7gHsNvlMkUTs2B8ZYCh6TM=";
+        $this->merchantID = $merchantID;
+        $this->apiKeyID = $apiKeyID;
+        $this->secretKey = $secretKey;
 
         // MetaKey configuration [Start]
         $this->useMetaKey = false;

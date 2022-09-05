@@ -1,11 +1,11 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Your super  ApplicationAPI",
-        "version": "1.0.0"
+        "title": "Omni Rest API",
+        "version": "0.1"
     },
     "paths": {
-        "/auth/login": {
+        "/api/auth/login": {
             "post": {
                 "tags": [
                     "User"
@@ -96,7 +96,11 @@
                 }
             }
         },
+<<<<<<< HEAD
         "/auth/passcodeLogin": {
+=======
+        "/api/auth/passcodeLogin": {
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
             "post": {
                 "tags": [
                     "User"
@@ -179,7 +183,11 @@
                 }
             }
         },
+<<<<<<< HEAD
         "/auth/register": {
+=======
+        "/api/auth/register": {
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
             "post": {
                 "tags": [
                     "User"
@@ -315,15 +323,56 @@
                             }
                         }
                     }
+<<<<<<< HEAD
                 },
                 "security": [
                     {
                         "Bearer": []
+=======
+                }
+            }
+        },
+        "/api/me": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "RETURN CURRENT LOGGED IN USER",
+                "operationId": "me",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
                     }
                 ]
             }
         },
+<<<<<<< HEAD
         "/logout": {
+=======
+        "/api/auth/logout": {
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
             "post": {
                 "tags": [
                     "User"
@@ -1157,6 +1206,133 @@
                 ]
             }
         },
+<<<<<<< HEAD
+=======
+        "/api/mail/internal/new-enquiry": {
+            "post": {
+                "tags": [
+                    "Mail"
+                ],
+                "summary": "send email for a new order",
+                "description": "send email for a new order",
+                "operationId": "newEnquiryEmail",
+                "requestBody": {
+                    "description": "get order items",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "storeview",
+                                    "client_id",
+                                    "location"
+                                ],
+                                "properties": {
+                                    "storeview": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "client_id": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+                                        "example": "user1@mail.com"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "vin": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "item_required": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "store_id": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "invalid_user_data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "invalid_user_data"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
         "/{store_view}/mail/external/new-order": {
             "post": {
                 "tags": [
@@ -2128,6 +2304,7 @@
                 }
             }
         },
+<<<<<<< HEAD
         "responses": {
             "200": {
                 "description": "Success",
@@ -2147,6 +2324,14 @@
                         }
                     }
                 }
+=======
+        "securitySchemes": {
+            "bearer_token": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+>>>>>>> 47196575c121d43fc371df484d5a65ad16f0bf3e
             }
         }
     }

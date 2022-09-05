@@ -9,17 +9,33 @@ use CyberSource\ApiClient;
 use CyberSource\Api\TransactionDetailsApi;
 use CyberSource\Api\CaptureApi;
 use Illuminate\Support\Facades\Http;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Models\StoreView;
+use App\Models\Company;
 
 
 class CybersourceController extends Controller
 {   
-    private function getClient() {
-        $commonElement = new ExternalConfiguration();
-        $config = $commonElement->ConnectionHost();
-        $merchantConfig = $commonElement->merchantConfigObject();
+    private function getClient($store_view) {
+        $user = JWTAuth::user();
+        $company = Company::where('name', $user->company_name)->firstOrFail();
 
-        $api_client = new ApiClient($config, $merchantConfig);
-        return $api_client;
+        $storeview = StoreView::where('company_id', $company->id)->where('code', $store_view)->firstOrFail();
+        
+        if (isset($storeview['cybersource']) && isset($storeview['cybersource']['shared_secret_key'])) {
+            $merchant_id = hex2bin(decrypt($storeview['cybersource']['merchant_id']));
+            $key = hex2bin(decrypt($storeview['cybersource']['key']));
+            $secret_key = hex2bin(decrypt($storeview['cybersource']['shared_secret_key']));
+            $commonElement = new ExternalConfiguration($merchant_id, $key, $secret_key);
+            $config = $commonElement->ConnectionHost();
+            $merchantConfig = $commonElement->merchantConfigObject();
+    
+            $api_client = new ApiClient($config, $merchantConfig);
+            return $api_client;
+        } else {
+            new Exception('could_not_create_cybersource_client');
+        }
+
     }
 
     public function getTransaction(Request $request)
@@ -27,8 +43,7 @@ class CybersourceController extends Controller
         try {
             $params = $request->route()->parameters();
             $id = $params['id'];
-            $api_client = $this->getClient();
-
+            $api_client = $this->getClient($params['store_view']);
             $api_instance = new TransactionDetailsApi($api_client);
             $apiResponse = $api_instance->getTransaction($id);
 
@@ -74,9 +89,9 @@ class CybersourceController extends Controller
     public function capture(Request $request)
     {
         try {
-            $api_instance = new CaptureApi($this->getClient());
-
             $params = $request->route()->parameters();
+            $api_client = $this->getClient($params['store_view']);
+            $api_instance = new CaptureApi($api_client);
             
             $apiResponse = $api_instance->capturePayment($requestObj, $id);
 

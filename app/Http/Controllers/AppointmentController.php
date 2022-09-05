@@ -108,6 +108,10 @@ class AppointmentController extends Controller
                     $appointment->where('customer', 'like', "%{$inputs['customer']}%");
                 }
 
+                if (isset($inputs['orderId'])) {
+                    $appointment->where('order_id', $inputs['orderId']);
+                }
+
                 if (isset($inputs['from'])) {
                     $date = Carbon::parse($inputs['from'])->toDateTimeString();
                     // $sql.= " and start_time >= '{$date}'";
@@ -200,14 +204,14 @@ class AppointmentController extends Controller
             if (isset($inputs['isEdit']) && $inputs['isEdit']) {
                 $slot_id = $inputs['slot_ids'][0];
                 $client_id = $params['companyId'];
-                $availabe = $this->isAvailable($client_id, $slot_id);
-                if (!$availabe) {
-                    return response()->json([
-                        'status' => 'error',
-                        'error' => 'fail_available_slot',
-                        'message' => "You can not book this appointment anymore",
-                    ], 200);
-                }
+                // $availabe = $this->isAvailable($client_id, $slot_id);
+                // if (!$availabe) {
+                //     return response()->json([
+                //         'status' => 'error',
+                //         'error' => 'fail_available_slot',
+                //         'message' => "You can not book this appointment anymore",
+                //     ], 200);
+                // }
                 $appointment = Appointment::findOrFail($inputs['id']);
                 if ($appointment) {
                     foreach ($inputs as $key => $input) {
