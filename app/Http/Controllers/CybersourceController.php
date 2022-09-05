@@ -33,7 +33,7 @@ class CybersourceController extends Controller
             $api_client = new ApiClient($config, $merchantConfig);
             return $api_client;
         } else {
-            new Exception('could_not_create_cybersource_client');
+            return false;
         }
 
     }
@@ -44,6 +44,11 @@ class CybersourceController extends Controller
             $params = $request->route()->parameters();
             $id = $params['id'];
             $api_client = $this->getClient($params['store_view']);
+            if (!$api_client)
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid Secret Keys',
+                ], 200);
             $api_instance = new TransactionDetailsApi($api_client);
             $apiResponse = $api_instance->getTransaction($id);
 
@@ -56,7 +61,7 @@ class CybersourceController extends Controller
                 'status' => 'error',
                 'error' => 'could_not_get_transaction',
                 'message' => $e->getMessage(),
-            ], 500);
+            ], 200);
         }
     }
 
