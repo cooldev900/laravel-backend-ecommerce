@@ -50,7 +50,7 @@ class StoreView extends Model
         'payment_additional_1', 'payment_additional_2', 'payment_additional_3', 'es_url',
         'es_index', 'es_username', 'es_password', 'vsf_url', 'vsf_preview', 'email_domain',
         'email_password', 'email_sender', 'website_id', 'webhook_token', 'language', 'currency', 'currency_code',
-        'shipment_with_label', 'shipment_without_label', 'shipment_without_tracking'
+        'shipment_with_label', 'shipment_without_label', 'shipment_without_tracking', 'default_provider'
     ];
 
     public function company()

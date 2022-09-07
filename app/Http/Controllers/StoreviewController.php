@@ -202,37 +202,37 @@ class StoreviewController extends Controller
 
     private function encryptPaypalKeys($values) {
         if (!sizeof($values)) return $values;
-        foreach($values as $key => $value) {    
+        foreach($values as $key => $value) {
             if ($key === 'client_id') $values[$key] = encrypt(bin2hex($value));
             if ($key === 'client_secret') $values[$key] = encrypt(bin2hex($value));
             if ($key === 'public_key') $values[$key] = encrypt(bin2hex($value));
         }
         return $values;
     }
-    
+
     private function encryptStripeKeys($values) {
         if (!sizeof($values)) return $values;
-        foreach($values as $key => $value) {    
+        foreach($values as $key => $value) {
             if ($key === 'public_api_key') $values[$key] = encrypt(bin2hex($value));
             if ($key === 'secret_api_key') $values[$key] = encrypt(bin2hex($value));
             if ($key === 'webhook_secret') $values[$key] = encrypt(bin2hex($value));
         }
         return $values;
     }
-    
+
     private function encryptCybersourceKeys($values) {
         if (!sizeof($values)) return $values;
-        foreach($values as $key => $value) {    
+        foreach($values as $key => $value) {
             if ($key === 'merchant_id') $values[$key] = encrypt(bin2hex($value));
             if ($key === 'key') $values[$key] = encrypt(bin2hex($value));
             if ($key === 'shared_secret_key') $values[$key] = encrypt(bin2hex($value));
         }
         return $values;
     }
-    
+
     private function encryptCheckoutcomKeys($values) {
         if (!sizeof($values)) return $values;
-        foreach($values as $key => $value) {    
+        foreach($values as $key => $value) {
             if ($key === 'public_api_key') $values[$key] = encrypt(bin2hex($value));
             if ($key === 'secret_api_key') $values[$key] = encrypt(bin2hex($value));
             if ($key === 'webhook_secret') $values[$key] = encrypt(bin2hex($value));
@@ -395,15 +395,15 @@ class StoreviewController extends Controller
                 'vsf_preview' => 'nullable|string',
                 'email_domain' => 'nullable|string',
                 'email_password' => 'nullable|string',
-                'email_sender' => 'nullable|string', 
+                'email_sender' => 'nullable|string',
                 'website_id' => 'nullable|string',
-                'whitelist' => 'nullable|string',               
+                'whitelist' => 'nullable|string',
                 'webhook_token' => 'nullable|string',
                 'language' => 'nullable|string',
                 'currency' => 'nullable|string',
                 'currency_code' => 'nullable|string',
             ]);
-            
+
             $params = $request->route()->parameters();
             $originStoreview = StoreView::find($params['id']);
             $storeview = $originStoreview->update([
@@ -440,6 +440,7 @@ class StoreviewController extends Controller
                 'shipment_with_label' => $request->input('shipment_with_label') ?? $originStoreview->shipment_with_label,
                 'shipment_without_label' => $request->input('shipment_without_label') ?? $originStoreview->shipment_without_label,
                 'shipment_without_tracking' => $request->input('shipment_without_tracking') ?? $originStoreview->shipment_without_tracking,
+                'default_provider' => $request->input('default_provider') ?? $originStoreview->default_provider,
             ]);
 
             if (!is_null($originStoreview['paypal'])) $originStoreview->paypal()->update($this->encryptPaypalKeys($request->input('paypal')));
