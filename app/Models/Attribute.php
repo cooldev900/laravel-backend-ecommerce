@@ -16,7 +16,8 @@ class Attribute extends Model
         'group',
         'used_as_product_option',
         'details',
-        'variant_product_field'
+        'variant_product_field',
+        'used_for_filter'
     ];
 
     public $timestamps = false;

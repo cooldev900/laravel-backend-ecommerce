@@ -36,6 +36,7 @@ class AttributeController extends Controller
                 'code' => 'nullable|string',
                 'group' => 'nullable|integer',
                 'used_as_product_option' => 'boolean',
+                'used_for_filter' => 'boolean',
                 'variant_product_field' => 'boolean',
                 'details' => 'nullable|string',
             ]);
@@ -43,8 +44,8 @@ class AttributeController extends Controller
             $inputs = $request->all();
             $newAttribute = new Attribute();
             foreach ($inputs as $key => $input) {
-                if ($key === 'client_id') {  
-                    $newAttribute['company_id'] = $input;                      
+                if ($key === 'client_id') {
+                    $newAttribute['company_id'] = $input;
                     continue;
                 }
                 $newAttribute[$key] = $input;
@@ -73,10 +74,11 @@ class AttributeController extends Controller
     public function updateAttribute(Request $request)
     {
         try {
-            $request->validate([                
+            $request->validate([
                 'name' => 'nullable|string',
                 'code' => 'nullable|string',
                 'used_as_product_option' => 'boolean',
+                'used_for_filter' => 'boolean',
                 'group' => 'nullable|integer',
                 'variant_product_field' => 'boolean',
                 'details' => 'nullable|string',
@@ -87,8 +89,9 @@ class AttributeController extends Controller
                 'name' => $request->input('name'),
                 'code' => $request->input('code'),
                 'used_as_product_option' => $request->input('used_as_product_option'),
+                'used_for_filter' => $request->input('used_for_filter'),
                 'group' => $request->input('group'),
-            ]);           
+            ]);
 
             return response()->json([
                 'status' => 'success',
