@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use PhpParser\Node\Expr;
+use App\Models\Attribute;
 
 class ProductController extends Controller
 {
@@ -65,7 +66,7 @@ class ProductController extends Controller
                         pageSize: $pageSize
                         currentPage: $currentPage
                     ) {
-                        total_count                        
+                        total_count
                         page_info {
                             current_page
                             page_size
@@ -150,7 +151,7 @@ class ProductController extends Controller
             $params = $request->route()->parameters();
             $storeId = $request->input('storeId') ?? '';
             $client = $this->makeHttpClient($params['store_view']);
-            $response = $client->request('GET', $storeId ? 'products/' . $params['sku'].'?storeId='.$storeId : 'products/' . $params['sku']);
+            $response = $client->request('GET', $storeId ? 'products/' . $params['sku'] . '?storeId=' . $storeId : 'products/' . $params['sku']);
             return response()->json([
                 'status' => 'success',
                 'data' => json_decode($response->getBody()),
@@ -440,7 +441,7 @@ class ProductController extends Controller
     {
         try {
             $client = $this->makeHttpClient();
-            
+
             $response = $client->request('GET', 'store/websites/', [
                 'headers' => ['Content-Type' => 'application/json'],
             ]);
@@ -564,5 +565,53 @@ class ProductController extends Controller
                 'message' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function getProductFilters(Request $request)
+    {
+        $params = $request->route()->parameters();
+        $client_id = $params['client_id'];
+        $client = $this->makeHttpClient($params['store_view']);
+
+        $attributes = Attribute::where('company_id', $client_id)->where('group', 1)->where('used_for_filter', 1)->get();
+
+        $result = [];
+        if (sizeof($attributes) > 0) {
+            foreach ($attributes as $key => $row) {
+                $value = $row->code;
+                $query = [
+                    'query' => [
+                        'searchCriteria' => [
+                            'filterGroups' => [
+                                [
+                                    'filters' => [
+                                        [
+                                            'field' => 'attribute_code',
+                                            'value' => $value,
+                                            'condition_type' => 'eq'
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ];
+
+                try {
+                    $response = $client->request('GET', 'products/attributes', $query);
+                    $data = json_decode($response->getBody());
+                    if (sizeof($data->items) > 0) {
+                        array_push($result, $data->items[0]);
+                    }
+                } catch (Exception $e) {
+
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $result,
+        ]);
     }
 }
