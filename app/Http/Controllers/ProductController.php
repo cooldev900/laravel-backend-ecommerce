@@ -573,8 +573,8 @@ class ProductController extends Controller
         $client_id = $params['client_id'];
         $client = $this->makeHttpClient($params['store_view']);
 
-        // $attributes = Attribute::where('company_id', $client_id)->where('used_for_filter', 1)->get();
-        $attributes = Attribute::where('company_id', $client_id)->get();
+        $attributes = Attribute::where('company_id', $client_id)->where('used_for_filter', 1)->get();
+        // $attributes = Attribute::where('company_id', $client_id)->get();
 
         $result = [];
         if (sizeof($attributes) > 0) {
