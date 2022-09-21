@@ -310,7 +310,7 @@ class OrderController extends Controller
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
 
-            $response = $client->request('POST', 'orders/' . $params['id'].'/cancel');
+            $response = $client->request('POST', 'orders/' . $params['id'] . '/cancel');
 
             return response()->json([
                 'status' => 'success',
@@ -363,8 +363,8 @@ class OrderController extends Controller
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
 
-            $response = $client->request('GET', 'orders/' . $params['id'].'/statuses');
-            
+            $response = $client->request('GET', 'orders/' . $params['id'] . '/statuses');
+
             return response()->json([
                 'status' => 'success',
                 'data' => json_decode($response->getBody()),
@@ -695,30 +695,30 @@ class OrderController extends Controller
                 ], 500);
             }
             $user_ids = UserLocation::where('location_id', $location)->pluck('user_id');
-            $sender = User::where('company_name', $company->name)->where('email_only', 0)->first(); 
-            $users = User::where('company_name', $company->name)->where('email_only',1)->whereIn('id', $user_ids)->get();
+            $sender = User::where('company_name', $company->name)->where('email_only', 0)->first();
+            $users = User::where('company_name', $company->name)->where('email_only', 1)->whereIn('id', $user_ids)->get();
             $to = '';
-            foreach($users as $key => $user) {
-                $to .= $user['name']." <".$user['email'].">";
-                
-                $mailClient = new Client();            
+            foreach ($users as $key => $user) {
+                $to .= $user['name'] . " <" . $user['email'] . ">";
+
+                $mailClient = new Client();
                 $mailClient->request(
                     'POST',
                     'https://api.eu.mailgun.net/v3/omninext.app/messages',
                     [
-                        'auth' => ['api', '5fc66908cef2c976f1be9e1dc2921c92-18e06deb-0a7d17b2'],
+                        'auth' => ['api', env('MAIL_GUN_SECRET')],
                         'form_params' => [
-                            'from' => 'Omni Support <noreply@omninext.app >',
+                            'from' => env('MAIL_GUN_SENDER'),
                             'to' => $to,
                             'subject' => 'New Online Order Placed',
                             'template' => 'internalneworder',
-                            'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '", "orderID":"'.$order_id.'", "date_placed":"'.$date_placed.'", "value":"'.$value.'", "name":"'.$user['name'].'", "store": "'.$store.'"}'
+                            'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '", "orderID":"' . $order_id . '", "date_placed":"' . $date_placed . '", "value":"' . $value . '", "name":"' . $user['name'] . '", "store": "' . $store . '"}'
                         ]
                     ]
-                );           
+                );
             }
 
-            
+
 
             return response()->json([
                 'status' => 'success',
@@ -798,14 +798,14 @@ class OrderController extends Controller
             ]);
             // $user = JWTAuth::user();
             // $storeview = $user['store_views'][0];
-            // $token = $request->header('Token');
-            
+            $token = $request->header('Token');
+
             $store_view = $request->input('storeview');
             $client_id = $request->input('client_id');
             $location = $request->input('location');
-            
+
             $storeview = StoreView::findOrFail($store_view);
-    
+
             $company = Company::findOrFail($client_id);
             if ($storeview && $token != $storeview->webhook_token) {
                 return response()->json([
@@ -815,12 +815,12 @@ class OrderController extends Controller
                 ], 500);
             }
             $user_ids = UserLocation::where('location_id', $location)->pluck('user_id');
-            $sender = User::where('company_name', $company->name)->where('email_only', 0)->first(); 
-            $users = User::where('company_name', $company->name)->where('email_only',1)->whereIn('id', $user_ids)->get();
+            $sender = User::where('company_name', $company->name)->where('email_only', 0)->first();
+            $users = User::where('company_name', $company->name)->where('email_only', 1)->whereIn('id', $user_ids)->get();
             $to = '';
             $params = $request->all();
             $mailgun_variables = "{'myorderurl': '{$storeview->vsf_url}'";
-            foreach($params as $key => $value) {
+            foreach ($params as $key => $value) {
                 $mailgun_variables .= ", '{$key}': '{$value}'";
             }
             $mailgun_variables .= "}";
@@ -828,25 +828,25 @@ class OrderController extends Controller
                 'status' => 'success',
                 'data' => $mailgun_variables,
             ], 200);
-            foreach($users as $key => $user) {
-                $to .= $user['name']." <".$user['email'].">";
-                
-                $mailClient = new Client();            
+            foreach ($users as $key => $user) {
+                $to .= $user['name'] . " <" . $user['email'] . ">";
+
+                $mailClient = new Client();
                 $mailClient->request(
                     'POST',
-                    'https://api.eu.mailgun.net/v3/' . $storeview['email_domain'] . '/messages',
+                    'https://api.eu.mailgun.net/v3/omninext.app/messages',
                     [
-                        'auth' => ['api', $storeview['email_password']],
+                        'auth' => ['api', env('MAIL_GUN_SECRET')],
                         'form_params' => [
-                            'from' => 'Mailgun Sandbox < noreply@omninext.app >',
+                            'from' =>  env('MAIL_GUN_SENDER'),
                             'to' => $to,
-                            'subject' => 'New Order',
-                            'template' => 'order',
+                            'subject' => 'New Enquiry',
+                            'template' => 'internalnewenquiry',
                             'h:X-Mailgun-Variables' => $mailgun_variables
                         ]
                     ]
-                );           
-            }            
+                );
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -921,13 +921,13 @@ class OrderController extends Controller
                 ], 500);
             }
             $user_ids = UserLocation::where('location_id', $location)->pluck('user_id');
-            $sender = User::where('company_name', $company->name)->where('email_only', 0)->first(); 
-            $users = User::where('company_name', $company->name)->where('email_only',1)->whereIn('id', $user_ids)->get();
+            $sender = User::where('company_name', $company->name)->where('email_only', 0)->first();
+            $users = User::where('company_name', $company->name)->where('email_only', 1)->whereIn('id', $user_ids)->get();
             $to = '';
-            foreach($users as $key => $user) {
-                $to .= $user['name']." <".$user['email'].">";
-                
-                $mailClient = new Client();            
+            foreach ($users as $key => $user) {
+                $to .= $user['name'] . " <" . $user['email'] . ">";
+
+                $mailClient = new Client();
                 $mailClient->request(
                     'POST',
                     'https://api.eu.mailgun.net/v3/' . $storeview['email_domain'] . '/messages',
@@ -941,10 +941,10 @@ class OrderController extends Controller
                             'h:X-Mailgun-Variables' => '{"myorderurl": "' . $storeview['vsf_url'] . '"}'
                         ]
                     ]
-                );           
+                );
             }
 
-            
+
 
             return response()->json([
                 'status' => 'success',
