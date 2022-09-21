@@ -6,6 +6,11 @@ use App\Models\Enquiry;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use App\Models\StoreView;
+use App\Models\Company;
+use App\Models\User;
+use App\Models\UserLocation;
+use GuzzleHttp\Client;
 
 class EnquiryController extends Controller
 {
@@ -73,10 +78,56 @@ class EnquiryController extends Controller
             $inputs = $request->all();
             $enquiry = new Enquiry();
             foreach ($inputs as $key => $input) {
-                if ($key === 'token') continue;
+                if ($key === 'token' || $key === 'location') continue;
                 $enquiry[$key] = $input;
             };
             $enquiry->save();
+
+            //send email
+            // $token = $inputs['token'];
+
+            $store_view = $inputs['store_id'];
+            $client_id = $inputs['client_id'];
+            $location = $inputs['location'];
+
+            $storeview = StoreView::findOrFail($store_view);
+            $company = Company::findOrFail($client_id);
+            if (!$storeview) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Token_Not_Matched',
+                    'message' => 'Token is not matched',
+                ], 500);
+            }
+            $user_ids = UserLocation::where('location_id', $location)->pluck('user_id');
+            $sender = User::where('company_name', $company->name)->where('email_only', 0)->first();
+            $users = User::where('company_name', $company->name)->where('email_only', 1)->whereIn('id', $user_ids)->get();
+            $to = '';
+            $params = $request->all();
+            $mailgun_variables = "{'myorderurl': '{$storeview->vsf_url}'";
+            foreach ($params as $key => $value) {
+                $mailgun_variables .= ", '{$key}': '{$value}'";
+            }
+            $mailgun_variables .= "}";
+            foreach ($users as $key => $user) {
+                $to .= $user['name'] . " <" . $user['email'] . ">";
+
+                $mailClient = new Client();
+                $mailClient->request(
+                    'POST',
+                    'https://api.eu.mailgun.net/v3/omninext.app/messages',
+                    [
+                        'auth' => ['api', env('MAIL_GUN_SECRET')],
+                        'form_params' => [
+                            'from' =>  env('MAIL_GUN_SENDER'),
+                            'to' => $to,
+                            'subject' => 'New Enquiry',
+                            'template' => 'internalnewenquiry',
+                            'h:X-Mailgun-Variables' => $mailgun_variables
+                        ]
+                    ]
+                );
+            }
 
             return response()->json([
                 'status' => 'success',
