@@ -169,7 +169,7 @@ class StoreviewController extends Controller
             $inputs = $request->all();
             $newStoreView = new StoreView();
             foreach ($inputs as $key => $input) {
-                if ($key === 'paypal' || $key === 'stripe' || $key === 'cybersource' || $key === 'checkoutcom')
+                if ($key === 'paypal' || $key === 'stripe' || $key === 'cybersource' || $key === 'checkoutcom'  || $key === 'checkoutcom2')
                     continue;
                 if (($key === 'api_key_1'
                     || $key === 'api_key_2' || $key === 'payment_additional_1'
@@ -181,11 +181,12 @@ class StoreviewController extends Controller
                 }
             }
             $newStoreView->save();
-
+            
             $newStoreView->paypal()->create($this->encryptPaypalKeys($inputs['paypal']));
             $newStoreView->stripe()->create($this->encryptStripeKeys($inputs['stripe']));
             $newStoreView->cybersource()->create($this->encryptCybersourceKeys($inputs['cybersource']));
             $newStoreView->checkoutcom()->create($this->encryptCheckoutcomKeys($inputs['checkoutcom']));
+            $newStoreView->checkoutcom2()->create($this->encryptCheckoutcom2Keys($inputs['checkoutcom2']));
 
             return response()->json([
                 'status' => 'success',
@@ -231,6 +232,16 @@ class StoreviewController extends Controller
     }
 
     private function encryptCheckoutcomKeys($values) {
+        if (!sizeof($values)) return $values;
+        foreach($values as $key => $value) {
+            if ($key === 'public_api_key') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'secret_api_key') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'webhook_secret') $values[$key] = encrypt(bin2hex($value));
+        }
+        return $values;
+    }
+
+    private function encryptCheckoutcom2Keys($values) {
         if (!sizeof($values)) return $values;
         foreach($values as $key => $value) {
             if ($key === 'public_api_key') $values[$key] = encrypt(bin2hex($value));
@@ -288,6 +299,7 @@ class StoreviewController extends Controller
             $newStoreView->stripe()->delete();
             $newStoreView->cybersource()->delete();
             $newStoreView->checkoutcom()->delete();
+            $newStoreView->checkoutcom2()->delete();
             $storeview->delete();
 
             return response()->json([
@@ -451,6 +463,8 @@ class StoreviewController extends Controller
             else $originStoreview->cybersource()->create($this->encryptCybersourceKeys($request->input('cybersource')));
             if (!is_null($originStoreview['checkoutcom'])) $originStoreview->checkoutcom()->update($this->encryptCheckoutcomKeys($request->input('checkoutcom')));
             else $originStoreview->checkoutcom()->create($this->encryptCheckoutcomKeys($request->input('checkoutcom')));
+            if (!is_null($originStoreview['checkoutcom2'])) $originStoreview->checkoutcom2()->update($this->encryptCheckoutcom2Keys($request->input('checkoutcom2')));
+            else $originStoreview->checkoutcom2()->create($this->encryptCheckoutcom2Keys($request->input('checkoutcom2')));
 
             return response()->json([
                 'status' => 'success',

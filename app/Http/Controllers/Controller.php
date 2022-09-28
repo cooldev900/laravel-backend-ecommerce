@@ -341,6 +341,11 @@ class Controller extends BaseController
                 unset($storeview['checkoutcom']['secret_api_key']);
                 unset($storeview['checkoutcom']['webhook_secret']);
             }
+            if (isset($storeview['checkoutcom2'])) {
+                unset($storeview['checkoutcom2']['public_api_key']);
+                unset($storeview['checkoutcom2']['secret_api_key']);
+                unset($storeview['checkoutcom2']['webhook_secret']);
+            }
             if (isset($storeview['cybersource'])) {
                 unset($storeview['cybersource']['merchant_id']);
                 unset($storeview['cybersource']['key']);
