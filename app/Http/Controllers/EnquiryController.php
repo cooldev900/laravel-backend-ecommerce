@@ -104,11 +104,11 @@ class EnquiryController extends Controller
             $users = User::where('company_name', $company->name)->where('email_only', 1)->whereIn('id', $user_ids)->get();
             $to = '';
             $params = $request->all();
-            $mailgun_variables = '{"myorderurl": "'.$storeview->vsf_url.'"';
-            foreach ($params as $key => $value) {
-                $mailgun_variables .= ', "'.$key.'": "'.$value.'"';
-            }
-            $mailgun_variables .= "}";
+            $params['myorderurl'] = $storeview->vsf_url;
+            return response()->json([
+                'status' => 'success',
+                'data' => $params,
+            ], 200);
             foreach ($users as $key => $user) {
                 $to .= $user['name'] . " <" . $user['email'] . ">";
 
@@ -123,7 +123,7 @@ class EnquiryController extends Controller
                             'to' => $to,
                             'subject' => 'New Enquiry',
                             'template' => 'internalnewenquiry',
-                            'h:X-Mailgun-Variables' => $mailgun_variables
+                            'h:X-Mailgun-Variables' => $params
                         ]
                     ]
                 );
