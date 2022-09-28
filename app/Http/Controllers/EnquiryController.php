@@ -104,9 +104,9 @@ class EnquiryController extends Controller
             $users = User::where('company_name', $company->name)->where('email_only', 1)->whereIn('id', $user_ids)->get();
             $to = '';
             $params = $request->all();
-            $mailgun_variables = "{'myorderurl': '{$storeview->vsf_url}'";
+            $mailgun_variables = '{"myorderurl": "'.$storeview->vsf_url.'"';
             foreach ($params as $key => $value) {
-                $mailgun_variables .= ", '{$key}': '{$value}'";
+                $mailgun_variables .= ', "'.$key.'": "'.$value.'"';
             }
             $mailgun_variables .= "}";
             foreach ($users as $key => $user) {
@@ -131,7 +131,7 @@ class EnquiryController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data' => $enquiry,
+                'data' => $users,
             ], 200);
 
         } catch (Exception $e) {
