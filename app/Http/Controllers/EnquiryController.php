@@ -105,10 +105,7 @@ class EnquiryController extends Controller
             $to = '';
             $params = $request->all();
             $params['myorderurl'] = $storeview->vsf_url;
-            return response()->json([
-                'status' => 'success',
-                'data' => $params,
-            ], 200);
+            
             foreach ($users as $key => $user) {
                 $to .= $user['name'] . " <" . $user['email'] . ">";
 
