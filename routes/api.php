@@ -27,6 +27,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BarclayCardController;
 use App\Http\Controllers\ElasticSearchController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -164,6 +165,10 @@ Route::prefix('{store_view}')->group(function () {
 });
 
 Route::middleware(['jwt_auth', 'is_admin'])->group(function () {
+    Route::prefix('report')->group(function () {
+        Route::get('/', [ReportController::class, 'getReportData'])->name('companies.all');
+    });
+
     Route::get('/products/getAllAttributes', [ProductController::class, 'getAttributeSets'])->name('products.attributes.get.all');
 
     Route::prefix('storeviews')->group(function () {
@@ -268,3 +273,5 @@ Route::prefix('providers')->group(function () {
     Route::put('/{id}/editField', [ProviderController::class, 'editField'])->name('providers.editField');
     Route::delete('/{id}/deleteField', [ProviderController::class, 'deleteField'])->name('providers.deleteField');
 });
+
+Route::get('/report/test/', [ReportController::class, 'getReportData'])->name('report.all');
