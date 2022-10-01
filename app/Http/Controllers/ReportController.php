@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Elasticsearch\ClientBuilder;
+use GuzzleHttp\Client;
 use Exception;
 
 class ReportController extends Controller
@@ -41,85 +42,38 @@ class ReportController extends Controller
     {
         try {
             $request->validate([
-                'clientId' => 'nullable|string',
-                'storeviewCode' => 'nullable|string',
-                'storeviewId' => 'required|string',
-                'startDate' => 'nullable|date',
-                'endDate' => 'nullable|date|after_or_equal:start_date'
+                'payload' => 'nullable|string'
             ]);
 
             $params = $request->all();
+            $body = $params['payload'];
 
-            $mustQuery = [];
+            $url = "https://" . env('ELASTIC_VEHICLE_HOST') . ":9243/reglookup/_search";
+            $secret = env('ELASTIC_VEHICLE_USER') . ':' . env('ELASTIC_VEHICLE_PASS');
+            $token = base64_encode($secret);
 
-            if (isset($params['clientId'])) {
-                $term = [
-                    'term' => [
-                        'ClientID' => $params['clientId']
-                    ]
-                ];
-                array_push($mustQuery, $term);
-            }
-
-            if (isset($params['storeviewId'])) {
-                $term = [
-                    'term' => [
-                        'StoreID' => $params['storeviewId']
-                    ]
-                ];
-                array_push($mustQuery, $term);
-            }
-
-            $date_range = [];
-            $date = \Carbon\Carbon::today()->subDays(7)->format('m/d/Y');
-            $date_range['gte'] = $date;
-            if (isset($params['startDate'])) {
-                $date_range['gte'] = \Carbon\Carbon::parse($params['startDate'])->format('m/d/Y');
-            }
-
-            if (isset($params['endDate'])) {
-                $date_range['lte'] = \Carbon\Carbon::parse($params['endDate'])->format('m/d/Y');
-            }
-            $term = [
-                'range' => [
-                    'Date' => $date_range
+            $client = new Client();
+            $response = $client->request(
+                'POST',
+                $url,
+                [
+                    'headers' =>
+                    [
+                        'Accept' => 'application/json',
+                        'Accept-Language' => 'en_US',
+                        'Content-Type' =>  'application/json',
+                        'Authorization' => "Basic {$token}"
+                    ],
+                    'body' => $body
                 ]
-            ];
+            );
+            $data = json_decode($response->getBody(), true);
 
-            array_push($mustQuery, $term);
-
-
-            $body = [
-                'query' => [
-                    'bool' => [
-                        'must' => $mustQuery ?? []
-                    ]
-                ],
-                'aggs' => [
-                    'make_count' => [
-                        'cardinality' => [
-                            'field' => 'Make'
-                        ]
-                    ]
-                ]
-            ];
-
-            $response = $this->elasticsearch->search([
-                'index' => "reglookup",
-                'body' => $body
-            ]);
-
-            $make_count = $response['aggregations']['make_count']['value'];
-            $hits = $response['hits']['hits'];
-            $result = array_column($hits, '_source');
+            $result = $data['aggregations']['groupByMake']['buckets'];
 
             return response()->json([
                 'status' => 'success',
-                'data' => [
-                    'make_count' => $make_count,
-                    'items' => $result ?? [],
-                    'query' => $body,
-                ],
+                'data' => $result
             ], 200);
         } catch (Exception $e) {
             return response()->json([
