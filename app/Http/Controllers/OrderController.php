@@ -1022,4 +1022,58 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    public function getOrderField(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
+            $order_id = json_decode($request->get('orderId'));
+            $query = json_decode($request->get('fields'));
+
+            $response = $client->request('PUT', 'orders/' . $order_id . '?' . $query);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $response,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_delete_product',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateOrder(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
+            $order = $request->input('entity');
+
+            $payload = [
+                'entity' => $order,
+            ];
+
+            $response = $client->request('PUT', 'orders', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $response,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_delete_product',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
