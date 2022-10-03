@@ -82,6 +82,8 @@ Route::prefix('{store_view}')->group(function () {
         /********** Orders **********/
         Route::get('/orders', [OrderController::class, 'allOrders'])->name('orders.all');
         Route::post('/orders', [OrderController::class, 'createOrder'])->name('orders.create');
+        Route::put('/orders', [OrderController::class, 'updateOrder'])->name('orders.update');
+        Route::get('/orders/getOrderField', [OrderController::class, 'getOrderField'])->name('orders.getOrderField');
         Route::get('/orders/items', [OrderController::class, 'getOrderItems'])->name('orders.items.all');
         Route::get('/orders/open-carts', [OrderController::class, 'openCarts'])->name('orders.openCarts');
         Route::get('/orders/{id}', [OrderController::class, 'getOrder'])->name('orders.index');
@@ -107,7 +109,7 @@ Route::prefix('{store_view}')->group(function () {
         /********** Invoices **********/
         Route::get('/invoices', [InvoiceController::class, 'allInvoices'])->name('invoices.all');
         Route::get('/invoices/{id}', [InvoiceController::class, 'getInvoice'])->name('invoices.index');
-//        Route::post('/invoices/{id}/refund', [InvoiceController::class, 'refundInvoice'])->name('invoices.refund');
+        //        Route::post('/invoices/{id}/refund', [InvoiceController::class, 'refundInvoice'])->name('invoices.refund');
 
         /********** Customers **********/
         Route::get('/customers', [CustomerController::class, 'allCustomers'])->name('customer.all');
