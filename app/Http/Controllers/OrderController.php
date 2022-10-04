@@ -1059,9 +1059,14 @@ class OrderController extends Controller
                 'entity' => $order,
             ];
 
+            $response = $client->request('PUT', 'orders/create', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
+
             return response()->json([
                 'status' => 'success',
-                'data' => $response->getBody()->getContents(),
+                'data' => json_decode($response->getBody()->getContents()),
             ], 200);
         } catch (Exception $e) {
             return response()->json([
