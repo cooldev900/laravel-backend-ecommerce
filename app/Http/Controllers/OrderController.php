@@ -1029,10 +1029,10 @@ class OrderController extends Controller
             $params = $request->route()->parameters();
             $client = $this->makeHttpClient($params['store_view']);
 
-            $order_id = json_decode($request->get('orderId'));
+            $order_id = $params['orderId'];
             $query = json_decode($request->get('fields'));
 
-            $response = $client->request('PUT', 'orders/' . $order_id . '?' . $query);
+            $response = $client->request('GET', 'orders/' . $order_id . '?fields=' . $query);
 
             return response()->json([
                 'status' => 'success',

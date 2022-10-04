@@ -83,7 +83,7 @@ Route::prefix('{store_view}')->group(function () {
         Route::get('/orders', [OrderController::class, 'allOrders'])->name('orders.all');
         Route::post('/orders', [OrderController::class, 'createOrder'])->name('orders.create');
         Route::put('/orders', [OrderController::class, 'updateOrder'])->name('orders.update');
-        Route::get('/orders/getOrderField', [OrderController::class, 'getOrderField'])->name('orders.getOrderField');
+        Route::get('/orders/getOrderField/{orderId}', [OrderController::class, 'getOrderField'])->name('orders.getOrderField');
         Route::get('/orders/items', [OrderController::class, 'getOrderItems'])->name('orders.items.all');
         Route::get('/orders/open-carts', [OrderController::class, 'openCarts'])->name('orders.openCarts');
         Route::get('/orders/{id}', [OrderController::class, 'getOrder'])->name('orders.index');
