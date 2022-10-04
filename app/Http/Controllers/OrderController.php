@@ -1051,7 +1051,7 @@ class OrderController extends Controller
     {
         try {
             $params = $request->route()->parameters();
-            $client = $this->makeHttpClient($params['store_view']);
+            $client = $this->makeHttpClient();
 
             $order = $request->input('entity');
 
@@ -1059,14 +1059,9 @@ class OrderController extends Controller
                 'entity' => $order,
             ];
 
-            $response = $client->request('PUT', 'orders', [
-                'headers' => ['Content-Type' => 'application/json'],
-                'body' => json_encode($payload),
-            ]);
-
             return response()->json([
                 'status' => 'success',
-                'data' => $response,
+                'data' => $response->getBody()->getContents(),
             ], 200);
         } catch (Exception $e) {
             return response()->json([
