@@ -1076,4 +1076,34 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    public function updateShippingAddress(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient('all');
+
+            $order = $request->input('entity');
+
+            $payload = [
+                'entity' => $order,
+            ];
+
+            $response = $client->request('PUT', 'orders/'.$params['parent_id'], [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()->getContents()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_delete_product',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
