@@ -33,21 +33,9 @@ class PaypalController extends Controller
         try {
             $params = $request->route()->parameters();
             $client = $this->makePaypalClient($params['store_view']);
+            $payment_id = $request->input('payment_id');
 
-            // $payload = '
-            //     {
-            //         "intent": "CAPTURE",
-            //         "purchase_units": [
-            //             {
-            //                 "amount": {
-            //                     "currency_code": "USD",
-            //                     "value": "100.00"
-            //                 }
-            //             }
-            //         ]
-            //     }
-            // ';
-            $response = $client->request('GET', 'authorizations/3KLHeWGfAlK9sk9k0c7tkJxo');
+            $response = $client->request('GET', "authorizations/{$payment_id}");
 
             return response()->json([
                 'status' => 'success',

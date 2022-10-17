@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Elasticsearch\ClientBuilder;
 use GuzzleHttp\Client;
 use Exception;
+use App\Models\ReportingData;
 
 class ReportController extends Controller
 {
@@ -79,6 +80,72 @@ class ReportController extends Controller
             return response()->json([
                 'status' => 'error',
                 'error' => 'could_not_get_data',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function createReportData(Request $request)
+    {
+        try {
+            $request->validate([
+                'order_date' => 'nullable|date',
+                'order_number' => 'nullable|numeric',
+                'store_id' => 'nullable|numeric',
+                'client_id' => 'nullable|numeric'
+            ]);
+
+            $inputs = $request->all();
+            $row = new ReportingData();
+            foreach ($inputs as $key => $input) {
+                $row[$key] = $input;
+            }
+            $row->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $row,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_save_Attribute',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getReportDate(Request $request)
+    {
+        try {
+            $request->validate([
+                'start_date' => 'nullable|date',
+                'end_number' => 'nullable|date',
+                'store_id' => 'nullable|numeric',
+                'client_id' => 'nullable|numeric'
+            ]);
+
+            $inputs = $request->all();
+            $query = ReportingData::where('id', '>', '0');
+            if (isset($inputs['store_id']))
+                $query = $query->where('store_id', $inputs['store_id']);
+            if (isset($inputs['client_id']))
+                $query = $query->where('client_id', $inputs['client_id']);
+            if (isset($inputs['start_date']))
+                $query = $query->where('order_date', '>=', $inputs['start_date']);
+            if (isset($inputs['end_date']))
+                $query = $query->where('order_date', '<=', $inputs['end_date']);
+
+            $result = $query->selectRaw('sum(value) as total')->pluck('total');
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $result[0],
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'fail_save_Attribute',
                 'message' => $e->getMessage(),
             ], 500);
         }
