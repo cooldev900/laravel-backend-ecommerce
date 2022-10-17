@@ -1051,22 +1051,73 @@ class OrderController extends Controller
     {
         try {
             $params = $request->route()->parameters();
-            $client = $this->makeHttpClient($params['store_view']);
+            $client = $this->makeHttpClient();
 
             $order = $request->input('entity');
 
+            
+            $entity_id = $order['entity_id'];
+            $response = $client->request('GET', "orders/{$entity_id}/statuses");
+            $result = json_decode($response->getBody()->getContents());    
+            if ($result !== 'draft') {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'not_draft_error',
+                    'message' => 'Statuses of order is not draft',
+                ], 500);    
+            }
+            
             $payload = [
                 'entity' => $order,
             ];
-
-            $response = $client->request('PUT', 'orders', [
+            $response = $client->request('PUT', 'orders/create', [
                 'headers' => ['Content-Type' => 'application/json'],
                 'body' => json_encode($payload),
             ]);
 
             return response()->json([
                 'status' => 'success',
-                'data' => $response,
+                'data' => json_decode($response->getBody()->getContents()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_delete_product',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateShippingAddress(Request $request)
+    {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient('all');
+
+            $order = $request->input('entity');
+            
+            $entity_id = $order['entity_id'];
+            $response = $client->request('GET', "orders/{$entity_id}/statuses");
+            $result = json_decode($response->getBody()->getContents());
+            if ($result !== 'draft') {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'not_draft_error',
+                    'message' => 'Statuses of order is not draft',
+                ], 500);    
+            }
+
+            $payload = [
+                'entity' => $order,
+            ];
+            $response = $client->request('PUT', 'orders/'.$params['parent_id'], [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()->getContents()),
             ], 200);
         } catch (Exception $e) {
             return response()->json([
