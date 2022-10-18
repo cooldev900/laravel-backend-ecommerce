@@ -279,4 +279,4 @@ Route::prefix('providers')->group(function () {
 
 Route::get('/report/test/', [ReportController::class, 'getReportData'])->name('report.all');
 Route::post('/reports/', [ReportController::class, 'createReportData'])->name('report.create');
-Route::get('/reports/', [ReportController::class, 'getReportDate'])->name('report.get');
+Route::get('/reports/', [ReportController::class, 'getReportingData'])->name('report.get');

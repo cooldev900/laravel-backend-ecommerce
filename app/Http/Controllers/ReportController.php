@@ -109,13 +109,13 @@ class ReportController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'fail_save_Attribute',
+                'error' => 'fail_save_row',
                 'message' => $e->getMessage(),
             ], 500);
         }
     }
 
-    public function getReportDate(Request $request)
+    public function getReportingData(Request $request)
     {
         try {
             $request->validate([
