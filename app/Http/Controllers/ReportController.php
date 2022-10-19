@@ -183,7 +183,7 @@ class ReportController extends Controller
                 $query = $query->whereIn('store_id', $inputs['store_id']);
                 $enquiry = $enquiry->whereIn('store_id', $inputs['store_id']);
             }
-            if (isset($inputs['client_id'])) {
+            if (isset($inputs['client_id']) && $inputs['client_id']) {
                 $query = $query->where('client_id', $inputs['client_id']);
                 $enquiry = $enquiry->where('client_id', $inputs['client_id']);
             }
