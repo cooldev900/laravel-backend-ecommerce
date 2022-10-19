@@ -51,6 +51,9 @@ Route::middleware(['jwt_auth'])->group(function () {
     /********** Sending Email **********/
     Route::post('/send-email', [Controller::class, 'sendEmail'])->name('email.send');
     Route::get('/websites', [ProductController::class, 'getWebsites'])->name('websites.all');
+
+    Route::post('/reports/', [ReportController::class, 'createReportData'])->name('report.create');
+    Route::get('/reports/', [ReportController::class, 'getReportingData'])->name('report.get');
 });
 
 Route::prefix('{store_view}')->group(function () {
@@ -278,5 +281,3 @@ Route::prefix('providers')->group(function () {
 });
 
 Route::get('/report/test/', [ReportController::class, 'getReportData'])->name('report.all');
-Route::post('/reports/', [ReportController::class, 'createReportData'])->name('report.create');
-Route::get('/reports/', [ReportController::class, 'getReportingData'])->name('report.get');

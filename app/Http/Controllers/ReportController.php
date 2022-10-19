@@ -9,6 +9,9 @@ use Elasticsearch\ClientBuilder;
 use GuzzleHttp\Client;
 use Exception;
 use App\Models\ReportingData;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Models\Company;
+use App\Models\StoreView;
 
 class ReportController extends Controller
 {
@@ -96,6 +99,32 @@ class ReportController extends Controller
             ]);
 
             $inputs = $request->all();
+            try {
+                $user = JWTAuth::user();
+                if (!$user->is_admin) {
+                    $company = Company::where('name', $user->company_name)->firstOrFail();
+                    if (!$company || $company->id !== $inputs['client_id']) {
+                        return response()->json([
+                            'status' => 'error',
+                            'error' => 'wrong_client_id',
+                            'message' => 'Wrong client Id',
+                        ], 500);
+                    }
+                    $storeview = StoreView::where('company_id', $company->id)->where('id', $inputs['store_id'])->firstOrFail();
+                    if (!$storeview)
+                        return response()->json([
+                            'status' => 'error',
+                            'error' => 'wrong_store_id',
+                            'message' => 'Wrong Store Id',
+                        ], 500);
+                }
+            } catch (Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'insufficient permissions',
+                    'data' => [],
+                ], 500);
+            }
             $row = new ReportingData();
             foreach ($inputs as $key => $input) {
                 $row[$key] = $input;
@@ -121,11 +150,38 @@ class ReportController extends Controller
             $request->validate([
                 'start_date' => 'nullable|date',
                 'end_number' => 'nullable|date',
-                'store_id' => 'nullable|numeric',
+                'store_id' => 'numeric',
                 'client_id' => 'nullable|numeric'
             ]);
 
             $inputs = $request->all();
+            try {
+                $user = JWTAuth::user();
+                if (!$user->is_admin) {
+                    $company = Company::where('name', $user->company_name)->firstOrFail();
+                    if (!$company || $company->id != $inputs['client_id']) {
+                        return response()->json([
+                            'status' => 'error',
+                            'error' => 'wrong_client_id',
+                            'message' => 'Wrong client Id',
+                        ], 500);
+                    }
+                    $storeview = StoreView::where('company_id', $company->id)->where('id', $inputs['store_id'])->firstOrFail();
+                    if (!$storeview)
+                        return response()->json([
+                            'status' => 'error',
+                            'error' => 'wrong_store_id',
+                            'message' => 'Wrong Store Id',
+                        ], 500);
+                }
+            } catch (Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'insufficient permissions',
+                    'data' => [],
+                ], 500);
+            }
+
             $query = ReportingData::where('id', '>', '0');
             if (isset($inputs['store_id']))
                 $query = $query->where('store_id', $inputs['store_id']);
@@ -136,7 +192,7 @@ class ReportController extends Controller
             if (isset($inputs['end_date']))
                 $query = $query->where('order_date', '<=', $inputs['end_date']);
 
-            $result = $query->selectRaw('sum(value) as total')->pluck('total');
+            $result = $query->selectRaw('sum(value) as total, count(*) as order_numbers')->get();
 
             return response()->json([
                 'status' => 'success',
