@@ -12,6 +12,7 @@ use App\Models\ReportingData;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Models\Company;
 use App\Models\StoreView;
+use App\Models\Enquiry;
 
 class ReportController extends Controller
 {
@@ -100,23 +101,16 @@ class ReportController extends Controller
 
             $inputs = $request->all();
             try {
-                $user = JWTAuth::user();
-                if (!$user->is_admin) {
-                    $company = Company::where('name', $user->company_name)->firstOrFail();
-                    if (!$company || $company->id !== $inputs['client_id']) {
-                        return response()->json([
-                            'status' => 'error',
-                            'error' => 'wrong_client_id',
-                            'message' => 'Wrong client Id',
-                        ], 500);
-                    }
-                    $storeview = StoreView::where('company_id', $company->id)->where('id', $inputs['store_id'])->firstOrFail();
-                    if (!$storeview)
-                        return response()->json([
-                            'status' => 'error',
-                            'error' => 'wrong_store_id',
-                            'message' => 'Wrong Store Id',
-                        ], 500);
+                $token = $request->header('Token');
+                $storeview = StoreView::findOrFail($inputs['store_id']);
+
+                // $company = Company::findOrFail($inputs['client_id']);
+                if ($storeview && $token != $storeview->webhook_token) {
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => 'Token_Not_Matched',
+                        'message' => 'Token is not matched',
+                    ], 500);
                 }
             } catch (Exception $e) {
                 return response()->json([
@@ -150,9 +144,10 @@ class ReportController extends Controller
             $request->validate([
                 'start_date' => 'nullable|date',
                 'end_number' => 'nullable|date',
-                'store_id' => 'numeric',
+                'store_id' => 'nullable|array',
                 'client_id' => 'nullable|numeric'
             ]);
+
 
             $inputs = $request->all();
             try {
@@ -183,25 +178,37 @@ class ReportController extends Controller
             }
 
             $query = ReportingData::where('id', '>', '0');
-            if (isset($inputs['store_id']))
-                $query = $query->where('store_id', $inputs['store_id']);
-            if (isset($inputs['client_id']))
+            $enquiry = Enquiry::where('id', '>', '0');
+            if (isset($inputs['store_id'])) {
+                $query = $query->whereIn('store_id', $inputs['store_id']);
+                $enquiry = $enquiry->whereIn('store_id', $inputs['store_id']);
+            }
+            if (isset($inputs['client_id'])) {
                 $query = $query->where('client_id', $inputs['client_id']);
-            if (isset($inputs['start_date']))
+                $enquiry = $enquiry->where('client_id', $inputs['client_id']);
+            }
+            if (isset($inputs['start_date'])) {
                 $query = $query->where('order_date', '>=', $inputs['start_date']);
-            if (isset($inputs['end_date']))
+                $enquiry = $enquiry->where('created_at', '>=', $inputs['start_date']);
+            }
+            if (isset($inputs['end_date'])) {
                 $query = $query->where('order_date', '<=', $inputs['end_date']);
+                $enquiry = $enquiry->where('created_at', '<=', $inputs['end_date']);
+            }
 
             $result = $query->selectRaw('sum(value) as total, count(*) as order_numbers')->get();
+            $enquiry_result = $enquiry->selectRaw('count(*) as enquiry_numbers')->pluck('enquiry_numbers');
+            $result = $result[0];
+            $result['enquiry_numbers'] = $enquiry_result[0];
 
             return response()->json([
                 'status' => 'success',
-                'data' => $result[0],
+                'data' => $result,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'error' => 'fail_save_Attribute',
+                'error' => 'fail_get_reporting_data',
                 'message' => $e->getMessage(),
             ], 500);
         }
