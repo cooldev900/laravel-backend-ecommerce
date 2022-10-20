@@ -58,6 +58,8 @@ Route::middleware(['jwt_auth'])->group(function () {
 
 Route::prefix('{store_view}')->group(function () {
     Route::middleware(['jwt_auth', 'permission'])->group(function () {
+        Route::get('/getCategoriesList', [ReportController::class, 'getCategoriesList'])->name('reports.getCategoriesList');
+
         Route::get('/marketing/getAllCoupons', [MarketingController::class, 'getAllCoupons'])->name('marketing.coupons.all');
         Route::get('/marketing/getSalesRule/{rule_id}', [MarketingController::class, 'getSalesRule'])->name('marketing.coupons.getSalesRule');
 

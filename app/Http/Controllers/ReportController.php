@@ -213,4 +213,31 @@ class ReportController extends Controller
             ], 500);
         }
     }
+
+    public function getCategoriesList(Request $request) {
+        try {
+            $params = $request->route()->parameters();
+            $client = $this->makeHttpClient($params['store_view']);
+
+            $search_criteria = json_decode($request->get('searchCriteria'));
+            $query = [
+                'query' => [
+                    'searchCriteria' => $search_criteria ? $search_criteria : 'entity_id',
+                ],
+            ];
+
+            $response = $client->request('GET', 'categories/list', $query);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'could_not_get_orders',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
