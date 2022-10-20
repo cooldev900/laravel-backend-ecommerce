@@ -51,10 +51,15 @@ Route::middleware(['jwt_auth'])->group(function () {
     /********** Sending Email **********/
     Route::post('/send-email', [Controller::class, 'sendEmail'])->name('email.send');
     Route::get('/websites', [ProductController::class, 'getWebsites'])->name('websites.all');
+
+    Route::post('/reports/', [ReportController::class, 'createReportData'])->name('report.create');
+    Route::get('/reports/', [ReportController::class, 'getReportingData'])->name('report.get');
 });
 
 Route::prefix('{store_view}')->group(function () {
     Route::middleware(['jwt_auth', 'permission'])->group(function () {
+        Route::get('/getCategoriesList', [ReportController::class, 'getCategoriesList'])->name('reports.getCategoriesList');
+
         Route::get('/marketing/getAllCoupons', [MarketingController::class, 'getAllCoupons'])->name('marketing.coupons.all');
         Route::get('/marketing/getSalesRule/{rule_id}', [MarketingController::class, 'getSalesRule'])->name('marketing.coupons.getSalesRule');
 
