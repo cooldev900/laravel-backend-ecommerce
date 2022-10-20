@@ -103,8 +103,7 @@ class EnquiryController extends Controller
             $sender = User::where('company_name', $company->name)->where('email_only', 0)->first();
             $users = User::where('company_name', $company->name)->where('email_only', 1)->whereIn('id', $user_ids)->get();
             $to = '';
-            $params = $request->all();
-            $params['myorderurl'] = $storeview->vsf_url;
+
             
             foreach ($users as $key => $user) {
                 $to .= $user['name'] . " <" . $user['email'] . ">";
@@ -117,10 +116,10 @@ class EnquiryController extends Controller
                         'auth' => ['api', env('MAIL_GUN_SECRET')],
                         'form_params' => [
                             'from' =>  env('MAIL_GUN_SENDER'),
-                            'to' => $to,
+                            'to' => "tom.brown@omniautomotive.co.uk",
                             'subject' => 'New Enquiry',
                             'template' => 'internalnewenquiry',
-                            'h:X-Mailgun-Variables' => $params
+                            'h:X-Mailgun-Variables' => '{"name":"'.$user['email'].'", "first_name":"'.$inputs['first_name'].'", "last_name":"'.$inputs['last_name'].'", "email":"'.$inputs['email'].'", ", "email":"'.$inputs['email'].'"created_at":"'.$enquiry->created_at.'"}'
                         ]
                     ]
                 );
@@ -128,7 +127,7 @@ class EnquiryController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data' => $users,
+                'data' => 'Email is sent',
             ], 200);
 
         } catch (Exception $e) {
