@@ -13,6 +13,7 @@ use App\Models\Stripe;
 use App\Models\Cybersource;
 use App\Models\CheckoutCom;
 use App\Models\CheckoutCom2;
+use App\Models\BarclaysEnterprise;
 
 /**
  * @OA\Schema(
@@ -44,7 +45,7 @@ class StoreView extends Model
     protected $hidden = ['created_at', 'updated_at', 'company_id', 'api_key_1', 'api_key_2', 'payment_additional_1',
         'payment_additional_2', 'payment_additional_3', 'es_password', 'webhook_token'];
 
-    protected $with = ['company', 'paypal', 'stripe', 'cybersource', 'checkoutcom', 'checkoutcom2'];
+    protected $with = ['company', 'paypal', 'stripe', 'cybersource', 'checkoutcom', 'checkoutcom2', 'barclaysenterprise'];
 
     protected $fillable = [
         'code', 'store_id', 'company_id', 'payment_provider', 'api_key_1', 'api_key_2',
@@ -77,5 +78,9 @@ class StoreView extends Model
 
     public function checkoutcom2() {
         return $this->hasOne(CheckoutCom2::class);
+    }
+
+    public function barclaysenterprise() {
+        return $this->hasOne(BarclaysEnterprise::class);
     }
 }

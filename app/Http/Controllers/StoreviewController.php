@@ -169,7 +169,7 @@ class StoreviewController extends Controller
             $inputs = $request->all();
             $newStoreView = new StoreView();
             foreach ($inputs as $key => $input) {
-                if ($key === 'paypal' || $key === 'stripe' || $key === 'cybersource' || $key === 'checkoutcom'  || $key === 'checkoutcom2')
+                if ($key === 'paypal' || $key === 'stripe' || $key === 'cybersource' || $key === 'checkoutcom'  || $key === 'checkoutcom2'   || $key === 'barclaysenterprise')
                     continue;
                 if (($key === 'api_key_1'
                     || $key === 'api_key_2' || $key === 'payment_additional_1'
@@ -187,6 +187,7 @@ class StoreviewController extends Controller
             $newStoreView->cybersource()->create($this->encryptCybersourceKeys($inputs['cybersource']));
             $newStoreView->checkoutcom()->create($this->encryptCheckoutcomKeys($inputs['checkoutcom']));
             $newStoreView->checkoutcom2()->create($this->encryptCheckoutcom2Keys($inputs['checkoutcom2']));
+            $newStoreView->barclaysenterprise()->create($this->encryptBarclaysEnterpriseKeys($inputs['barclaysenterprise']));
 
             return response()->json([
                 'status' => 'success',
@@ -251,6 +252,16 @@ class StoreviewController extends Controller
         return $values;
     }
 
+    private function encryptBarclaysEnterpriseKeys($values) {
+        if (!sizeof($values)) return $values;
+        foreach($values as $key => $value) {
+            if ($key === 'client_id') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'secret_key') $values[$key] = encrypt(bin2hex($value));
+            if ($key === 'enterprise') $values[$key] = encrypt(bin2hex($value));
+        }
+        return $values;
+    }
+
     /**
      * @OA\Delete(
      * path="/api/storeviews/{id}",
@@ -295,11 +306,12 @@ class StoreviewController extends Controller
             $userPermissions->delete();
 
             $storeview = StoreView::find($params['id']);
-            $newStoreView->paypal()->delete();
-            $newStoreView->stripe()->delete();
-            $newStoreView->cybersource()->delete();
-            $newStoreView->checkoutcom()->delete();
-            $newStoreView->checkoutcom2()->delete();
+            $storeview->paypal()->delete();
+            $storeview->stripe()->delete();
+            $storeview->cybersource()->delete();
+            $storeview->checkoutcom()->delete();
+            $storeview->checkoutcom2()->delete();
+            $storeview->barclaysenterprise()->delete();
             $storeview->delete();
 
             return response()->json([
@@ -465,6 +477,8 @@ class StoreviewController extends Controller
             else $originStoreview->checkoutcom()->create($this->encryptCheckoutcomKeys($request->input('checkoutcom')));
             if (!is_null($originStoreview['checkoutcom2'])) $originStoreview->checkoutcom2()->update($this->encryptCheckoutcom2Keys($request->input('checkoutcom2')));
             else $originStoreview->checkoutcom2()->create($this->encryptCheckoutcom2Keys($request->input('checkoutcom2')));
+            if (!is_null($originStoreview['barclaysenterprise'])) $originStoreview->barclaysenterprise()->update($this->encryptBarclaysEnterpriseKeys($request->input('barclaysenterprise')));
+            else $originStoreview->barclaysenterprise()->create($this->encryptBarclaysEnterpriseKeys($request->input('barclaysenterprise')));
 
             return response()->json([
                 'status' => 'success',
